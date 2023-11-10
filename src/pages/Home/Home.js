@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import TopBarMenu from "../../components/topBarMenu/TopBarMenu";
 import style from "./Home.module.css";
+import { Container } from "@mui/material";
 
 function Home() {
   return (
-    <div className={style.background}>
-      <p>Home</p>
+    <div className={style.test}>
+      
     </div>
   );
 }
