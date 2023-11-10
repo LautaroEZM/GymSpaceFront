@@ -6,12 +6,12 @@ export default function Errors({ userData }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (userData.name.length < 4) {
+    if (userData.firstName.length < 4) {
       setError("The name must be longer than 4 characters");
       return;
     }
   
-    if (userData.name.length > 12) {
+    if (userData.firstName.length > 12) {
       setError("The name must be less than 12 characters");
       return;
     }
@@ -23,12 +23,12 @@ export default function Errors({ userData }) {
       return;
     }
 
-    if (userData.lastname.length < 4) {
+    if (userData.lastName.length < 4) {
         setError("The lastname must be longer than 4 characters");
         return;
       }
     
-      if (userData.lastname.length > 12) {
+      if (userData.lastName.length > 12) {
         setError("The lastname must be less than 12 characters");
         return;
       }
@@ -68,13 +68,22 @@ export default function Errors({ userData }) {
       );
       return;
     }
-
+    if (!/^[0-9]{10,11}$/g.test(userData.contactPhone)) {
+      setError(
+        "The contact phone number must be 10 or 11 characters long, all of which are numbers"
+      );
+      return;
+    }
     if (!/^[a-zA-Z0-9]{4,11}$/g.test(userData.password) || !/[0-9]/g.test(userData.password)) {
       setError(
         "The password must be at least 4 characters long, less than 12 characters long, and contain at least one number"
       );
       return;
     }
+    if (!userData.photo) {
+      setError("You must upload a profile photo")
+    }
+    
 
     setError("");
   }, [userData]);
