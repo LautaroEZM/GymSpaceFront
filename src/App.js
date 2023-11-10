@@ -17,8 +17,10 @@ export default function App() {
       <TopBarMenu></TopBarMenu>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/Marketplace" element={<Home />} />
+            <Route path="/Classes" element={<Home />} />
             <Route path="/signUp" element={<SignUp />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>
