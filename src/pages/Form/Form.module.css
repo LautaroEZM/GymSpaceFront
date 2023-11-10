@@ -14,6 +14,10 @@
   align-items: center;
 }
 
+.div3{
+  height: 150px;
+}
+
 .input {
   padding: 10px;
   width: 200px;
@@ -37,6 +41,20 @@
 
 .showPassword {
   position: absolute;
-  left: 545px;
+  left: 540px;
   bottom: 55px;
+}
+
+.photoDiv{
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  top: 100px;
+  right: 100px;
+}
+
+.photo{
+  height: 235px;
+  width: 290px;
+  margin-left: 5px;
 }

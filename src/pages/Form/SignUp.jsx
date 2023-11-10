@@ -14,6 +14,7 @@ import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
 import styles from "./Form.module.css";
 import { DatePicker } from "@mui/x-date-pickers";
 import Errors from "./Errors";
+import { MuiFileInput } from 'mui-file-input'
 
 export default function SignUp() {
   const [userData, setUserData] = useState({
@@ -25,6 +26,8 @@ export default function SignUp() {
     phone: "",
     adress: "",
     gender: "",
+    systemRole: 'User',
+    photo: undefined,
   });
 
   const [showPassword, setShowPassword] = useState({ // the password is initially hidden
@@ -40,8 +43,6 @@ export default function SignUp() {
 
   const handleChange = (event) => { // handles the input changes of the form
     const { name, value } = event.target;
-    console.log("event target:", name, value);
-
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -49,6 +50,12 @@ export default function SignUp() {
     const newDate = formatDate(value)
     setUserData((prevData) => ({ ...prevData, birth: newDate }));
   };
+
+  const handlePhoto = (file) => {
+    if(userData.photo) setUserData((prevData) => ({...prevData, photo: undefined}))
+    const url = URL.createObjectURL(file);
+    setUserData((prevData) => ({...prevData, photo: url}))
+  }
 
   const formatDate = (value) => { // formats the date selected by the datePicker into a more friendly view
     const year = value.$y.toString();
@@ -64,6 +71,7 @@ export default function SignUp() {
 
   return (
     <Container sx={{ width: 1200, height: 600 }} className={styles.container}>
+      <div className={styles.div3} ></div>
       <div className={styles.div}>
         <TextField  // name input
           name="name"
@@ -163,6 +171,10 @@ export default function SignUp() {
       </div> 
       <Errors userData={userData} // errors component
        />
+      <div className={styles.photoDiv} >
+      {userData.photo ? <img className={styles.photo} src={userData.photo} alt="Could not load photo" /> : <div className={styles.photo} ><h3>Please submit a photo</h3></div>}
+      <MuiFileInput name="photo" value={userData.photo} onChange={handlePhoto} className={styles.photoUpload} inputProps={{ accept: '.png, .jpeg' }} />
+      </div>
     </Container>
   );
 }
