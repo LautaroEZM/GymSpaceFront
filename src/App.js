@@ -5,8 +5,6 @@ import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import "./App.css";
 import TopBarMenu from './components/topBarMenu/TopBarMenu';
-
-
 import SignUp from "./pages/Form/SignUp";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
