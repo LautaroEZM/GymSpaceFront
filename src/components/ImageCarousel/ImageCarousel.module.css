@@ -1,0 +1,13 @@
+.carouselContainer {
+    margin-top: 15px;
+}
+
+.carouselImage{
+    width: 70%;
+}
+
+.carouselItem {
+    background-color: transparent; /* Establece el fondo transparente */
+    border: none; /* Elimina cualquier borde si es necesario */
+    box-shadow: none; /* Elimina cualquier sombra si es necesario */
+  }

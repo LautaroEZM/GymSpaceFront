@@ -1,11 +1,10 @@
-import TopBarMenu from "../../components/topBarMenu/TopBarMenu";
+import ImageCarousel from "../../components/ImageCarousel/ImageCarousel";
 import style from "./Home.module.css";
-import { Container } from "@mui/material";
 
 function Home() {
   return (
-    <div className={style.test}>
-      
+    <div className={style.background}>
+    <ImageCarousel></ImageCarousel>
     </div>
   );
 }

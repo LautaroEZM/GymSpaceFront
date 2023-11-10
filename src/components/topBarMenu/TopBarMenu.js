@@ -1,5 +1,6 @@
 import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -30,6 +31,11 @@ function TopBarMenu() {
       <img src={fig} alt="Fig" className={style.overlayImage} />
       <div className={style.topBar}>
         <div className={style.buttonsContainer}>
+          <Link to="/">
+            <Button variant="contained" color="menuButton" disableElevation>
+              HOME
+            </Button>
+          </Link>
           <Button
             variant="contained"
             color="menuButton"
@@ -37,7 +43,7 @@ function TopBarMenu() {
             disableElevation
             className={style.homeButton}
           >
-            HOME
+            INFO
           </Button>
           <Menu
             anchorEl={anchorElHome}
@@ -122,16 +128,18 @@ function TopBarMenu() {
               >
                 Login
               </Button>
-              <Button
-                injectFirst
-                variant="text"
-                color="primary"
-                fullWidth
-                required
-                className={style.buttonBot}
-              >
-                Register
-              </Button>
+              <Link to="/SignUp">
+                <Button
+                  injectFirst
+                  variant="text"
+                  color="primary"
+                  fullWidth
+                  required
+                  className={style.buttonBot}
+                >
+                  Register
+                </Button>
+              </Link>
             </Box>
           </Menu>
         </div>
