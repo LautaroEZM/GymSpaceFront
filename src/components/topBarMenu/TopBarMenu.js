@@ -68,12 +68,16 @@ function TopBarMenu() {
             <MenuItem>asd3</MenuItem>
             <div className={style.bottomLine}></div>
           </Menu>
-          <Button variant="contained" color="menuButton" disableElevation>
-            MARKETPLACE
-          </Button>
-          <Button variant="contained" color="menuButton" disableElevation>
-            CLASSES
-          </Button>
+          <Link to="/Marketplace">
+            <Button variant="contained" color="menuButton" disableElevation>
+              MARKETPLACE
+            </Button>
+          </Link>
+          <Link to="/Services">
+            <Button variant="contained" color="menuButton" disableElevation>
+              SERVICES
+            </Button>
+          </Link>
         </div>
         <div className={style.accountContainer}>
           <Button
