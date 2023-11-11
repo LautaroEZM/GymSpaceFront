@@ -71,9 +71,11 @@ function TopBarMenu() {
           <Button variant="contained" color="menuButton" disableElevation>
             MARKETPLACE
           </Button>
+          <Link to="/Services">
           <Button variant="contained" color="menuButton" disableElevation>
-            CLASSES
+            SERVICES
           </Button>
+          </Link>
         </div>
         <div className={style.accountContainer}>
           <Button

@@ -8,6 +8,7 @@ import SignUp from "./pages/Form/SignUp";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import CreateService from "./pages/CreateService/CreateService";
+import Services from "./pages/Services/Services";
 
 export default function App() {
   return (
@@ -18,9 +19,10 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/Marketplace" element={<Home />} />
-            <Route path="/Classes" element={<Home />} />
+            <Route path="/Services" element={<Services />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="createService" element={<CreateService />} />
+            <Route path="createProduct" element={<CreateService />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

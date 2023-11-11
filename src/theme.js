@@ -20,8 +20,16 @@ const theme = createTheme({
       main: "#414141",
       light: "#ff9721",
       dark: "#ff9721",
-      contrastText: "#FFF",
+      contrastText: "white",
     },
+
+    orangeButton: {
+      main: "#ff9721",
+      light: "#c26c0b",
+      dark: "#c26c0b",
+      contrastText: "white",
+    },
+    
     error: {
       main: red.A400,
     },
