@@ -14,17 +14,19 @@ import {
   ThemeProvider,
   Menu,
   MenuItem,
+  Chip,
 } from "@mui/material";
 import {
   AddCircleOutline as AddCircleOutlineIcon,
   Category as CategoryIcon,
+  Clear as ClearIcon,
 } from "@mui/icons-material";
 import theme from "../../theme";
 
 export default function Album() {
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
@@ -32,7 +34,6 @@ export default function Album() {
       .then((response) => response.json())
       .then((data) => {
         setServices(data);
-        // Obtener todas las categorías únicas del conjunto de datos
         const uniqueCategories = Array.from(
           new Set(data.map((service) => service.category))
         );
@@ -43,21 +44,20 @@ export default function Album() {
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
-    // Obtener todas las categorías únicas del conjunto de datos
-    const uniqueCategories = Array.from(
-      new Set(services.map((service) => service.category))
-    );
-    setCategories(uniqueCategories);
   };
 
   const handleMenuItemClick = (category) => {
-    setSelectedCategory(category);
+    if (!selectedCategories.includes(category)) {
+      setSelectedCategories([...selectedCategories, category]);
+    }
     setAnchorEl(null);
   };
 
-  const handleClearFilter = () => {
-    setSelectedCategory(null);
-    setAnchorEl(null);
+  const handleClearFilter = (category) => {
+    const updatedCategories = selectedCategories.filter(
+      (selectedCategory) => selectedCategory !== category
+    );
+    setSelectedCategories(updatedCategories);
   };
 
   const handleClose = () => {
@@ -104,6 +104,7 @@ export default function Album() {
                 height: "40px",
                 backgroundColor: "#131313",
                 display: "flex",
+                flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
                 position: "absolute",
@@ -111,8 +112,7 @@ export default function Album() {
                 transform: "translateX(-50%)",
                 zIndex: 1,
               }}
-              direction="row"
-              spacing={0}
+              spacing={2}
             >
               <Button
                 variant="outlined"
@@ -121,7 +121,7 @@ export default function Album() {
                 sx={{
                   borderRadius: 0,
                   border: 0,
-                  marginRight: 0,
+                  marginRight: 2,
                   minWidth: 300,
                 }}
               >
@@ -138,7 +138,9 @@ export default function Album() {
                   border: 0,
                 }}
               >
-                {selectedCategory || "Select Category"}
+                {selectedCategories.length > 0
+                  ? "Selected Categories"
+                  : "Select Category"}
               </Button>
               <Menu
                 anchorEl={anchorEl}
@@ -164,17 +166,42 @@ export default function Album() {
                     {category}
                   </MenuItem>
                 ))}
-                <MenuItem onClick={handleClearFilter}>Clear Filter</MenuItem>
               </Menu>
             </Stack>
           </Container>
-
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: "60px",
+            }}
+          >
+            {selectedCategories.map((category, index) => (
+              <Chip
+                key={index}
+                label={category}
+                onDelete={() => handleClearFilter(category)}
+                deleteIcon={
+                  <ClearIcon style={{ color: "black", fontWeight: "bold" }} />
+                }
+                color="secondary"
+                sx={{
+                  marginRight: "8px",
+                  backgroundColor: "#ff9721",
+                  color: "black",
+                  fontWeight: "bold", 
+                }}
+              />
+            ))}
+          </Box>
           <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
             <Grid container spacing={5} marginTop={0.1}>
               {services
                 .filter(
                   (service) =>
-                    !selectedCategory || service.category === selectedCategory
+                    selectedCategories.length === 0 ||
+                    selectedCategories.includes(service.category)
                 )
                 .map((service) => (
                   <Grid item key={service.serviceID} xs={12} sm={3} md={3}>
