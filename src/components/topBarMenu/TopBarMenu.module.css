@@ -1,6 +1,7 @@
 /* TopBar */
 .topContainer {
   position: relative;
+  box-Shadow: 0px 0px 5px 1px rgba(207, 207, 207, 0.75);
 }
 
 .overlayImage {

@@ -7,7 +7,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import theme from "../../theme";
+import theme from "../../theme"; // Deja solo una de estas líneas
 import { useState, useEffect } from "react";
 import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
 import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
@@ -17,6 +17,7 @@ import Errors from "./Errors";
 import { MuiFileInput } from "mui-file-input";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 
 export default function SignUp() {
   const [userData, setUserData] = useState({
