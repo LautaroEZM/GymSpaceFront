@@ -76,7 +76,7 @@ function TopBarMenu() {
             SERVICES
           </Button>
           </Link>
-        </div>
+                  </div>
         <div className={style.accountContainer}>
           <Button
             variant="contained"
