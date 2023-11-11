@@ -38,7 +38,7 @@ export default function CreateService() {
       try {
         const response = await axios.get("http://localhost:3001/coaches");
         const { data } = response;
-        if(data) setCoaches(data);
+        if (data) setCoaches(data);
         console.log(coaches)
       } catch (error) {
         window.alert("could not load coaches", error.message);
@@ -158,10 +158,10 @@ export default function CreateService() {
       >
         {coaches
           ? coaches.map((coach, i) => (
-              <MenuItem key={i} id="coachID" value={coach.userID}>
-                {`${coach.firstName} ${coach.lastName}`}
-              </MenuItem>
-            ))
+            <MenuItem key={i} id="coachID" value={coach.userID}>
+              {`${coach.firstName} ${coach.lastName}`}
+            </MenuItem>
+          ))
           : null}
       </Select>
       <TextField

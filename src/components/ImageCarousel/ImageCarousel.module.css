@@ -1,13 +1,26 @@
+/* ImageCarousel.module.css */
+
 .carouselContainer {
     margin-top: 15px;
-}
-
-.carouselImage{
-    width: 70%;
-}
-
-.carouselItem {
-    background-color: transparent; /* Establece el fondo transparente */
-    border: none; /* Elimina cualquier borde si es necesario */
-    box-shadow: none; /* Elimina cualquier sombra si es necesario */
   }
+  
+  .carouselImage {
+    width: 70%;
+    display: block;
+    margin: 0 auto; /* Centra horizontalmente la imagen */
+  }
+  
+  .carouselItem {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    text-align: center; /* Asegura que el contenido esté centrado dentro del Paper */
+  }
+  
+  .carouselContent {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
