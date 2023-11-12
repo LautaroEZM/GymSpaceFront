@@ -78,6 +78,11 @@ function TopBarMenu() {
               SERVICES
             </Button>
           </Link>
+          <Link to="/Users">
+            <Button variant="contained" color="menuButton" disableElevation>
+              USERS
+            </Button>
+          </Link>
         </div>
         <div className={style.accountContainer}>
           <Button

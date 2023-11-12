@@ -27,7 +27,7 @@ import {
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
 import theme from "../../theme";
-
+import { Link } from "react-router-dom";
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -156,21 +156,23 @@ export default function Marketplace() {
                   <SortIcon />
                 </Badge>
               </IconButton>
-              <Button
-                variant="outlined"
-                color="orangeButton"
-                startIcon={<AddCircleOutlineIcon />}
-                style={{
-                  color: "#ff9721",
-                  textTransform: "none",
-                  height: "50px",
-                  width: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                ADD PRODUCT
-              </Button>
+              <Link to="/CreateProduct">
+                <Button
+                  variant="outlined"
+                  color="orangeButton"
+                  startIcon={<AddCircleOutlineIcon />}
+                  style={{
+                    color: "#ff9721",
+                    textTransform: "none",
+                    height: "50px",
+                    width: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ADD PRODUCT
+                </Button>
+              </Link>
             </Toolbar>
             <Collapse in={filterOpen} timeout="auto" unmountOnExit>
               <Box

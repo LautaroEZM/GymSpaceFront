@@ -11,6 +11,8 @@ import CreateService from "./pages/CreateService/CreateService";
 import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
+import UserList from "./pages/UserList/UserList";
+
 
 
 export default function App() {
@@ -23,10 +25,10 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
+            <Route path="/Users" element={<UserList />} />
             <Route path="/signUp" element={<SignUp />} />
-            <Route path="createService" element={<CreateService />} />
-            <Route path="createProduct" element={<CreateProduct/>} />
-            <Route path="createProduct" element={<CreateService />} />
+            <Route path="/CreateProduct" element={<CreateProduct/>} />
+            <Route path="/CreateService" element={<CreateService />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
