@@ -6,20 +6,16 @@ import {
   InputAdornment,
   Select,
   MenuItem,
-  InputLabel,
   Button,
   FormControl,
-  FormLabel,
-  FormHelperText,
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import { useState, useEffect } from "react";
-import PhotoUPload from "../../components/PhotoUpload/PhotoUpload";
+import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import theme from "../../theme";
 import { useNavigate } from "react-router";
-import Errors from './Errors'
 
-export default function () {
+export default function CreateProduct() {
   const [productData, setProductData] = useState({
     productID: Math.random().toString(),
     name: "",
@@ -33,9 +29,9 @@ export default function () {
   });
 
   const [newImage, setNewImage] = useState(undefined);
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
-    // handles the input changes of the form
     const { name, value } = event.target;
     setProductData((prevData) => ({ ...prevData, [name]: value }));
   };
@@ -49,9 +45,9 @@ export default function () {
       );
       if (product) {
         window.alert("Product created");
-        useNavigate("/");
+        navigate("/");
       } else {
-        window.alert("could not create product");
+        window.alert("Could not create product");
       }
     } catch (error) {
       console.error("Could not create product: ", error.message);
@@ -63,7 +59,6 @@ export default function () {
   }, [newImage]);
 
   useEffect(() => {
-    //debugging
     console.log(productData);
   }, [productData]);
 
@@ -77,7 +72,7 @@ export default function () {
         minWidth: 300,
       }}
     >
-      <FormControl >
+      <FormControl>
         <TextField
           name="name"
           label="Name"
@@ -97,7 +92,7 @@ export default function () {
           onChange={handleChange}
         />
       </FormControl>
-      <PhotoUPload photo={newImage} setPhoto={setNewImage} />
+      <PhotoUpload photo={newImage} setPhoto={setNewImage} />
       <TextareaAutosize
         aria-label="minimum height"
         name="description"
@@ -106,20 +101,14 @@ export default function () {
         value={productData.description}
         onChange={handleChange}
       />
-      <InputLabel name="selectStatus">Status:</InputLabel>
       <Select
-        labelId="selectStatus"
-        name="status"
         label="Status"
+        name="status"
         value={productData.status}
         onChange={handleChange}
       >
-        <MenuItem id="status" value={"available"}>
-          Available
-        </MenuItem>
-        <MenuItem id="status" value={"unavailable"}>
-          Unavailable
-        </MenuItem>
+        <MenuItem value={"available"}>Available</MenuItem>
+        <MenuItem value={"unavailable"}>Unavailable</MenuItem>
       </Select>
       <TextField
         name="stockNow"
@@ -128,7 +117,6 @@ export default function () {
         value={productData.stockNow}
         onChange={handleChange}
       />
-      <InputLabel htmlFor="price">Price:</InputLabel>
       <Input
         name="price"
         type="number"
@@ -136,7 +124,6 @@ export default function () {
         onChange={handleChange}
         startAdornment={<InputAdornment position="start">$</InputAdornment>}
       />
-      <Errors productData={productData} />
       <Button
         variant="contained"
         color={theme.primary}
