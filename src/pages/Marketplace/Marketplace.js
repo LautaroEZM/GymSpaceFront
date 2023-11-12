@@ -7,61 +7,111 @@ import {
   CardMedia,
   CssBaseline,
   Grid,
-  Stack,
   Box,
   Typography,
-  Container,
   ThemeProvider,
+  IconButton,
+  AppBar,
+  Toolbar,
+  Badge,
+  Rating,
+  Collapse,
+  Slider,
+  TextField,
   Menu,
   MenuItem,
-  Chip,
 } from "@mui/material";
 import {
   AddCircleOutline as AddCircleOutlineIcon,
-  Category as CategoryIcon,
-  Clear as ClearIcon,
+  Sort as SortIcon,
+  FilterList as FilterListIcon,
 } from "@mui/icons-material";
 import theme from "../../theme";
 
 export default function Marketplace() {
-  const [services, setServices] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/services")
+    fetch("https://gymspace-backend.onrender.com/products")
       .then((response) => response.json())
       .then((data) => {
-        setServices(data);
-        const uniqueCategories = Array.from(
-          new Set(data.map((service) => service.category))
-        );
-        setCategories(uniqueCategories);
+        setProducts(data);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const allCategories = Array.from(
+    new Set(products.map((product) => product.category))
+  );
 
-  const handleMenuItemClick = (category) => {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-    setAnchorEl(null);
-  };
+  const handleCategoryFilter = (category) => {
+    const updatedCategories = selectedCategories.includes(category)
+      ? selectedCategories.filter((c) => c !== category)
+      : [...selectedCategories, category];
 
-  const handleClearFilter = (category) => {
-    const updatedCategories = selectedCategories.filter(
-      (selectedCategory) => selectedCategory !== category
-    );
     setSelectedCategories(updatedCategories);
   };
 
-  const handleClose = () => {
+  const handlePriceFilter = (event, newValue) => {
+    setPriceRange(newValue);
+  };
+
+  const handleManualPriceChange = (event, type) => {
+    const value = parseFloat(event.target.value);
+
+    if (type === "min") {
+      setPriceRange([Math.min(value, priceRange[1]), priceRange[1]]);
+    } else if (type === "max") {
+      setPriceRange([priceRange[0], Math.max(value, priceRange[0])]);
+    }
+  };
+
+  const handleSortClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleSortChange = (type) => {
+    setSorting((prevSorting) => ({
+      type,
+      order:
+        prevSorting.type === type && prevSorting.order === "asc"
+          ? "desc"
+          : "asc",
+    }));
     setAnchorEl(null);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const price = parseFloat(product.price);
+    const isCategoryFiltered =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(product.category);
+    const isPriceFiltered = price >= priceRange[0] && price <= priceRange[1];
+
+    return isCategoryFiltered && isPriceFiltered;
+  });
+
+  const sortedProducts = () => {
+    if (sorting.type === "price") {
+      return filteredProducts.sort((a, b) => {
+        const priceA = parseFloat(a.price);
+        const priceB = parseFloat(b.price);
+        return sorting.order === "asc" ? priceA - priceB : priceB - priceA;
+      });
+    } else if (sorting.type === "alphabetical") {
+      return filteredProducts.sort((a, b) => {
+        return sorting.order === "asc"
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      });
+    } else {
+      return filteredProducts;
+    }
   };
 
   return (
@@ -69,208 +119,305 @@ export default function Marketplace() {
       <CssBaseline />
       <Box
         sx={{
-          minHeight: "100vh",
+          mt: 2,
           display: "flex",
           flexDirection: "column",
-          width: "85%",
-          margin: "0 auto",
-          marginTop: "45px",
-          marginBottom: "45px",
-          borderRadius: "5px",
-          position: "relative",
+          alignItems: "center",
         }}
       >
-        <main>
-          <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
-            <Grid container spacing={0}>
-              <Grid item xs={12}>
-                <Box sx={{ pt: 1, pb: 6 }}>
-                  <Container maxWidth="md">
-                    <Typography
-                      variant="h2"
-                      align="center"
-                      color="white"
-                      gutterBottom
-                    >
-                      List of classes
-                    </Typography>
-                  </Container>
-                </Box>
-              </Grid>
-            </Grid>
-            <Stack
-              sx={{
-                width: "100%",
-                height: "40px",
-                backgroundColor: "#131313",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 1,
-              }}
-              spacing={2}
-            >
+        <Box sx={{ width: "100%" }}>
+          <AppBar
+            position="static"
+            sx={{ backgroundColor: "transparent", boxShadow: "none" }}
+          >
+            <Toolbar>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={() => setFilterOpen(!filterOpen)}
+              >
+                <FilterListIcon style={{ color: "#ff9721" }} />
+              </IconButton>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1, color: "#ff9721" }}
+              >
+                FILTER BY
+              </Typography>
+              <IconButton
+                color="inherit"
+                style={{ color: "#ff9721", width: "48px", height: "48px" }}
+                onClick={handleSortClick}
+              >
+                <Badge color="secondary">
+                  <SortIcon />
+                </Badge>
+              </IconButton>
               <Button
                 variant="outlined"
                 color="orangeButton"
                 startIcon={<AddCircleOutlineIcon />}
-                sx={{
-                  borderRadius: 0,
-                  border: 0,
-                  marginRight: 2,
-                  minWidth: 300,
+                style={{
+                  color: "#ff9721",
+                  textTransform: "none",
+                  height: "50px",
+                  width: "auto",
+                  display: "flex",
+                  alignItems: "center",
                 }}
               >
-                ADD SERVICE
+                ADD PRODUCT
               </Button>
-              <Button
-                variant="outlined"
-                color="orangeButton"
-                onClick={handleMenuClick}
-                startIcon={<CategoryIcon />}
+            </Toolbar>
+            <Collapse in={filterOpen} timeout="auto" unmountOnExit>
+              <Box
                 sx={{
-                  minWidth: 300,
-                  borderRadius: 0,
-                  border: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  p: 2,
                 }}
               >
-                {selectedCategories.length > 0
-                  ? "Selected Categories"
-                  : "Select Category"}
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                PaperProps={{
-                  style: {
-                    backgroundColor: "#000000e8",
-                    color: "#ff9721",
-                    width: "200px",
-                    borderRadius: "0px",
-                    position: "absolute",
-                    transform: "translate(0, 5px)",
-                    boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-                  },
-                }}
-              >
-                {categories.map((category) => (
-                  <MenuItem
-                    key={category}
-                    onClick={() => handleMenuItemClick(category)}
+                <Typography variant="h6" sx={{ color: "#ff9721", mb: 1 }}>
+                  CATEGORY
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {allCategories.slice(0, 10).map((category) => (
+                    <Button
+                      key={category}
+                      variant={
+                        selectedCategories.includes(category)
+                          ? "contained"
+                          : "outlined"
+                      }
+                      color="orangeButton"
+                      onClick={() => handleCategoryFilter(category)}
+                      sx={{ margin: 0.5 }}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{ color: "#ff9721", mt: 2, mb: 1 }}
+                >
+                  PRICE
+                </Typography>
+                <Box
+                  sx={{
+                    width: "80%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      color: "#ff9721",
+                      marginLeft: "16px",
+                      marginRight: "16px",
+                    }}
                   >
-                    {category}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Stack>
-          </Container>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: "60px",
-            }}
-          >
-            {selectedCategories.map((category, index) => (
-              <Chip
-                key={index}
-                label={category}
-                onDelete={() => handleClearFilter(category)}
-                deleteIcon={
-                  <ClearIcon style={{ color: "black", fontWeight: "bold" }} />
-                }
-                color="secondary"
-                sx={{
-                  marginRight: "8px",
-                  backgroundColor: "#ff9721",
-                  color: "black",
-                  fontWeight: "bold", 
-                }}
-              />
-            ))}
-          </Box>
-          <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
-            <Grid container spacing={5} marginTop={0.1}>
-              {services
-                .filter(
-                  (service) =>
-                    selectedCategories.length === 0 ||
-                    selectedCategories.includes(service.category)
-                )
-                .map((service) => (
-                  <Grid item key={service.serviceID} xs={12} sm={3} md={3}>
-                    <Card
+                    <TextField
+                      type="number"
+                      value={priceRange[0]}
+                      onChange={(e) => handleManualPriceChange(e, "min")}
+                      label="Min"
+                      variant="filled"
+                      InputLabelProps={{
+                        style: {
+                          color: "#ff9721",
+                        },
+                      }}
+                      InputProps={{
+                        inputProps: { min: 0 },
+                        style: {
+                          color: "#ff9721",
+                          "& input": {
+                            color: "#ff9721",
+                          },
+                          "& fieldset": {
+                            borderColor: "#ff9721",
+                          },
+                        },
+                      }}
+                    />
+
+                    <Slider
+                      value={priceRange}
+                      onChange={handlePriceFilter}
+                      valueLabelDisplay="auto"
+                      aria-labelledby="range-slider"
+                      valueLabelFormat={(value) => `$${value}`}
+                      max={Math.ceil(
+                        Math.max(
+                          ...products.map((product) =>
+                            parseFloat(product.price)
+                          )
+                        )
+                      )}
                       sx={{
-                        height: "100%",
+                        width: "calc(100% - 32px)",
+                        marginLeft: "16px",
+                        marginRight: "16px",
+                        color: "#ff9721",
+                      }}
+                    />
+
+                    <TextField
+                      type="number"
+                      value={priceRange[1]}
+                      onChange={(e) => handleManualPriceChange(e, "max")}
+                      label="Max"
+                      variant="filled"
+                      InputLabelProps={{
+                        style: {
+                          color: "#ff9721",
+                        },
+                      }}
+                      InputProps={{
+                        inputProps: { min: 0 },
+                        style: {
+                          color: "#ff9721",
+                          "& input": {
+                            color: "#ff9721",
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ textAlign: "center", mt: 1 }}
+                  >
+                    Price Range
+                  </Typography>
+                </Box>
+              </Box>
+            </Collapse>
+          </AppBar>
+        </Box>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          PaperProps={{
+            style: {
+              backgroundColor: "#111111",
+              width: "350px",
+              borderRadius: "0px",
+              transform: "translate(0, 5px)",
+              boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
+              color: "#ff9721",
+            },
+          }}
+        >
+          <MenuItem onClick={() => handleSortChange("price")}>
+            Sort by Price{" "}
+            {sorting.type === "price" && sorting.order === "asc" && "▲"}
+            {sorting.type === "price" && sorting.order === "desc" && "▼"}
+          </MenuItem>
+          <MenuItem onClick={() => handleSortChange("alphabetical")}>
+            Sort Alphabetically{" "}
+            {sorting.type === "alphabetical" && sorting.order === "asc" && "▲"}
+            {sorting.type === "alphabetical" && sorting.order === "desc" && "▼"}
+          </MenuItem>
+        </Menu>
+
+        <Box
+          sx={{
+            mt: 2,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ width: "90%", marginBottom: "40px" }}>
+            <Grid container spacing={2}>
+              {sortedProducts().map((product) => (
+                <Grid
+                  item
+                  key={product.productID}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={2}
+                  xl={2}
+                >
+                  <Card
+                    sx={{
+                      height: "100%",
+                      backgroundColor: "transparent",
+                      boxShadow: "none",
+                      border: "none",
+                      transition: "box-shadow 0.3s, border 0.3s",
+                      "&:hover": {
+                        border: "1px solid #fff",
+                        boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
+                      },
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={product.image}
+                      alt={product.name}
+                    />
+                    <CardContent
+                      sx={{
                         display: "flex",
                         flexDirection: "column",
-                        backgroundColor: "#414141",
-                        color: "white",
-                        boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
+                        alignItems: "center",
                       }}
                     >
-                      <CardMedia
-                        component="div"
-                        sx={{
-                          pt: "56.25%",
-                          background: `url(${service.image})`,
-                        }}
+                      <Rating
+                        name={`rating-${product.productID}`}
+                        value={4}
+                        precision={0.5}
+                        readOnly
+                        sx={{ marginBottom: 1, color: "#ff9721" }}
                       />
-                      <CardContent
-                        sx={{
-                          flexGrow: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                        }}
+                      <Typography
+                        gutterBottom
+                        variant="h6"
+                        component="div"
+                        sx={{ color: "#fff", textAlign: "center" }}
                       >
-                        <Typography
-                          color="black"
-                          align="center"
-                          fontWeight="bold"
-                          sx={{
-                            textTransform: "uppercase",
-                            backgroundColor: "#ff9721",
-                            width: "100%",
-                            padding: "8px",
-                            marginBottom: "10px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          {service.category}
-                        </Typography>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {service.name}
-                        </Typography>
-                        <Typography
-                          color="white"
-                          align="justify"
-                          mb={1}
-                          sx={{ height: "60px", overflow: "hidden" }}
-                        >
-                          {service.description}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" color="orangeButton">
-                          View
-                        </Button>
-                        <Button size="small" color="orangeButton">
-                          Edit
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
+                        {product.name}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "#fff", textAlign: "center" }}
+                      >
+                        ${product.price}
+                      </Typography>
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "center" }}>
+                      <Button size="small" color="orangeButton">
+                        VIEW DETAIL
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          </Container>
-        </main>
+          </Box>
+        </Box>
       </Box>
     </ThemeProvider>
   );
