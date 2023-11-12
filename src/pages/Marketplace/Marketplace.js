@@ -32,16 +32,14 @@ export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 100000]);
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/products")
       .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-      })
+      .then((data) => setProducts(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
@@ -57,23 +55,22 @@ export default function Marketplace() {
     setSelectedCategories(updatedCategories);
   };
 
-  const handlePriceFilter = (event, newValue) => {
-    setPriceRange(newValue);
-  };
+  const handlePriceFilter = (event, newValue) => setPriceRange(newValue);
 
   const handleManualPriceChange = (event, type) => {
     const value = parseFloat(event.target.value);
 
-    if (type === "min") {
-      setPriceRange([Math.min(value, priceRange[1]), priceRange[1]]);
-    } else if (type === "max") {
-      setPriceRange([priceRange[0], Math.max(value, priceRange[0])]);
-    }
+    setPriceRange((prevPriceRange) => {
+      if (type === "min") {
+        return [Math.min(value, prevPriceRange[1]), prevPriceRange[1]];
+      } else if (type === "max") {
+        return [prevPriceRange[0], Math.max(value, prevPriceRange[0])];
+      }
+      return prevPriceRange;
+    });
   };
 
-  const handleSortClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleSortClick = (event) => setAnchorEl(event.currentTarget);
 
   const handleSortChange = (type) => {
     setSorting((prevSorting) => ({
@@ -86,29 +83,32 @@ export default function Marketplace() {
     setAnchorEl(null);
   };
 
+  const maxProductPrice = Math.ceil(
+    Math.max(...products.map((product) => parseFloat(product.price)))
+  );
+
   const filteredProducts = products.filter((product) => {
     const price = parseFloat(product.price);
     const isCategoryFiltered =
       selectedCategories.length === 0 ||
       selectedCategories.includes(product.category);
     const isPriceFiltered = price >= priceRange[0] && price <= priceRange[1];
-
     return isCategoryFiltered && isPriceFiltered;
   });
 
   const sortedProducts = () => {
     if (sorting.type === "price") {
-      return filteredProducts.sort((a, b) => {
+      return [...filteredProducts].sort((a, b) => {
         const priceA = parseFloat(a.price);
         const priceB = parseFloat(b.price);
         return sorting.order === "asc" ? priceA - priceB : priceB - priceA;
       });
     } else if (sorting.type === "alphabetical") {
-      return filteredProducts.sort((a, b) => {
-        return sorting.order === "asc"
+      return [...filteredProducts].sort((a, b) =>
+        sorting.order === "asc"
           ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
-      });
+          : b.name.localeCompare(a.name)
+      );
     } else {
       return filteredProducts;
     }
@@ -179,6 +179,10 @@ export default function Marketplace() {
                   flexDirection: "column",
                   alignItems: "center",
                   p: 2,
+                  width: "90%",
+                  border: "1px solid white",
+                  boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
+                  margin: "auto", // Agrega esta línea
                 }}
               >
                 <Typography variant="h6" sx={{ color: "#ff9721", mb: 1 }}>
@@ -237,38 +241,23 @@ export default function Marketplace() {
                       onChange={(e) => handleManualPriceChange(e, "min")}
                       label="Min"
                       variant="filled"
-                      InputLabelProps={{
-                        style: {
-                          color: "#ff9721",
-                        },
-                      }}
+                      InputLabelProps={{ style: { color: "#ff9721" } }}
                       InputProps={{
                         inputProps: { min: 0 },
                         style: {
                           color: "#ff9721",
-                          "& input": {
-                            color: "#ff9721",
-                          },
-                          "& fieldset": {
-                            borderColor: "#ff9721",
-                          },
+                          "& input": { color: "#ff9721" },
+                          "& fieldset": { borderColor: "#ff9721" },
                         },
                       }}
                     />
-
                     <Slider
                       value={priceRange}
                       onChange={handlePriceFilter}
                       valueLabelDisplay="auto"
                       aria-labelledby="range-slider"
                       valueLabelFormat={(value) => `$${value}`}
-                      max={Math.ceil(
-                        Math.max(
-                          ...products.map((product) =>
-                            parseFloat(product.price)
-                          )
-                        )
-                      )}
+                      max={maxProductPrice}
                       sx={{
                         width: "calc(100% - 32px)",
                         marginLeft: "16px",
@@ -276,36 +265,22 @@ export default function Marketplace() {
                         color: "#ff9721",
                       }}
                     />
-
                     <TextField
                       type="number"
                       value={priceRange[1]}
                       onChange={(e) => handleManualPriceChange(e, "max")}
                       label="Max"
                       variant="filled"
-                      InputLabelProps={{
-                        style: {
-                          color: "#ff9721",
-                        },
-                      }}
+                      InputLabelProps={{ style: { color: "#ff9721" } }}
                       InputProps={{
                         inputProps: { min: 0 },
                         style: {
                           color: "#ff9721",
-                          "& input": {
-                            color: "#ff9721",
-                          },
+                          "& input": { color: "#ff9721" },
                         },
                       }}
                     />
                   </Box>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ textAlign: "center", mt: 1 }}
-                  >
-                    Price Range
-                  </Typography>
                 </Box>
               </Box>
             </Collapse>
