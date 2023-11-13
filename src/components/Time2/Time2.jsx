@@ -22,7 +22,7 @@ export default function ({ time, setTime, labelName }) {
       arr2.push(i);
       i++;
     }
-    arr = arr.map((e) => e.toString());
+    arr = arr.map((e) => e < 10 ? '0' + e : e.toString());
     arr2 = arr2.map((e) => e.toString());
     setHours(arr);
     setMinutes(arr2);

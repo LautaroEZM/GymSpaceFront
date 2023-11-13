@@ -6,7 +6,7 @@ import {
   InputLabel,
   Button,
   Input,
-  InputAdornment
+  InputAdornment,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
@@ -40,7 +40,9 @@ export default function CreateService() {
     const getCoaches = async () => {
       try {
         console.log("Fetching coaches...");
-        const response = await axios.get("https://gymspace-backend.onrender.com/coaches");
+        const response = await axios.get(
+          "https://gymspace-backend.onrender.com/coaches"
+        );
         const { data } = response;
         setCoaches(data);
         console.log("Coaches loaded:", data);
@@ -57,10 +59,10 @@ export default function CreateService() {
         window.alert("Could not load coaches data. See console for details.");
       }
     };
-  
+
     getCoaches();
   }, []);
-  
+
   useEffect(() => {
     setServiceData((prevData) => ({ ...prevData, image: newImage }));
   }, [newImage]);
@@ -73,7 +75,8 @@ export default function CreateService() {
   const handleChange = (event) => {
     // handles the input changes of the form
     let { name, value } = event.target;
-    if(name === 'duration' || name === 'price' || name === 'capacity') value = parseInt(value)
+    if (name === "duration" || name === "price" || name === "capacity")
+      value = parseInt(value);
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -169,28 +172,43 @@ export default function CreateService() {
             ))
           : null}
       </Select>
-      <Input
-        id="durationInput"
+      <InputLabel name="durationSelect">Duration:</InputLabel>
+      <Select
+        labelId="durationSelect"
         name="duration"
+        label="Duration"
         value={serviceData.duration}
         onChange={handleChange}
-        startAdornment={<InputAdornment position="start">Duration:</InputAdornment>}
-      />
+      >
+        <MenuItem id="duration" value={"45"}>
+          45
+        </MenuItem>
+        <MenuItem id="duration" value={"60"}>
+          60
+        </MenuItem>
+        <MenuItem id="duration" value={"90"}>
+          90
+        </MenuItem>
+      </Select>
       <Input
         id="capacityInput"
         name="capacity"
         value={serviceData.capacity}
         onChange={handleChange}
-        startAdornment={<InputAdornment position="start">Capacity:</InputAdornment>}
+        startAdornment={
+          <InputAdornment position="start">Capacity:</InputAdornment>
+        }
       />
       <Input
         id="priceInput"
         name="price"
         value={serviceData.price}
         onChange={handleChange}
-        startAdornment={<InputAdornment position="start">Price: $</InputAdornment>}
+        startAdornment={
+          <InputAdornment position="start">Price: $</InputAdornment>
+        }
       />
-      
+
       <Button
         variant="contained"
         color={theme.primary}
