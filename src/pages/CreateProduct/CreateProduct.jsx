@@ -1,22 +1,30 @@
-import axios from "axios";
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import {
-  Container,
-  TextField,
+  FormControl,
   Input,
   InputAdornment,
+  TextareaAutosize,
   Select,
   MenuItem,
-  Button,
-  FormControl,
 } from "@mui/material";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import { useState, useEffect } from "react";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import theme from "../../theme";
 import { useNavigate } from "react-router";
 
+const defaultTheme = createTheme();
+
 export default function CreateProduct() {
-  const [productData, setProductData] = useState({
+  const [productData, setProductData] = React.useState({
     name: "",
     description: "",
     category: "",
@@ -27,7 +35,7 @@ export default function CreateProduct() {
     status: "",
   });
 
-  const [newImage, setNewImage] = useState(undefined);
+  const [newImage, setNewImage] = React.useState(undefined);
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -53,83 +61,123 @@ export default function CreateProduct() {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     setProductData((prevData) => ({ ...prevData, image: newImage }));
   }, [newImage]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     console.log(productData);
   }, [productData]);
 
   return (
-    <Container
-      sx={{
-        bgcolor: "background.paper",
-        boxShadow: 1,
-        borderRadius: 1,
-        p: 2,
-        minWidth: 300,
-      }}
-    >
-      <FormControl>
-        <TextField
-          name="name"
-          label="Name"
-          value={productData.name}
-          onChange={handleChange}
-        />
-        <TextField
-          name="category"
-          label="Category"
-          value={productData.category}
-          onChange={handleChange}
-        />
-        <TextField
-          name="brand"
-          label="Brand"
-          value={productData.brand}
-          onChange={handleChange}
-        />
-      </FormControl>
-      <PhotoUpload photo={newImage} setPhoto={setNewImage} />
-      <TextareaAutosize
-        aria-label="minimum height"
-        name="description"
-        minRows={3}
-        placeholder="Description"
-        value={productData.description}
-        onChange={handleChange}
-      />
-      <Select
-        label="Status"
-        name="status"
-        value={productData.status}
-        onChange={handleChange}
+    <ThemeProvider theme={defaultTheme}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          bgcolor: 'transparent', // Set background color to transparent
+        }}
       >
-        <MenuItem value={"available"}>Available</MenuItem>
-        <MenuItem value={"unavailable"}>Unavailable</MenuItem>
-      </Select>
-      <TextField
-        name="stockNow"
-        label="Stock now"
-        type="number"
-        value={productData.stockNow}
-        onChange={handleChange}
-      />
-      <Input
-        name="price"
-        type="number"
-        value={productData.price}
-        onChange={handleChange}
-        startAdornment={<InputAdornment position="start">$</InputAdornment>}
-      />
-      <Button
-        variant="contained"
-        color={theme.primary}
-        onClick={() => handleSubmit()}
-      >
-        Create Product
-      </Button>
-    </Container>
+        <CssBaseline />
+        <Container component="main" maxWidth="xs">
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Create Product
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <FormControl>
+                <TextField
+                  name="name"
+                  label="Name"
+                  fullWidth
+                  required
+                  autoFocus
+                  value={productData.name}
+                  onChange={handleChange}
+                />
+                <TextField
+                  name="category"
+                  label="Category"
+                  fullWidth
+                  required
+                  value={productData.category}
+                  onChange={handleChange}
+                />
+                <TextField
+                  name="brand"
+                  label="Brand"
+                  fullWidth
+                  required
+                  value={productData.brand}
+                  onChange={handleChange}
+                />
+              </FormControl>
+              <PhotoUpload photo={newImage} setPhoto={setNewImage} />
+              <TextareaAutosize
+                aria-label="Minimum height"
+                name="description"
+                minRows={3}
+                placeholder="Description"
+                fullWidth
+                required
+                value={productData.description}
+                onChange={handleChange}
+              />
+              <Select
+                label="Status"
+                name="status"
+                fullWidth
+                required
+                value={productData.status}
+                onChange={handleChange}
+              >
+                <MenuItem value={"available"}>Available</MenuItem>
+                <MenuItem value={"unavailable"}>Unavailable</MenuItem>
+              </Select>
+              <TextField
+                name="stockNow"
+                label="Stock now"
+                type="number"
+                fullWidth
+                required
+                value={productData.stockNow}
+                onChange={handleChange}
+              />
+              <Input
+                name="price"
+                type="number"
+                fullWidth
+                required
+                value={productData.price}
+                onChange={handleChange}
+                startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                color={theme.primary}
+              >
+                Create Product
+              </Button>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 }
