@@ -5,25 +5,29 @@ import {
   MenuItem,
   InputLabel,
   Button,
+  Input,
+  InputAdornment,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
-import Time from "../../components/Time/Time";
+import Time2 from "../../components/Time2/Time2";
 import axios from "axios";
 import theme from "../../theme";
+import Errors from "./Errors";
+
 export default function CreateService() {
   const [serviceData, setServiceData] = useState({
     name: "",
     description: "",
     category: "",
-    price: "",
+    price: 0,
     startTime: "",
-    duration: "",
-    image: "",
+    duration: 0,
+    image: undefined,
     status: "",
     coachID: "",
-    capacity: "",
-    areaID: "1",
+    capacity: 0,
+    areaID: "01",
   });
 
   const [coaches, setCoaches] = useState([]);
@@ -33,18 +37,31 @@ export default function CreateService() {
   const [newTime, setNewTime] = useState("");
 
   useEffect(() => {
-    console.log('fetching coaches');
-    return async () => {
+    const getCoaches = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/coaches");
+        console.log("Fetching coaches...");
+        const response = await axios.get(
+          "https://gymspace-backend.onrender.com/coaches"
+        );
         const { data } = response;
-        if (data) setCoaches(data);
-        console.log(coaches)
+        setCoaches(data);
+        console.log("Coaches loaded:", data);
       } catch (error) {
-        window.alert("could not load coaches", error.message);
+        console.error("Error loading coaches:", error.message);
+        if (error.response) {
+          console.error("Server responded with:", error.response.data);
+          console.error("Status code:", error.response.status);
+        } else if (error.request) {
+          console.error("No response received from the server.");
+        } else {
+          console.error("Error setting up the request:", error.message);
+        }
+        window.alert("Could not load coaches data. See console for details.");
       }
     };
-  }, [window]);
+
+    getCoaches();
+  }, []);
 
   useEffect(() => {
     setServiceData((prevData) => ({ ...prevData, image: newImage }));
@@ -57,30 +74,28 @@ export default function CreateService() {
 
   const handleChange = (event) => {
     // handles the input changes of the form
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (name === "duration" || name === "price" || name === "capacity")
+      value = parseInt(value);
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
   };
-
-  useEffect(() => {
-    return async () => {
-      const response = await axios.get("http://localhost:3001/coaches");
-      const { data } = response;
-      setCoaches(data);
-      console.log(coaches);
-    };
-  }, []);
 
   const handleSubmit = async () => {
     try {
       console.log("trying to submit");
-      const user = await axios.post("http://localhost:3001/users", userData);
-      console.log(user);
-      if (user) {
-        window.alert("User created");
+      const service = await axios.post(
+        "https://gymspace-backend.onrender.com/services",
+        serviceData
+      );
+
+      if (service) {
+        window.alert("Service created");
         useNavigate("/");
+      } else {
+        window.alert("could not create service");
       }
     } catch (error) {
-      window.alert("Could not create user: ", error.message);
+      console.error(error.message);
     }
   };
 
@@ -117,15 +132,8 @@ export default function CreateService() {
         value={serviceData.category}
         onChange={handleChange}
       />
-      <TextField
-        name="price"
-        label="Price"
-        type="number"
-        value={serviceData.price}
-        onChange={handleChange}
-      />
       <PhotoUpload photo={newImage} setPhoto={setNewImage} />
-      <Time labelName={"Start Time"} time={newTime} setTime={setNewTime} />
+      <Time2 labelName={"Start Time"} time={newTime} setTime={setNewTime} />
       <TextField
         name="duration"
         label="Duration"
@@ -158,19 +166,49 @@ export default function CreateService() {
       >
         {coaches
           ? coaches.map((coach, i) => (
-            <MenuItem key={i} id="coachID" value={coach.userID}>
-              {`${coach.firstName} ${coach.lastName}`}
-            </MenuItem>
-          ))
+              <MenuItem key={i} id="coachID" value={coach.userID}>
+                {`${coach.firstName} ${coach.lastName}`}
+              </MenuItem>
+            ))
           : null}
       </Select>
-      <TextField
+      <InputLabel name="durationSelect">Duration:</InputLabel>
+      <Select
+        labelId="durationSelect"
+        name="duration"
+        label="Duration"
+        value={serviceData.duration}
+        onChange={handleChange}
+      >
+        <MenuItem id="duration" value={"45"}>
+          45
+        </MenuItem>
+        <MenuItem id="duration" value={"60"}>
+          60
+        </MenuItem>
+        <MenuItem id="duration" value={"90"}>
+          90
+        </MenuItem>
+      </Select>
+      <Input
+        id="capacityInput"
         name="capacity"
-        label="Capacity"
-        type="number"
         value={serviceData.capacity}
         onChange={handleChange}
+        startAdornment={
+          <InputAdornment position="start">Capacity:</InputAdornment>
+        }
       />
+      <Input
+        id="priceInput"
+        name="price"
+        value={serviceData.price}
+        onChange={handleChange}
+        startAdornment={
+          <InputAdornment position="start">Price: $</InputAdornment>
+        }
+      />
+
       <Button
         variant="contained"
         color={theme.primary}
@@ -178,6 +216,7 @@ export default function CreateService() {
       >
         Create CLass
       </Button>
+      <Errors serviceData={serviceData} />
     </Container>
   );
 }

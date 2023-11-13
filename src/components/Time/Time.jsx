@@ -16,7 +16,7 @@ export default function Time({time, setTime, labelName}) {
         const minutes = value.$m < 10 // if the minutes value is lower than 10
         ? '0' + value.$m  // it will add a 0 in front and also turn it into a string by data coertion
         : value.$m.toString() // if not, it will only turn it into a string
-        const newValue = `${hour}:${minutes} hs` // joints the hour and minutes strings
+        const newValue = `${hour}:${minutes}` // joints the hour and minutes strings
         return newValue // returns the new value with a 24 hs format
     }
 
