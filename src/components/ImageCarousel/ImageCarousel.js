@@ -3,7 +3,6 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Box } from "@mui/material";
-import style from "./ImageCarousel.module.css";
 
 const items = [
   {
@@ -21,21 +20,43 @@ const items = [
     description: "Description for Product 3",
     imageUrl: "https://png.pngtree.com/background/20230528/original/pngtree-gym-is-reflected-in-an-odd-light-picture-image_2773779.jpg",
   },
-  // Agrega más elementos según sea necesario
 ];
 
 function ImageCarousel() {
+  const carouselContainerStyle = {
+    marginTop: "15px",
+  };
+
+  const carouselImageStyle = {
+    width: "70%",
+    display: "block",
+    margin: "0 auto",
+  };
+
+  const carouselItemStyle = {
+    backgroundColor: "transparent",
+    border: "none",
+    boxShadow: "none",
+    textAlign: "center",
+  };
+
+  const carouselContentStyle = {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+  
   return (
-    <Box className={style.carouselContainer}>
+    <Box style={carouselContainerStyle}>
       <Carousel>
         {items.map((item, i) => (
-          <Paper key={i} className={style.carouselItem}>
-            <div className={style.carouselContent}>
-              {/* Contenido del carousel, si es necesario */}
+          <Paper key={i} style={carouselItemStyle}>
+            <div style={carouselContentStyle}>
               <img
                 src={item.imageUrl}
                 alt={item.name}
-                className={style.carouselImage}
+                style={carouselImageStyle}
               />
             </div>
           </Paper>

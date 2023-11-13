@@ -7,7 +7,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import theme from "../../theme"; // Deja solo una de estas líneas
+import theme from "../../theme"; 
 import { useState, useEffect } from "react";
 import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
 import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
@@ -37,13 +37,12 @@ export default function SignUp() {
   });
 
   const [showPassword, setShowPassword] = useState({
-    // the password is initially hidden
     icon: <VisibilityOffSharpIcon />,
     value: false,
   });
 
   const handleShowPassword = () => {
-    showPassword.value // sets the visibility of the password on/off
+    showPassword.value
       ? setShowPassword({ icon: <VisibilityOffSharpIcon />, value: false })
       : setShowPassword({ icon: <VisibilitySharpIcon />, value: true });
   };
@@ -68,7 +67,6 @@ export default function SignUp() {
   };
 
   const formatDate = (value) => {
-    // formats the date selected by the datePicker into a more friendly view
     const year = value.$y.toString();
     const month = (value.$M + 1).toString();
     const day = value.$D.toString();
@@ -76,24 +74,20 @@ export default function SignUp() {
     return newDate;
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     try {
-      console.log("trying to submit");
-      const user = await axios.post("http://localhost:3001/users", userData);
-      console.log(user);
+      const user = await axios.post("https://gymspace-backend.onrender.com/Users", userData);
       if (user) {
         window.alert("User created");
-        useNavigate("/");
+        navigate("/"); 
       }
     } catch (error) {
-      window.alert("Could not create user: ", error.message);
+      window.alert("Could not create user: " + error.message);
     }
   };
 
-  useEffect(() => {
-    //debugging
-    console.log(userData);
-  }, [userData]);
 
   return (
     <Container sx={{ width: 1200, height: 600 }} className={styles.container}>
@@ -139,8 +133,8 @@ export default function SignUp() {
           <MenuItem id="gender" value={"female"}>
             Female
           </MenuItem>
-          <MenuItem id="gender" value={"non-binary"}>
-            Non-binary
+          <MenuItem id="gender" value={"prefer not to say"}>
+            Prefer not to say
           </MenuItem>
         </Select>
         <DatePicker //the date of birth datePicker

@@ -5,104 +5,79 @@ import {
   MenuItem,
   InputLabel,
   Button,
-  Input,
-  InputAdornment,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
-import Time2 from "../../components/Time2/Time2";
 import axios from "axios";
+import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import theme from "../../theme";
-import Errors from "./Errors";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateService() {
   const [serviceData, setServiceData] = useState({
     name: "",
     description: "",
     category: "",
-    price: 0,
+    price: "",
     startTime: "",
-    duration: 0,
-    image: undefined,
+    duration: "",
+    image: "", // Agregado para la imagen
     status: "",
     coachID: "",
-    capacity: 0,
-    areaID: "01",
+    capacity: "",
+    areaID: "1",
   });
+  
 
   const [coaches, setCoaches] = useState([]);
-
   const [newImage, setNewImage] = useState(undefined);
-
-  const [newTime, setNewTime] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getCoaches = async () => {
+    const fetchCoaches = async () => {
       try {
-        console.log("Fetching coaches...");
-        const response = await axios.get(
-          "https://gymspace-backend.onrender.com/coaches"
-        );
+        const response = await axios.get("https://gymspace-backend.onrender.com/Coaches");
         const { data } = response;
-        setCoaches(data);
-        console.log("Coaches loaded:", data);
+        if (data) setCoaches(data);
       } catch (error) {
-        console.error("Error loading coaches:", error.message);
-        if (error.response) {
-          console.error("Server responded with:", error.response.data);
-          console.error("Status code:", error.response.status);
-        } else if (error.request) {
-          console.error("No response received from the server.");
-        } else {
-          console.error("Error setting up the request:", error.message);
-        }
-        window.alert("Could not load coaches data. See console for details.");
+        window.alert("No se pudieron cargar los entrenadores: " + error.message);
       }
     };
 
-    getCoaches();
+    fetchCoaches();
   }, []);
 
   useEffect(() => {
     setServiceData((prevData) => ({ ...prevData, image: newImage }));
   }, [newImage]);
 
-  useEffect(() => {
-    console.log("time changed");
-    setServiceData((prevData) => ({ ...prevData, startTime: newTime }));
-  }, [newTime]);
-
   const handleChange = (event) => {
-    // handles the input changes of the form
-    let { name, value } = event.target;
-    if (name === "duration" || name === "price" || name === "capacity")
-      value = parseInt(value);
+    const { name, value } = event.target;
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      console.log("trying to submit");
-      const service = await axios.post(
-        "https://gymspace-backend.onrender.com/services",
-        serviceData
-      );
+  const handleTimeChange = (event) => {
+    const { value } = event.target;
 
-      if (service) {
-        window.alert("Service created");
-        useNavigate("/");
-      } else {
-        window.alert("could not create service");
-      }
-    } catch (error) {
-      console.error(error.message);
+    // Verificar que el valor esté dentro del rango de 1 a 24
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue) && parsedValue >= 1 && parsedValue <= 24) {
+      setServiceData((prevData) => ({ ...prevData, startTime: `${parsedValue}` }));
+    } else {
+      // Mostrar una alerta o tomar alguna acción en caso de valor no válido
+      window.alert("Por favor, ingrese una hora válida entre 1 y 24.");
     }
   };
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("https://gymspace-backend.onrender.com/Services", serviceData);
+      window.alert("Servicio creado");
 
-  useEffect(() => {
-    //debugging
-    console.log(serviceData);
-  }, [serviceData]);
+      // Navegar a la ruta /Marketplace después de crear el servicio
+      navigate("/Marketplace");
+    } catch (error) {
+      window.alert("No se pudo crear el servicio: " + error.message);
+    }
+  };
 
   return (
     <Container
@@ -114,109 +89,95 @@ export default function CreateService() {
         minWidth: 300,
       }}
     >
-      <TextField // name input
+      <TextField
         name="name"
-        label="Name"
+        label="Nombre"
         value={serviceData.name}
         onChange={handleChange}
       />
       <TextField
         name="description"
-        label="Description"
+        label="Descripción"
         value={serviceData.description}
         onChange={handleChange}
       />
       <TextField
         name="category"
-        label="Category"
+        label="Categoría"
         value={serviceData.category}
         onChange={handleChange}
       />
+      <TextField
+        name="price"
+        label="Precio"
+        type="number"
+        value={serviceData.price}
+        onChange={handleChange}
+      />
       <PhotoUpload photo={newImage} setPhoto={setNewImage} />
-      <Time2 labelName={"Start Time"} time={newTime} setTime={setNewTime} />
+      <TextField
+        name="startTime"
+        label="Hora de inicio"
+        type="number"
+        inputProps={{
+          min: 1,
+          max: 24,
+        }}
+        value={serviceData.startTime}
+        onChange={handleTimeChange}
+      />
       <TextField
         name="duration"
-        label="Duration"
+        label="Duración"
         type="number"
         value={serviceData.duration}
         onChange={handleChange}
       />
-      <InputLabel name="selectStatus">Status:</InputLabel>
+      <InputLabel name="selectStatus">Estado:</InputLabel>
       <Select
         labelId="selectStatus"
         name="status"
-        label="Status"
+        label="Estado"
         value={serviceData.status}
         onChange={handleChange}
       >
-        <MenuItem id="status" value={"available"}>
-          Available
+        <MenuItem id="status" value={"disponible"}>
+          Disponible
         </MenuItem>
-        <MenuItem id="status" value={"unavailable"}>
-          Unavailable
+        <MenuItem id="status" value={"no disponible"}>
+          No Disponible
         </MenuItem>
       </Select>
-      <InputLabel name="selectCoachs">Coach:</InputLabel>
+      <InputLabel name="selectCoachs">Entrenador:</InputLabel>
       <Select
         labelId="selectCoach"
         name="coachID"
-        label="Coach"
+        label="Entrenador"
         value={serviceData.coachID}
         onChange={handleChange}
       >
         {coaches
           ? coaches.map((coach, i) => (
-              <MenuItem key={i} id="coachID" value={coach.userID}>
-                {`${coach.firstName} ${coach.lastName}`}
-              </MenuItem>
-            ))
+            <MenuItem key={i} id="coachID" value={coach.userID}>
+              {`${coach.firstName} ${coach.lastName}`}
+            </MenuItem>
+          ))
           : null}
       </Select>
-      <InputLabel name="durationSelect">Duration:</InputLabel>
-      <Select
-        labelId="durationSelect"
-        name="duration"
-        label="Duration"
-        value={serviceData.duration}
-        onChange={handleChange}
-      >
-        <MenuItem id="duration" value={"45"}>
-          45
-        </MenuItem>
-        <MenuItem id="duration" value={"60"}>
-          60
-        </MenuItem>
-        <MenuItem id="duration" value={"90"}>
-          90
-        </MenuItem>
-      </Select>
-      <Input
-        id="capacityInput"
+      <TextField
         name="capacity"
+        label="Capacidad"
+        type="number"
         value={serviceData.capacity}
         onChange={handleChange}
-        startAdornment={
-          <InputAdornment position="start">Capacity:</InputAdornment>
-        }
       />
-      <Input
-        id="priceInput"
-        name="price"
-        value={serviceData.price}
-        onChange={handleChange}
-        startAdornment={
-          <InputAdornment position="start">Price: $</InputAdornment>
-        }
-      />
-
       <Button
         variant="contained"
         color={theme.primary}
-        onClick={() => handleSubmit()}
+        onClick={handleSubmit}
       >
-        Create CLass
+        Crear Clase
       </Button>
-      <Errors serviceData={serviceData} />
     </Container>
   );
 }
