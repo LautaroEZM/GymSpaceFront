@@ -1,0 +1,25 @@
+.container {
+  height: 30px;
+  min-width: 300px;
+  position: absolute;
+  /* left: 200px;
+  top: 480px; */
+}
+
+.noErrors {
+  background-color: rgba(46, 153, 46, 0.562);
+  border: 1px solid green;
+  color: green;
+  align-self: flex-start;
+  border-radius: 5%;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.errors {
+  background-color: rgba(153, 46, 46, 0.521);
+  border: 1px solid rgb(170, 0, 0);;
+  color: rgb(170, 0, 0);
+  align-self: flex-start;
+  border-radius: 5%;
+  font-family: 'Courier New', Courier, monospace;
+}
