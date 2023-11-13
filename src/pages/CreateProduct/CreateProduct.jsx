@@ -17,7 +17,6 @@ import { useNavigate } from "react-router";
 
 export default function CreateProduct() {
   const [productData, setProductData] = useState({
-    productID: Math.random().toString(),
     name: "",
     description: "",
     category: "",
@@ -40,12 +39,12 @@ export default function CreateProduct() {
     try {
       console.log("trying to submit");
       const product = await axios.post(
-        "http://localhost:3001/products",
+        "https://gymspace-backend.onrender.com/products",
         productData
       );
       if (product) {
         window.alert("Product created");
-        navigate("/");
+        navigate("/Marketplace");
       } else {
         window.alert("Could not create product");
       }

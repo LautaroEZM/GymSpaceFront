@@ -22,6 +22,7 @@ import {
   Clear as ClearIcon,
 } from "@mui/icons-material";
 import theme from "../../theme";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Album() {
   const [services, setServices] = useState([]);
@@ -30,7 +31,7 @@ export default function Album() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/services")
+    fetch("https://gymspace-backend.onrender.com/Services")
       .then((response) => response.json())
       .then((data) => {
         setServices(data);
@@ -114,19 +115,21 @@ export default function Album() {
               }}
               spacing={2}
             >
-              <Button
-                variant="outlined"
-                color="orangeButton"
-                startIcon={<AddCircleOutlineIcon />}
-                sx={{
-                  borderRadius: 0,
-                  border: 0,
-                  marginRight: 2,
-                  minWidth: 300,
-                }}
-              >
-                ADD SERVICE
-              </Button>
+              <Link to="/CreateService">
+                <Button
+                  variant="outlined"
+                  color="orangeButton"
+                  startIcon={<AddCircleOutlineIcon />}
+                  sx={{
+                    borderRadius: 0,
+                    border: 0,
+                    marginRight: 2,
+                    minWidth: 300,
+                  }}
+                >
+                  ADD SERVICE
+                </Button>
+              </Link>
               <Button
                 variant="outlined"
                 color="orangeButton"
@@ -190,7 +193,7 @@ export default function Album() {
                   marginRight: "8px",
                   backgroundColor: "#ff9721",
                   color: "black",
-                  fontWeight: "bold", 
+                  fontWeight: "bold",
                 }}
               />
             ))}

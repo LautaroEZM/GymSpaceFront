@@ -354,6 +354,7 @@ export default function Marketplace() {
                       height="140"
                       image={product.image}
                       alt={product.name}
+                      style={{ color: "#fff", fontStyle: "italic", fontSize: "14px" }} // Añade este estilo
                     />
                     <CardContent
                       sx={{
