@@ -357,7 +357,7 @@ export default function CreateService() {
               fullWidth
               required
               value={serviceData.startTimeMinute}
-              onChange={(event) => handleTimeChange(event, "startTimeMinute")}
+              onChange={(event) => handleTimeChange(event, "startTimeMinute")}//
               sx={{
                 margin: "2px",
                 width: "100px",
