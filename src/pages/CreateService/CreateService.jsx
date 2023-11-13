@@ -5,11 +5,16 @@ import {
   MenuItem,
   InputLabel,
   Button,
+  FormControl,
+  Typography,
+  Box,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
-import theme from "../../theme";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateService() {
@@ -20,13 +25,12 @@ export default function CreateService() {
     price: "",
     startTime: "",
     duration: "",
-    image: "", // Agregado para la imagen
+    image: "",
     status: "",
     coachID: "",
     capacity: "",
     areaID: "1",
   });
-  
 
   const [coaches, setCoaches] = useState([]);
   const [newImage, setNewImage] = useState(undefined);
@@ -55,24 +59,36 @@ export default function CreateService() {
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleTimeChange = (event) => {
+  const handleTimeChange = (event, fieldName) => {
     const { value } = event.target;
 
-    // Verificar que el valor esté dentro del rango de 1 a 24
-    const parsedValue = parseInt(value, 10);
-    if (!isNaN(parsedValue) && parsedValue >= 1 && parsedValue <= 24) {
-      setServiceData((prevData) => ({ ...prevData, startTime: `${parsedValue}` }));
-    } else {
-      // Mostrar una alerta o tomar alguna acción en caso de valor no válido
-      window.alert("Por favor, ingrese una hora válida entre 1 y 24.");
+    if (value === '' || (fieldName === 'startTimeHour' && !isNaN(value) && value >= 0 && value <= 23) ||
+      (fieldName === 'startTimeMinute' && !isNaN(value) && value >= 0 && value <= 59)) {
+      setServiceData((prevData) => {
+        const updatedTime = {
+          ...prevData,
+          [fieldName]: value,
+        };
+        // Formatear la cadena de tiempo
+        if (updatedTime.startTimeHour !== undefined && updatedTime.startTimeMinute !== undefined) {
+          updatedTime.startTime = formatTime(updatedTime.startTimeHour, updatedTime.startTimeMinute);
+        }
+        return updatedTime;
+      });
     }
   };
+
+  function formatTime(hour, minute) {
+    const formattedHour = String(hour).padStart(2, '0');
+    const formattedMinute = String(minute).padStart(2, '0');
+    return `${formattedHour}:${formattedMinute}`;
+  }
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post("https://gymspace-backend.onrender.com/Services", serviceData);
       window.alert("Servicio creado");
 
-      // Navegar a la ruta /Marketplace después de crear el servicio
       navigate("/Marketplace");
     } catch (error) {
       window.alert("No se pudo crear el servicio: " + error.message);
@@ -82,102 +98,354 @@ export default function CreateService() {
   return (
     <Container
       sx={{
-        bgcolor: "background.paper",
-        boxShadow: 1,
-        borderRadius: 1,
-        p: 2,
-        minWidth: 300,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        color: "white",
+        marginTop: "20px",
+        marginBottom: "20px",
       }}
     >
-      <TextField
-        name="name"
-        label="Nombre"
-        value={serviceData.name}
-        onChange={handleChange}
-      />
-      <TextField
-        name="description"
-        label="Descripción"
-        value={serviceData.description}
-        onChange={handleChange}
-      />
-      <TextField
-        name="category"
-        label="Categoría"
-        value={serviceData.category}
-        onChange={handleChange}
-      />
-      <TextField
-        name="price"
-        label="Precio"
-        type="number"
-        value={serviceData.price}
-        onChange={handleChange}
-      />
-      <PhotoUpload photo={newImage} setPhoto={setNewImage} />
-      <TextField
-        name="startTime"
-        label="Hora de inicio"
-        type="number"
-        inputProps={{
-          min: 1,
-          max: 24,
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          border: "1px solid white",
+          width: "70%",
+          textAlign: "center",
+          backgroundColor: "#212020",
+          padding: 4,
+          marginTop: 8,
         }}
-        value={serviceData.startTime}
-        onChange={handleTimeChange}
-      />
-      <TextField
-        name="duration"
-        label="Duración"
-        type="number"
-        value={serviceData.duration}
-        onChange={handleChange}
-      />
-      <InputLabel name="selectStatus">Estado:</InputLabel>
-      <Select
-        labelId="selectStatus"
-        name="status"
-        label="Estado"
-        value={serviceData.status}
-        onChange={handleChange}
       >
-        <MenuItem id="status" value={"disponible"}>
-          Disponible
-        </MenuItem>
-        <MenuItem id="status" value={"no disponible"}>
-          No Disponible
-        </MenuItem>
-      </Select>
-      <InputLabel name="selectCoachs">Entrenador:</InputLabel>
-      <Select
-        labelId="selectCoach"
-        name="coachID"
-        label="Entrenador"
-        value={serviceData.coachID}
-        onChange={handleChange}
-      >
-        {coaches
-          ? coaches.map((coach, i) => (
-            <MenuItem key={i} id="coachID" value={coach.userID}>
-              {`${coach.firstName} ${coach.lastName}`}
-            </MenuItem>
-          ))
-          : null}
-      </Select>
-      <TextField
-        name="capacity"
-        label="Capacidad"
-        type="number"
-        value={serviceData.capacity}
-        onChange={handleChange}
-      />
-      <Button
-        variant="contained"
-        color={theme.primary}
-        onClick={handleSubmit}
-      >
-        Crear Clase
-      </Button>
+        <Typography component="h1" variant="h5" marginTop="10px">
+          Create a new service
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <TextField
+            name="name"
+            label="Name"
+            fullWidth
+            required
+            autoFocus
+            value={serviceData.name}
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
+                },
+              },
+            }}
+          />
+
+          <TextField
+            name="category"
+            label="Category"
+            fullWidth
+            required
+            autoFocus
+            value={serviceData.category}
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
+                },
+              },
+            }}
+          />
+          <TextField
+            name="description"
+            label="Description"
+            fullWidth
+            multiline
+            required
+            value={serviceData.description}
+            onChange={handleChange} sx={{
+              marginTop: '10px',
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'white',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#ff9721',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'white',
+                '&.Mui-focused': {
+                  color: '#ff9721',
+                },
+              },
+            }}
+          />
+          <TextField
+            name="price"
+            label="Price"
+            type="number"
+            fullWidth
+            required
+            value={serviceData.price}
+            onChange={handleChange} sx={{
+              marginTop: '10px',
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'white',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#ff9721',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'white',
+                '&.Mui-focused': {
+                  color: '#ff9721',
+                },
+              },
+            }}
+          />
+          <TextField
+            name="capacity"
+            label="Capacity"
+            type="number"
+            fullWidth
+            required
+            value={serviceData.capacity}
+            onChange={handleChange} sx={{
+              marginTop: '10px',
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'white',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#ff9721',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'white',
+                '&.Mui-focused': {
+                  color: '#ff9721',
+                },
+              },
+            }}
+          />
+          <TextField
+            name="duration"
+            label="Duration"
+            type="number"
+            fullWidth
+            required
+            value={serviceData.duration}
+            onChange={handleChange} sx={{
+              marginTop: '10px',
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'white',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#ff9721',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'white',
+                '&.Mui-focused': {
+                  color: '#ff9721',
+                },
+              },
+            }}
+          />
+          <Container>
+            <TextField
+              name="startTimeHour"
+              label="Hour"
+              type="number"
+              fullWidth
+              required
+              value={serviceData.startTimeHour}
+              onChange={(event) => handleTimeChange(event, "startTimeHour")}
+              sx={{
+                margin: "2px",
+                width: "100px",
+                marginTop: '10px',
+                '& .MuiInputBase-input': {
+                  color: 'white',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#ff9721',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'white',
+                  '&.Mui-focused': {
+                    color: '#ff9721',
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              name="startTimeMinute"
+              label="Min"
+              type="number"
+              fullWidth
+              required
+              value={serviceData.startTimeMinute}
+              onChange={(event) => handleTimeChange(event, "startTimeMinute")}
+              sx={{
+                margin: "2px",
+                width: "100px",
+                marginTop: '10px',
+                '& .MuiInputBase-input': {
+                  color: 'white',
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#ff9721',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'white',
+                  '&.Mui-focused': {
+                    color: '#ff9721',
+                  },
+                },
+              }}
+            />
+            <Typography variant="body2" sx={{ marginLeft: '8px', color: 'transparent', marginTop: '10px' }}>
+              Start Time: {serviceData.startTime}
+            </Typography>
+          </Container>
+          <PhotoUpload photo={newImage} setPhoto={setNewImage} />
+
+          <Typography component="h1" variant="h5" marginTop="10px">
+            STATUS
+          </Typography>
+          <RadioGroup
+            aria-label="Status"
+            name="status"
+            value={serviceData.status}
+            onChange={handleChange}
+            sx={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: '10px',
+              '& .Mui-checked': {
+                color: '#ff9721', // Cambia el color del icono cuando está seleccionado
+              },
+            }}
+          >
+            <FormControlLabel
+              value="available"
+              control={<Radio sx={{ color: 'white' }} />}
+              label="Available"
+            />
+            <FormControlLabel
+              value="unavailable"
+              control={<Radio sx={{ color: 'white' }} />}
+              label="Unavailable"
+            />
+          </RadioGroup>
+
+          <InputLabel name="selectCoachs">TRAINER</InputLabel>
+          <Select
+            labelId="selectCoach"
+            name="coachID"
+            label="Entrenador"
+            value={serviceData.coachID}
+            onChange={handleChange}
+          >
+            {coaches
+              ? coaches.map((coach, i) => (
+                <MenuItem key={i} id="coachID" value={coach.userID}>
+                  {`${coach.firstName} ${coach.lastName}`}
+                </MenuItem>
+              ))
+              : null}
+          </Select>
+
+        </Box>
+        <Button
+          variant="contained"
+          color="orangeButton"
+          onClick={handleSubmit}
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Create Service
+        </Button>
+      </Box>
     </Container>
   );
 }
