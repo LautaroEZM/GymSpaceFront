@@ -1,0 +1,25 @@
+.img {
+  height: 300px;
+  width: 345px;
+  margin-left: 5px;
+}
+
+.div {
+  position: relative;
+  width: 345px;
+  height: 300px;
+}
+
+.preview {
+    width: 345px;
+    height: 300px;
+    display: block;
+    padding: 10px;
+    border: none;
+    background-color: rgba(129, 129, 129, 0.527);
+    color: #333;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size:larger;
+  }
