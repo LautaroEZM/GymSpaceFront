@@ -44,6 +44,19 @@ export const OrangeButtonFilter = styled(Button)`
   }
 `;
 
+export const OrangeContainedButton = styled(Button)`
+background-color: #ff9721;
+color: white;
+border-radius: 5px;
+height: 50px;
+width: auto;
+display: flex;
+align-items: center;
+&:hover {
+    background-color: #c26c0b;
+  }
+`;
+
 //----------------------- CARDS
 
 export const ProductCard = styled(Card)`
