@@ -62,7 +62,7 @@ export default function Album() {
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+  
           width: "85%",
           margin: "0 auto",
           marginTop: "45px",

@@ -91,18 +91,19 @@ export const ServicesCard = styled(Card)`
 
 export const StyledMenu = styled(Menu)`
   .MuiPaper-root {
-    background-color: #111111;
+    background-color: #111111f4;
     width: 350px;
-    border-radius: 0px;
+    border-radius: 5px;
     transform: translate(0, 5px);
     box-shadow: 0px 0px 5px 1px rgba(207, 207, 207, 0.75);
     color: #ff9721;
+
   }
 `;
 
 export const StyledMenuItem = styled(MenuItem)`
   &:hover {
-    background-color: #1c1813;
+    background-color: #1c181397;
   }
 `;
 
