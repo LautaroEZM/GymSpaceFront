@@ -85,7 +85,8 @@ export default function ProductList({ sortedProducts }) {
                 </CardActions>
               </ProductCard>
             </Grid>
-          ))}
+          ))
+        }
         </Grid>
       </Box>
     </Box>

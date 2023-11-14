@@ -33,6 +33,8 @@ export default function Marketplace() {
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [noProducts, setNoProducts] = useState(false)
+
   useEffect(() => {
     setLoading(true)
     fetch("https://gymspace-backend.onrender.com/products")
@@ -115,6 +117,11 @@ export default function Marketplace() {
     }
   };
 
+  useEffect(() => {
+    if(filteredProducts.length === 0) setNoProducts(true)
+    else setNoProducts(false)
+  }, [filteredProducts])
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -182,9 +189,9 @@ export default function Marketplace() {
           sorting={sorting}
           setAnchorEl={setAnchorEl}
         />
-
+        {noProducts && !loading ? <h1>No products found</h1> : null}
         {loading 
-        ? <Loading state={loading} label={'Marketplace'} /> 
+        ? <Loading loading={loading} /> 
         :
         <>
         <ProductList
