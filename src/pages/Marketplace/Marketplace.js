@@ -185,7 +185,6 @@ export default function Marketplace() {
                   border: "1px solid white",
                   boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
                   margin: "auto", // Agrega esta línea
-                  
                 }}
               >
                 <Typography variant="h6" sx={{ color: "#ff9721", mb: 1 }}>
@@ -355,7 +354,11 @@ export default function Marketplace() {
                       height="140"
                       image={product.image}
                       alt={product.name}
-                      style={{ color: "#fff", fontStyle: "italic", fontSize: "14px" }} // Añade este estilo
+                      style={{
+                        color: "#fff",
+                        fontStyle: "italic",
+                        fontSize: "14px",
+                      }} // Añade este estilo
                     />
                     <CardContent
                       sx={{

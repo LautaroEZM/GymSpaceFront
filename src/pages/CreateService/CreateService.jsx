@@ -89,7 +89,7 @@ export default function CreateService() {
       const response = await axios.post("https://gymspace-backend.onrender.com/Services", serviceData);
       window.alert("Servicio creado");
 
-      navigate("/Marketplace");
+      navigate("/Services");
     } catch (error) {
       window.alert("No se pudo crear el servicio: " + error.message);
     }

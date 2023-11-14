@@ -12,6 +12,7 @@ import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/UserList/UserList";
+import DetailProduct from "./components/Date/DetailProduct";
 
 
 
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
+            <Route path="/marketplace/detail/:id" component={<DetailProduct />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
