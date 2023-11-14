@@ -21,18 +21,24 @@ import FilterBar from "./FilterBar";
 import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
 
+import Loading from '../../components/Loading/loading'
+
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+  const [loading, setLoading ] = useState(false)
+
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
+    setLoading(true)
     fetch("https://gymspace-backend.onrender.com/products")
       .then((response) => response.json())
       .then((data) => setProducts(data))
+      .then(() => setLoading(false))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
@@ -177,10 +183,17 @@ export default function Marketplace() {
           setAnchorEl={setAnchorEl}
         />
 
+        {loading 
+        ? <Loading state={loading} label={'Marketplace'} /> 
+        :
+        <>
         <ProductList
           sortedProducts={sortedProducts}
           maxProductPrice={maxProductPrice}
         />
+        </>
+        }
+
       </Box>
     </ThemeProvider>
   );
