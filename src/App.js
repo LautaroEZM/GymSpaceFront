@@ -13,7 +13,7 @@ import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/UserList/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
-
+import { storage } from './firebaseConfig';
 
 
 export default function App() {
