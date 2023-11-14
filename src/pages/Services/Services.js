@@ -1,28 +1,17 @@
+// Album.js
 import React, { useState, useEffect } from "react";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
   CssBaseline,
-  Grid,
-  Stack,
   Box,
-  Typography,
   Container,
+  Typography,
   ThemeProvider,
-  Menu,
-  MenuItem,
-  Chip,
+  Grid,
 } from "@mui/material";
-import {
-  AddCircleOutline as AddCircleOutlineIcon,
-  Category as CategoryIcon,
-  Clear as ClearIcon,
-} from "@mui/icons-material";
 import theme from "../../theme";
-import { Link, useNavigate } from "react-router-dom";
+import ServiceFilter from "./ServiceFilter";
+import ServiceChip from "./ServiceChip";
+import ServiceCard from "./ServiceCard";
 
 export default function Album() {
   const [services, setServices] = useState([]);
@@ -73,104 +62,25 @@ export default function Album() {
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           width: "85%",
           margin: "0 auto",
           marginTop: "45px",
           marginBottom: "45px",
           borderRadius: "5px",
-          position: "relative",
         }}
       >
         <main>
           <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
-            <Grid container spacing={0}>
-              <Grid item xs={12}>
-                <Box sx={{ pt: 1, pb: 6 }}>
-                  <Container maxWidth="md">
-                    <Typography
-                      variant="h2"
-                      align="center"
-                      color="white"
-                      gutterBottom
-                    >
-                      List of classes
-                    </Typography>
-                  </Container>
-                </Box>
-              </Grid>
-            </Grid>
-            <Stack
-              sx={{
-                width: "100%",
-                height: "40px",
-                backgroundColor: "#131313",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 1,
-              }}
-              spacing={2}
-            >
-              <Link to="/CreateService">
-                <Button
-                  variant="outlined"
-                  color="orangeButton"
-                  startIcon={<AddCircleOutlineIcon />}
-                  sx={{
-                    borderRadius: 0,
-                    border: 0,
-                    marginRight: 2,
-                    minWidth: 300,
-                  }}
-                >
-                  ADD SERVICE
-                </Button>
-              </Link>
-              <Button
-                variant="outlined"
-                color="orangeButton"
-                onClick={handleMenuClick}
-                startIcon={<CategoryIcon />}
-                sx={{
-                  minWidth: 300,
-                  borderRadius: 0,
-                  border: 0,
-                }}
-              >
-                {selectedCategories.length > 0
-                  ? "Selected Categories"
-                  : "Select Category"}
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                PaperProps={{
-                  style: {
-                    backgroundColor: "#000000e8",
-                    color: "#ff9721",
-                    width: "200px",
-                    borderRadius: "0px",
-                    position: "absolute",
-                    transform: "translate(0, 5px)",
-                    boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-                  },
-                }}
-              >
-                {categories.map((category) => (
-                  <MenuItem
-                    key={category}
-                    onClick={() => handleMenuItemClick(category)}
-                  >
-                    {category}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Stack>
+            <ServiceFilter
+              categories={categories}
+              selectedCategories={selectedCategories}
+              anchorEl={anchorEl}
+              handleMenuClick={handleMenuClick}
+              handleMenuItemClick={handleMenuItemClick}
+              handleClearFilter={handleClearFilter}
+              handleClose={handleClose}
+            />
           </Container>
           <Box
             sx={{
@@ -181,25 +91,16 @@ export default function Album() {
             }}
           >
             {selectedCategories.map((category, index) => (
-              <Chip
+              <ServiceChip
                 key={index}
-                label={category}
-                onDelete={() => handleClearFilter(category)}
-                deleteIcon={
-                  <ClearIcon style={{ color: "black", fontWeight: "bold" }} />
-                }
-                color="secondary"
-                sx={{
-                  marginRight: "8px",
-                  backgroundColor: "#ff9721",
-                  color: "black",
-                  fontWeight: "bold",
-                }}
+                category={category}
+                handleClearFilter={handleClearFilter}
               />
             ))}
           </Box>
           <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
-            <Grid container spacing={5} marginTop={0.1}>
+            <Grid container spacing={5} marginTop={0.1} justifyContent="center">
+              {" "}
               {services
                 .filter(
                   (service) =>
@@ -207,69 +108,7 @@ export default function Album() {
                     selectedCategories.includes(service.category)
                 )
                 .map((service) => (
-                  <Grid item key={service.serviceID} xs={12} sm={3} md={3}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        backgroundColor: "#414141",
-                        color: "white",
-                        boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-                      }}
-                    >
-                      <CardMedia
-                        component="div"
-                        sx={{
-                          pt: "56.25%",
-                          background: `url(${service.image})`,
-                        }}
-                      />
-                      <CardContent
-                        sx={{
-                          flexGrow: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography
-                          color="black"
-                          align="center"
-                          fontWeight="bold"
-                          sx={{
-                            textTransform: "uppercase",
-                            backgroundColor: "#ff9721",
-                            width: "100%",
-                            padding: "8px",
-                            marginBottom: "10px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          {service.category}
-                        </Typography>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {service.name}
-                        </Typography>
-                        <Typography
-                          color="white"
-                          align="justify"
-                          mb={1}
-                          sx={{ height: "60px", overflow: "hidden" }}
-                        >
-                          {service.description}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" color="orangeButton">
-                          View
-                        </Button>
-                        <Button size="small" color="orangeButton">
-                          Edit
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
+                  <ServiceCard key={service.serviceID} service={service} />
                 ))}
             </Grid>
           </Container>

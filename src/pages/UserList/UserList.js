@@ -7,14 +7,13 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
   CssBaseline,
   ThemeProvider,
   Box,
   CardMedia,
-  createTheme,
 } from "@mui/material";
 import theme from "../../theme";
+import { OrangeContainedButton } from "../../styles/ComponentStyles";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -103,9 +102,9 @@ export default function UserList() {
           maxWidth={50}
         />
         <SortableTableCell
-          onClick={() => handleSort("detail")}
-          label="DETAIL"
-          sorted={sortConfig.key === "detail"}
+          onClick={() => handleSort("actions")}
+          label="ACTIONS"
+          sorted={sortConfig.key === "actions"}
           direction={sortConfig.direction}
           maxWidth={30}
         />
@@ -153,17 +152,7 @@ export default function UserList() {
             {user.status}
           </TableCell>
           <TableCell sx={{ maxWidth: 50 }}>
-            <Button
-              variant="contained"
-              color="orangeButton"
-              sx={{
-                fontSize: 12,
-                minWidth: 40,
-                minHeight: 30,
-              }}
-            >
-              View Detail
-            </Button>
+            <OrangeContainedButton>DETAIL</OrangeContainedButton>
           </TableCell>
         </TableRow>
       ))}
@@ -212,7 +201,7 @@ export default function UserList() {
             py: 1,
             flexGrow: 1,
             width: "90%",
-            marginTop: 25,
+            marginTop: 5,
           }}
         >
           <TableContainer component={Paper}>
