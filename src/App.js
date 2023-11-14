@@ -12,7 +12,7 @@ import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/UserList/UserList";
-
+import { storage } from './firebaseConfig';
 
 
 export default function App() {
