@@ -2,19 +2,32 @@ import { MuiFileInput } from "mui-file-input";
 import { Container, Button } from "@mui/material";
 import { Fragment, useState } from "react";
 import styles from "./PhotoUpload.module.css";
+import { storage } from "../../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import loadingGIF from "./loading.gif";
 
 export default function PhotoUPload({ photo, setPhoto }) {
   // we receive the poto and setPhoto from the father
 
   // IMPORTANT: make sure that the photo's local state in the father component is undefined by default
 
+  const [loading, setLoading] = useState(false);
+
   const [preview, setPreview] = useState(false);
 
   const handlePhoto = (file) => {
     // this formats the file to a blob url string
-    if (photo) setPhoto(undefined); // if there's already a photo this sets it to undefined to make the preview reset
-    const url = URL.createObjectURL(file);
-    setPhoto(url);
+    if (photo) setPhoto(null); // if there's already a photo this sets it to undefined to make the preview reset
+    const name = Math.random().toString(); //sets a random name for the img
+    const imageRef = ref(storage, `/${name}`); // sets it for uploading
+    setLoading(true); // enables loading gif
+    uploadBytes(imageRef, file).then(() => { // uploads the image to firebase
+      const uploadedImg = ref(storage, name); // saves the info for retrieval of the url
+      getDownloadURL(uploadedImg).then((url) => { //retrieves the url 
+        setPhoto(url); // sets the url in the father local state
+        setLoading(false); // disables the loading gif
+      });
+    });
   };
 
   return (
@@ -52,7 +65,7 @@ export default function PhotoUPload({ photo, setPhoto }) {
       ) : (
         // if there's not, it will ask you to submit a photo
         <div>
-          <h3>Please submit a photo</h3>
+          {loading ? <img className={styles.img} src={loadingGIF} /> : <h3>Please submit a photo</h3>}
         </div>
       )}
       <MuiFileInput
