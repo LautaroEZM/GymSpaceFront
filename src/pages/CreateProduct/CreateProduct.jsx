@@ -36,7 +36,7 @@ export default function CreateProduct() {
 
   const handleSubmit = async () => {
     try {
-      console.log("trying to submit");
+
       const product = await axios.post(
         "https://gymspace-backend.onrender.com/products",
         productData
@@ -56,9 +56,6 @@ export default function CreateProduct() {
     setProductData((prevData) => ({ ...prevData, image: newImage }));
   }, [newImage]);
 
-  useEffect(() => {
-    console.log(productData);
-  }, [productData]);
 
   return (
     <Container
