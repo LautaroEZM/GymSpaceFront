@@ -82,7 +82,6 @@ export default function Marketplace() {
 
   const [priceRange, setPriceRange] = useState([0, 10000]);
 
-
   const filteredProducts = products.filter((product) => {
     const price = parseFloat(product.price);
     const isCategoryFiltered =
