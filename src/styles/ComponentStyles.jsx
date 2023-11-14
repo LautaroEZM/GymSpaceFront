@@ -2,7 +2,7 @@ import { styled } from '@mui/system';
 import {
   Button,
   Card,
-  Menu, 
+  Menu,
   MenuItem,
 } from "@mui/material";
 import { Link } from 'react-router-dom';
@@ -29,6 +29,12 @@ font-size: 12px;
 height: auto;
   &:hover {
   border: none;
+}
+`;
+
+export const SmallOrangeOutlinedButtonLess = styled(SmallOrangeOutlinedButton)`
+  &:hover {
+background-color: #48443f;
 }
 `;
 
@@ -69,6 +75,17 @@ transition: box-shadow 0.3s, border 0.3s;
   box-shadow: 0px 0px 10px 0px rgba(255,255,255,0.5);
 }
 `;
+
+
+export const ServicesCard = styled(Card)`
+  margin: 25px;
+  width: 300px;
+  height: 400px;
+  background-color: #414141;
+  color: white;
+  box-shadow: 0px 0px 5px 1px rgba(207, 207, 207, 0.75);
+`;
+
 
 //----------------------- MENU
 

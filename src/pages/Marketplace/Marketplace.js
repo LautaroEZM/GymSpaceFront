@@ -135,11 +135,7 @@ export default function Marketplace() {
               >
                 <FilterListIcon style={{ color: "#ff9721" }} />
               </IconButton>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1, color: "#ff9721" }}
-              >
+              <Typography sx={{ flexGrow: 1, color: "#ff9721" }}>
                 FILTER BY
               </Typography>
               <IconButton
