@@ -1,9 +1,8 @@
 import ImageCarousel from "../../components/ImageCarousel/ImageCarousel";
-import style from "./Home.module.css";
 
 function Home() {
   return (
-    <div className={style.background}>
+    <div>
     <ImageCarousel></ImageCarousel>
     </div>
   );
