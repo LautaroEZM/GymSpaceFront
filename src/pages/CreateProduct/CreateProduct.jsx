@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { OrangeContainedButton, TextFieldForm } from "../../styles/ComponentStyles";
 
 export default function CreateProduct() {
   const [productData, setProductData] = useState({
@@ -68,10 +69,12 @@ export default function CreateProduct() {
         color: "white",
         marginTop: "20px",
         marginBottom: "20px",
+        
       }}
     >
       <Box
         sx={{
+          borderRadius: "5px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -84,136 +87,42 @@ export default function CreateProduct() {
         }}
       >
         <Typography component="h1" variant="h5" marginTop="10px">
-          Create a new product
+          CREATE NEW PRODUCT
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
           <FormControl>
-            <TextField
-              name="name"
+            <TextFieldForm
               label="Name"
-              fullWidth
               required
               autoFocus
               value={productData.name}
               onChange={handleChange}
-              sx={{
-                marginTop: "10px",
-                "& .MuiInputBase-input": {
-                  color: "white",
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#ff9721",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white",
-                  "&.Mui-focused": {
-                    color: "#ff9721",
-                  },
-                },
-              }}
             />
-            <TextField
-              name="category"
+            <TextFieldForm
               label="Category"
-              fullWidth
               required
               value={productData.category}
               onChange={handleChange}
-              sx={{
-                marginTop: "10px",
-                "& .MuiInputBase-input": {
-                  color: "white",
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#ff9721",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white",
-                  "&.Mui-focused": {
-                    color: "#ff9721",
-                  },
-                },
-              }}
             />
-            <TextField
-              name="brand"
+            <TextFieldForm
               label="Brand"
-              fullWidth
               required
               value={productData.brand}
               onChange={handleChange}
-              sx={{
-                marginTop: "10px",
-                "& .MuiInputBase-input": {
-                  color: "white",
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#ff9721",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white",
-                  "&.Mui-focused": {
-                    color: "#ff9721",
-                  },
-                },
-              }}
             />
           </FormControl>
           <PhotoUpload photo={newImage} setPhoto={setNewImage} />
-          <TextField
-            name="description"
+          <TextFieldForm
             label="Description"
-            fullWidth
             multiline
             required
             value={productData.description}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
-              },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'white',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
-                },
-              },
-            }}
+            onChange={handleChange}
           />
           <RadioGroup
             aria-label="Status"
@@ -222,11 +131,8 @@ export default function CreateProduct() {
             onChange={handleChange}
             sx={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: '10px',
-              '& .Mui-checked': {
-                color: '#ff9721', // Cambia el color del icono cuando está seleccionado
-              },
+              justifyContent: 'center',
+              margin: '10px',
             }}
           >
             <FormControlLabel
@@ -240,76 +146,26 @@ export default function CreateProduct() {
               label="Unavailable"
             />
           </RadioGroup>
-          <TextField
-            name="stockNow"
+          <TextFieldForm
             label="Stock now"
             type="number"
-            fullWidth
             required
             value={productData.stockNow}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
-              },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'white',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
-                },
-              },
-            }}
+            onChange={handleChange}
           />
-          <TextField
-            name="price"
+          <TextFieldForm
             label="Price"
             type="number"
-            fullWidth
             required
             value={productData.price}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
-              },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'white',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
-                },
-              },
-            }}
+            onChange={handleChange}
           />
-          <Button
-            variant="contained"
-            color="orangeButton"
+          <OrangeContainedButton
             onClick={() => handleSubmit()}
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ marginTop: '20px' }}
           >
             Create Product
-          </Button>
+          </OrangeContainedButton>
         </Box>
       </Box>
     </Container>

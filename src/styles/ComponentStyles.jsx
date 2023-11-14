@@ -4,6 +4,7 @@ import {
   Card,
   Menu,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import { Link } from 'react-router-dom';
 
@@ -107,9 +108,43 @@ export const StyledMenuItem = styled(MenuItem)`
   }
 `;
 
+//----------------------- TEXT FIELD
+
+export const TextFieldForm = styled(TextField)`
+  margin-top: 10px;
+  width: 600px;
+
+  & .MuiInputBase-input {
+    color: white;
+  }
+
+  & .MuiOutlinedInput-root {
+    & fieldset {
+      border-color: white;
+    }
+
+    &:hover fieldset {
+      border-color: white;
+    }
+
+    &.Mui-focused fieldset {
+      border-color: #ff9721;
+    }
+  }
+
+  & .MuiInputLabel-root {
+    color: white;
+
+    &.Mui-focused {
+      color: #ff9721;
+    }
+  }
+`;
 
 //----------------------- OTHER ELEMENTS
 
 export const LinkNoDeco = styled(Link)`
 text-decoration: none;
 `;
+
+
