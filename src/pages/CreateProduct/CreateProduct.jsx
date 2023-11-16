@@ -31,7 +31,7 @@ export default function CreateProduct() {
 
   const [errors, setErrors] = useState({
     name: "",
-    description: "", 
+    description: "",
     category: "",
     brand: "",
     stockNow: "",
