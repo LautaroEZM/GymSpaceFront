@@ -120,23 +120,23 @@ export const TextFieldForm = styled(TextField)`
 
   & .MuiOutlinedInput-root {
     & fieldset {
-      border-color: white;
+      border-color: ${({ error }) => (error ? 'red' : '#ff9721')}; 
     }
 
     &:hover fieldset {
-      border-color: white;
+      border-color: ${({ error }) => (error ? 'red' : '#ff9721')}; 
     }
 
     &.Mui-focused fieldset {
-      border-color: #ff9721;
+      border-color: ${({ error }) => (error ? 'red' : '#ff9721')}; 
     }
   }
 
   & .MuiInputLabel-root {
-    color: white;
+    color: ${({ error }) => (error ? 'red' : '#ff9721')}; 
 
     &.Mui-focused {
-      color: #ff9721;
+      color: ${({ error }) => (error ? 'red' : '#ff9721')}; 
     }
   }
 `;
