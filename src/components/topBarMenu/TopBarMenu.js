@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useAuth0 } from "@auth0/auth0-react";
+import LogIn from "../LogIn/logIn";
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const { user } = useAuth0();
 
   const handleToggleMenuHome = (event) => {
     setAnchorElHome(anchorElHome ? null : event.currentTarget);
@@ -92,7 +95,11 @@ function TopBarMenu() {
             className={style.buttonAccount}
             onClick={handleToggleMenuIcon}
           >
-            <AccountCircleIcon className={style.accountIcon} />
+            {user ? (
+              <img src={user.picture} className={style.accountIcon} />
+            ) : (
+              <AccountCircleIcon className={style.accountIcon} />
+            )}
           </Button>
           <Menu
             anchorEl={anchorElIcon}
@@ -111,44 +118,38 @@ function TopBarMenu() {
             }}
           >
             <Box p={2}>
-              <TextField
-                label="Username"
-                variant="filled"
-                fullWidth
-                className={style.textFieldLogin}
-                InputProps={{ style: { color: "white" } }}
-                InputLabelProps={{ style: { color: "gray" } }}
-              />
-              <TextField
-                label="Password"
-                variant="filled"
-                type="password"
-                fullWidth
-                className={style.textFieldLogin}
-                InputProps={{ style: { color: "white" } }}
-                InputLabelProps={{ style: { color: "gray" } }}
-              />
-              <Button
-                variant="contained"
-                color="regularButton"
-                fullWidth
-                required
-                className={style.buttonBot}
-              >
-                Login
-              </Button>
-              <Link to="/SignUp">
-                <Button
-                  injectFirst
-                  variant="text"
-                  color="primary"
-                  fullWidth
-                  required
-                  className={style.buttonBot}
-                >
-                  Register
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/Profile">
+                    <Button
+                      variant="contained"
+                      color="menuButton"
+                      disableElevation
+                    >
+                      Profile
+                    </Button>
+                  </Link>
+                  <Link to="/UserProducts">
+                    <Button
+                      variant="contained"
+                      color="menuButton"
+                      disableElevation
+                    >
+                      Your products
+                    </Button>
+                  </Link>
+                  <Link to="/UserServices">
+                    <Button
+                      variant="contained"
+                      color="menuButton"
+                      disableElevation
+                    >
+                      Your services
+                    </Button>
+                  </Link>
+                </>
+              ) : null}
+              <LogIn />
             </Box>
           </Menu>
         </div>
