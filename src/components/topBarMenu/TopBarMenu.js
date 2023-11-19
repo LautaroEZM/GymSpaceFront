@@ -95,11 +95,13 @@ function TopBarMenu() {
             className={style.buttonAccount}
             onClick={handleToggleMenuIcon}
           >
-            {user ? (
-              <img src={user.picture} className={style.accountIcon} />
+            {
+            user ? (
+              <img src={user.picture} className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
-            )}
+            )
+            }
           </Button>
           <Menu
             anchorEl={anchorElIcon}
@@ -110,46 +112,44 @@ function TopBarMenu() {
             PaperProps={{
               style: {
                 backgroundColor: "#111111",
-                width: "350px",
+                width: "200px",
                 borderRadius: "0px",
                 transform: "translate(0, 5px)",
                 boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
               },
             }}
           >
-            <Box p={2}>
+            <Box p={2} >
               {user ? (
-                <>
-                  <Link to="/Profile">
+                <div className={style.accountContainer} >
                     <Button
                       variant="contained"
                       color="menuButton"
                       disableElevation
+                      fullWidth={true}
                     >
                       Profile
                     </Button>
-                  </Link>
-                  <Link to="/UserProducts">
                     <Button
                       variant="contained"
                       color="menuButton"
                       disableElevation
+                      fullWidth={true}
                     >
                       Your products
                     </Button>
-                  </Link>
-                  <Link to="/UserServices">
                     <Button
                       variant="contained"
                       color="menuButton"
+                      fullWidth='true'
                       disableElevation
                     >
                       Your services
                     </Button>
-                  </Link>
-                </>
-              ) : null}
-              <LogIn />
+
+                  <LogIn />
+                </div>
+              ) : <LogIn />}
             </Box>
           </Menu>
         </div>

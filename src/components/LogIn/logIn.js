@@ -1,7 +1,8 @@
 import Container from "@mui/material/Container";
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import style from './login.module.css'
 
 export default function logIn() {
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
@@ -14,6 +15,7 @@ export default function logIn() {
         fullWidth
         required
         onClick={() => logout()}
+        className={style.button}
       >
         Logout
       </Button>
@@ -27,11 +29,12 @@ export default function logIn() {
           fullWidth
           required
           onClick={() => loginWithRedirect()}
+          className={style.button}
         >
           Login
         </Button>
         <Link to="/SignUp">
-          <Button injectFirst variant="text" color="primary" fullWidth required>
+          <Button className={style.button} injectFirst variant="text" color="primary" fullWidth required>
             Register
           </Button>
         </Link>
