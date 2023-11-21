@@ -14,20 +14,62 @@ import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
-import { storage } from './firebaseConfig';
 import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
 import DetailUsers from "./components/DetailUsers/DetailUsers";
-
-
+import { storage } from "./firebaseConfig";
+import Profile from "./pages/Profile/Profile";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 export default function App() {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  const navigate= useNavigate()
+
+  const [newUser, setNewUser] = useState({
+    status: '',
+    email: '',
+  })
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if (isAuthenticated) {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "https://gymspacebackend-production-421c.up.railway.app/",
+            scope: "read:current_user",
+          },
+        });
+        const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+        const { data } = await axios.get(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(data);
+        if(data) setNewUser({
+          status: data.status,
+          email: data.email,
+        })
+      }
+    };
+    checkUser();
+  }, [user]);
+
+  useEffect(() => {
+    console.log('newUser:' , newUser);
+    if(newUser.status = "unregistered") navigate('/signUp')
+  }, [newUser])
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="App">
         <div className="contentContainer">
           <TopBarMenu></TopBarMenu>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={ <Home /> } />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
             <Route path="/ShopCart" element={<ShopCart/>} />
@@ -39,7 +81,10 @@ export default function App() {
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Dashboard" element={<Dashboard />} />
-
+            <Route path="/signUp" element={<SignUp newUser={newUser} />} />
+            <Route path="/CreateProduct" element={<CreateProduct />} />
+            <Route path="/CreateService" element={<CreateService />} />
+            <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
