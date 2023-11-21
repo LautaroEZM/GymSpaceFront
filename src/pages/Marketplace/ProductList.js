@@ -8,10 +8,13 @@ import {
   CardContent,
   CardActions,
 } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import {
   SmallOrangeOutlinedButton,
   ProductCard,
 } from "../../styles/ComponentStyles";
+import { Link } from "react-router-dom";
 
 export default function ProductList({ sortedProducts }) {
   return (
@@ -79,9 +82,20 @@ export default function ProductList({ sortedProducts }) {
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: "center" }}>
-                  <SmallOrangeOutlinedButton>
+                  <Link to= {`/Marketplace/detail/${product.productID}`}>
+                  <SmallOrangeOutlinedButton> 
                     VIEW DETAIL
                   </SmallOrangeOutlinedButton>
+                  </Link>
+                </CardActions>
+                <CardActions sx={{ justifyContent:"right" }}>
+                  <IconButton 
+                   color="primary"
+                   aria-label="add to shopping cart"
+                   
+                   >
+                    <AddShoppingCartIcon />
+                  </IconButton>
                 </CardActions>
               </ProductCard>
             </Grid>
