@@ -14,7 +14,6 @@ import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
-import { storage } from './firebaseConfig';
 import Dashboard from "./pages/Dashboard/Dashboard";
 import { storage } from "./firebaseConfig";
 import Profile from "./pages/Profile/Profile";
