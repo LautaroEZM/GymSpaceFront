@@ -74,14 +74,9 @@ export default function Errors({ userData }) {
       );
       return;
     }
-    if (!/^[a-zA-Z0-9]{4,11}$/g.test(userData.password) || !/[0-9]/g.test(userData.password)) {
-      setError(
-        "The password must be at least 4 characters long, less than 12 characters long, and contain at least one number"
-      );
-      return;
-    }
-    if (!userData.photo) {
+    if (userData.photo === undefined) {
       setError("You must upload a profile photo")
+      return
     }
     
 

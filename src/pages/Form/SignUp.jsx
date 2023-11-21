@@ -18,13 +18,13 @@ import { MuiFileInput } from "mui-file-input";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+export default function SignUp({newUser}) {
 
-export default function SignUp() {
+  
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
-    password: "",
+    email: newUser.email,
     birth: "YYYY-MM-DD",
     gender: "",
     address: "",
@@ -36,16 +36,7 @@ export default function SignUp() {
     systemRole: "User",
   });
 
-  const [showPassword, setShowPassword] = useState({
-    icon: <VisibilityOffSharpIcon />,
-    value: false,
-  });
-
-  const handleShowPassword = () => {
-    showPassword.value
-      ? setShowPassword({ icon: <VisibilityOffSharpIcon />, value: false })
-      : setShowPassword({ icon: <VisibilitySharpIcon />, value: true });
-  };
+  const {user} = newUser
 
   const handleChange = (event) => {
     // handles the input changes of the form
@@ -73,6 +64,13 @@ export default function SignUp() {
     const newDate = `${year}-${month}-${day}`;
     return newDate;
   };
+
+  useEffect(() => {
+    console.log(newUser);
+    if(newUser.email){
+      setUserData((prevData) => ({...prevData, email: newUser.email}))
+    }
+  }, [newUser])
 
   const navigate = useNavigate();
 
@@ -164,28 +162,13 @@ export default function SignUp() {
       </div>
       <div className={styles.div}>
         <TextField // email input
+          disabled
           name="email"
           label="Email"
           value={userData.email}
           onChange={handleChange}
           className={styles.input}
         />
-        <TextField //password input
-          name="password"
-          type={showPassword.value ? "text" : "password"} //manages the visibility of the password
-          label="Password"
-          value={userData.password}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <div className={styles.div}>
-          <IconButton // triggers the visibility of the password on/off
-            onClick={() => handleShowPassword()}
-            className={styles.showPassword}
-          >
-            {showPassword.icon}
-          </IconButton>
-        </div>
       </div>
       <div className={styles.buttonContainer}>
         <Button // sends the form info to the back-end controller and registers the user
