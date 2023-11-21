@@ -15,13 +15,14 @@ import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import DetailService from "./components/DetailService/DetailService";
+import DetailUsers from "./components/DetailUsers/DetailUsers";
 import { storage } from "./firebaseConfig";
 import Profile from "./pages/Profile/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 export default function App() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
@@ -74,6 +75,8 @@ export default function App() {
             <Route path="/ShopCart" element={<ShopCart/>} />
             <Route path="/Users" element={<UserList />} />
             <Route path="/Marketplace/detail/:id" element={<DetailProduct />} />
+            <Route path="/ServiceDetail/:id" element={<DetailService/>} />
+            <Route path="/UsersDetail/:id" element={<DetailUsers />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
