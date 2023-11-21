@@ -12,12 +12,14 @@ import theme from "../../theme";
 import ServiceFilter from "./ServiceFilter";
 import ServiceChip from "./ServiceChip";
 import ServiceCard from "./ServiceCard";
+import Loading from '../../components/Loading/loading'
 
 export default function Album() {
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/Services")
@@ -28,6 +30,7 @@ export default function Album() {
           new Set(data.map((service) => service.category))
         );
         setCategories(uniqueCategories);
+        setLoading(false)
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -70,6 +73,7 @@ export default function Album() {
           borderRadius: "5px",
         }}
       >
+
         <main>
           <Container sx={{ py: 1, flexGrow: 1 }} maxWidth="xl">
             <ServiceFilter
@@ -90,6 +94,7 @@ export default function Album() {
               marginTop: "60px",
             }}
           >
+            {loading ? <Loading loading={loading} /> : null}
             {selectedCategories.map((category, index) => (
               <ServiceChip
                 key={index}

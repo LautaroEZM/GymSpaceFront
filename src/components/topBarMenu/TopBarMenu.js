@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useAuth0 } from "@auth0/auth0-react";
 import LogIn from "../LogIn/logIn";
 
@@ -81,9 +82,16 @@ function TopBarMenu() {
               SERVICES
             </Button>
           </Link>
-          <Link to="/Users">
+          <Link to="/Dashboard">
             <Button variant="contained" color="menuButton" disableElevation>
-              USERS
+              DASHBOARD
+            </Button>
+          </Link>
+        </div>
+        <div>
+          <Link to="/ShopCart">
+            <Button variant="contained" color="menuButton" disableElevation>
+              <ShoppingCartIcon/>
             </Button>
           </Link>
         </div>

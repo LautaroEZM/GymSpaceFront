@@ -5,6 +5,9 @@ import {
   Menu,
   MenuItem,
   TextField,
+  List,
+  ListItem,
+  Select,
 } from "@mui/material";
 import { Link } from 'react-router-dom';
 
@@ -55,13 +58,28 @@ export const OrangeContainedButton = styled(Button)`
 background-color: #ff9721;
 color: white;
 border-radius: 5px;
-height: 50px;
+height: 30px;
 width: auto;
 display: flex;
 align-items: center;
 &:hover {
     background-color: #c26c0b;
   }
+`;
+
+export const RedOutlinedButton = styled(Button)`
+background-color: #ff2121;
+color: white;
+border: none;
+border-radius: 5px;
+&:hover {
+  background-color: #a81b08;
+}
+height: 30px;
+width: auto;
+display: flex;
+align-items: center;
+
 `;
 
 //----------------------- CARDS
@@ -102,7 +120,23 @@ export const StyledMenu = styled(Menu)`
   }
 `;
 
+export const StyledSelect = styled(Select)`
+
+    background-color: #111111f4;
+    width: 350px;
+    border-radius: 5px;
+    transform: translate(0, 5px);
+    color: #ff9721;
+`;
+
+export const StyledMenuItemSelect = styled(MenuItem)`
+  &:hover {
+    background-color: #1c181397;
+  }
+`;
+
 export const StyledMenuItem = styled(MenuItem)`
+background-color: #1c181397;
   &:hover {
     background-color: #1c181397;
   }
@@ -140,6 +174,26 @@ export const TextFieldForm = styled(TextField)`
     }
   }
 `;
+
+//----------------------- LIST
+
+export const DashBoardList = styled(List)`
+text-decoration: none;
+`;
+
+export const DashBoardCategory = styled(ListItem)`
+    user-Select: none;
+    cursor: default;
+`;
+
+export const DashBoardListItem = styled(ListItem)`
+    color: #bbbbbb;
+    &:hover {
+    background-color: #f3a143;
+    color: black;
+  }
+`;
+
 
 //----------------------- OTHER ELEMENTS
 

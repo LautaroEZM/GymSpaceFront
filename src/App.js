@@ -11,8 +11,11 @@ import CreateService from "./pages/CreateService/CreateService";
 import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
-import UserList from "./pages/UserList/UserList";
+import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
+import ShopCart from "./pages/Shopping/ShopCart";
+import { storage } from './firebaseConfig';
+import Dashboard from "./pages/Dashboard/Dashboard";
 import { storage } from "./firebaseConfig";
 import Profile from "./pages/Profile/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -69,14 +72,16 @@ export default function App() {
             <Route path="/" element={ <Home /> } />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
+            <Route path="/ShopCart" element={<ShopCart/>} />
             <Route path="/Users" element={<UserList />} />
+            <Route path="/Marketplace/detail/:id" element={<DetailProduct />} />
+            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/CreateProduct" element={<CreateProduct/>} />
+            <Route path="/CreateService" element={<CreateService />} />
+            <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/signUp" element={<SignUp newUser={newUser} />} />
             <Route path="/CreateProduct" element={<CreateProduct />} />
             <Route path="/CreateService" element={<CreateService />} />
-            <Route
-              path="/marketplace/detail/:id"
-              component={<DetailProduct />}
-            />
             <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

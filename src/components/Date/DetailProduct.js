@@ -9,11 +9,12 @@ export default function DetailProduct() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log(id);
   useEffect(() => {
     const getProd = async (id) => {
       try {
         const response = await axios.get(
-          `https://gymspace-backend.onrender.com/Product${id}`
+          `https://gymspace-backend.onrender.com/products/${id}`
         );
         const data = response.data;
         if (data) {
@@ -58,49 +59,54 @@ export default function DetailProduct() {
         <Card sx={{ maxWidth: 345 }}>
           <CardMedia
             component="img"
-            height="140"
+            height="400"
             image={product.image}
           ></CardMedia>
-          <CardContent>
+          <CardContent sx={{
+              backgroundColor:"brown",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}>
             <Typography
-              variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              variant="h6"
+              sx={{ color: "Black", textAlign: "center" }}
             >
               {product.name}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               {product.description}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               ${product.price}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               Brand= {product.brand}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               Category= {product.category}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               Status= {product.status}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#text.secondary", textAlign: "center" }}
             >
               Stock= {product.stockNow}
             </Typography>
