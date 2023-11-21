@@ -10,19 +10,22 @@ import { Auth0Provider } from "@auth0/auth0-react";
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
 
-const audience = "https://gymspacebackend-production-421c.up.railway.app/"
-const scope = "read:current_user update:current_user_metadata"
+const providerConfig = {
+  domain: "dev-y4mdv7lm3spxjtu2.us.auth0.com",
+  clientId: "lWHtJzbfJeiBfe0nXxmw5uqZkoJwkIkp",
+  authorizationParams: {
+    redirect_uri: window.location.origin,
+    audience: "https://gymspacebackend-production-421c.up.railway.app/",
+    scope: "read:current_user update:current_user_metadata"
+  },
+};
 
 root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <BrowserRouter>
       <Auth0Provider
-        domain="dev-y4mdv7lm3spxjtu2.us.auth0.com"
-        clientId="lWHtJzbfJeiBfe0nXxmw5uqZkoJwkIkp"
-        redirectUri={window.location.origin}
-        audience={audience}
-        scope={scope}
+          {...providerConfig}
       >
         <App/>
       </Auth0Provider>
