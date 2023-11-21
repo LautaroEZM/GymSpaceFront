@@ -12,8 +12,8 @@ import {
   Box,
   CardMedia,
 } from "@mui/material";
-import theme from "../../theme";
-import { OrangeContainedButton } from "../../styles/ComponentStyles";
+import theme from "../../../theme";
+import { OrangeContainedButton } from "../../../styles/ComponentStyles";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
