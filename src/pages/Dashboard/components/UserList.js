@@ -10,10 +10,15 @@ import {
   CssBaseline,
   ThemeProvider,
   Box,
-  CardMedia,
 } from "@mui/material";
 import theme from "../../../theme";
-import { OrangeContainedButton } from "../../../styles/ComponentStyles";
+import {
+  OrangeContainedButton,
+  RedOutlinedButton,
+  StyledSelect,
+  StyledMenuItemSelect,
+  TextFieldForm,
+} from "../../../styles/ComponentStyles";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -22,6 +27,8 @@ export default function UserList() {
     direction: "ascending",
   });
   const [hoveredRow, setHoveredRow] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("firstName");
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/Users")
@@ -40,8 +47,32 @@ export default function UserList() {
     setSortConfig({ key, direction });
   };
 
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredUsers = users.filter((user) =>
+    user[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleDelete = (userId) => {
+    fetch(`https://gymspace-backend.onrender.com/Users/${userId}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        const updatedUsers = users.filter((user) => user.userID !== userId);
+        setUsers(updatedUsers);
+      })
+      .catch((error) => console.error("Error deleting user:", error));
+  };
+
   const sortedUsers = () => {
-    const sortableUsers = [...users];
+    const sortableUsers = [...filteredUsers];
     if (sortConfig.key !== null) {
       sortableUsers.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -60,39 +91,32 @@ export default function UserList() {
     <TableHead>
       <TableRow sx={{ backgroundColor: "#414141" }}>
         <SortableTableCell
-          onClick={() => handleSort("photo")}
-          label="PHOTO"
-          sorted={sortConfig.key === "photo"}
-          direction={sortConfig.direction}
-          maxWidth={500}
-        />
-        <SortableTableCell
           onClick={() => handleSort("firstName")}
           label="FIRST NAME"
           sorted={sortConfig.key === "firstName"}
           direction={sortConfig.direction}
-          maxWidth={50}
+          maxWidth={200}
         />
         <SortableTableCell
           onClick={() => handleSort("lastName")}
           label="LAST NAME"
           sorted={sortConfig.key === "lastName"}
           direction={sortConfig.direction}
-          maxWidth={50}
+          maxWidth={200}
         />
         <SortableTableCell
           onClick={() => handleSort("gender")}
           label="GENDER"
           sorted={sortConfig.key === "gender"}
           direction={sortConfig.direction}
-          maxWidth={50}
+          maxWidth={150}
         />
         <SortableTableCell
           onClick={() => handleSort("phone")}
           label="PHONE"
           sorted={sortConfig.key === "phone"}
           direction={sortConfig.direction}
-          maxWidth={50}
+          maxWidth={150}
         />
         <SortableTableCell
           onClick={() => handleSort("status")}
@@ -101,13 +125,18 @@ export default function UserList() {
           direction={sortConfig.direction}
           maxWidth={50}
         />
-        <SortableTableCell
-          onClick={() => handleSort("actions")}
-          label="ACTIONS"
-          sorted={sortConfig.key === "actions"}
-          direction={sortConfig.direction}
-          maxWidth={30}
-        />
+        <TableCell
+          sx={{
+            fontSize: 18,
+            color: "white",
+            minWidth: 150,
+            backgroundColor: "#414141",
+            border: "1px solid white",
+            textAlign: "center",
+          }}
+        >
+          ACTIONS
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -121,38 +150,73 @@ export default function UserList() {
             backgroundColor: index === hoveredRow ? "#333333" : "#414141",
             color: "white",
             border: "1px solid white",
-
-            boxShadow: index === hoveredRow ? "0 0 5px white" : "none",
           }}
           onMouseEnter={() => setHoveredRow(index)}
           onMouseLeave={() => setHoveredRow(null)}
         >
-          <TableCell sx={{ maxWidth: 200 }}>
-            <CardMedia
-              component="div"
-              sx={{
-                pt: "37.5%",
-                background: `url(${user.photo})`,
-              }}
-            />
-          </TableCell>
-          <TableCell sx={{ fontSize: 16, color: "white", maxWidth: 100 }}>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.firstName}
           </TableCell>
-          <TableCell sx={{ fontSize: 16, color: "white", maxWidth: 100 }}>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.lastName}
           </TableCell>
-          <TableCell sx={{ fontSize: 16, color: "white", maxWidth: 100 }}>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.gender}
           </TableCell>
-          <TableCell sx={{ fontSize: 16, color: "white", maxWidth: 100 }}>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.phone}
           </TableCell>
-          <TableCell sx={{ fontSize: 16, color: "white", maxWidth: 100 }}>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.status}
           </TableCell>
-          <TableCell sx={{ maxWidth: 50 }}>
+          <TableCell
+            sx={{
+              display: "flex",
+              gap: "8px",
+              minWidth: 150,
+              border: "1px solid white",
+              justifyContent: "center",
+            }}
+          >
             <OrangeContainedButton>DETAIL</OrangeContainedButton>
+            <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
+              DELETE
+            </RedOutlinedButton>
           </TableCell>
         </TableRow>
       ))}
@@ -174,8 +238,8 @@ export default function UserList() {
         color: "white",
         maxWidth,
         backgroundColor: sorted ? "#333333" : "#414141",
-        border: sorted ? "1px solid white" : "none",
-        boxShadow: sorted ? "0 0 5px white" : "none",
+        border: "1px solid white",
+        textAlign: "center",
       }}
     >
       {label} {sorted && (direction === "ascending" ? "▲" : "▼")}
@@ -204,6 +268,24 @@ export default function UserList() {
             marginTop: 5,
           }}
         >
+          <TextFieldForm
+            label="Search"
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+          />
+          <StyledSelect
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <StyledMenuItemSelect value="firstName">
+              First Name
+            </StyledMenuItemSelect>
+            <StyledMenuItemSelect value="lastName">
+              Last Name
+            </StyledMenuItemSelect>
+            <StyledMenuItemSelect value="phone">Phone</StyledMenuItemSelect>
+          </StyledSelect>
           <TableContainer component={Paper}>
             <Table>
               {renderTableHeader()}
