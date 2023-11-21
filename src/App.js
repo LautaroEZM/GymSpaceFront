@@ -13,15 +13,37 @@ import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/UserList/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
-import { storage } from './firebaseConfig';
-import Profile from './pages/Profile/Profile'
+import { storage } from "./firebaseConfig";
+import Profile from "./pages/Profile/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
 
 export default function App() {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  const user = useAuth0()
+  // useEffect(() => {
+    const checkUser = async () => {
+      if (isAuthenticated) {
+        console.log('entramos');
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "https://gymspacebackend-production-421c.up.railway.app/",
+            scope: "read:current_user",
+          },
+        });
+        console.log('accessToken');
+        const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+        const { data } = await axios.get(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log('data');
+      }
+    };
+  //   checkUser();
+  // }, [user]);
 
   // if() useNavigate('/signUp')
 
@@ -31,15 +53,18 @@ export default function App() {
         <div className="contentContainer">
           <TopBarMenu></TopBarMenu>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={ <><Home /> <button onClick={() => checkUser()} >GET USER</button> </> } />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
             <Route path="/Users" element={<UserList />} />
             <Route path="/signUp" element={<SignUp />} />
-            <Route path="/CreateProduct" element={<CreateProduct/>} />
+            <Route path="/CreateProduct" element={<CreateProduct />} />
             <Route path="/CreateService" element={<CreateService />} />
-            <Route path="/marketplace/detail/:id" component={<DetailProduct />} />
-            <Route path="/Profile" element={<Profile/>}/>
+            <Route
+              path="/marketplace/detail/:id"
+              component={<DetailProduct />}
+            />
+            <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
