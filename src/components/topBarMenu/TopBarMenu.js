@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
@@ -81,6 +82,13 @@ function TopBarMenu() {
           <Link to="/Users">
             <Button variant="contained" color="menuButton" disableElevation>
               USERS
+            </Button>
+          </Link>
+        </div>
+        <div>
+          <Link to="/ShopCart">
+            <Button variant="contained" color="menuButton" disableElevation>
+              <ShoppingCartIcon/>
             </Button>
           </Link>
         </div>
