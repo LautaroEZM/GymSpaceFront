@@ -108,7 +108,13 @@ function Dashboard() {
           </List>
         </List>
       </Box>
-      <Box sx={{ flexGrow: 1, padding: "20px" }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          padding: "20px",
+          overflowY: "auto",
+        }}
+      >
         {/* Contenido de la página a la derecha del menú */}
         {showClientsUserList && <UserList />}
       </Box>
