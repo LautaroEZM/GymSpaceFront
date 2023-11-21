@@ -52,9 +52,7 @@
 /* Account Container */
 .accountContainer {
   display: flex;
-  flex-direction: column;
   justify-content: flex-end;
-  align-items: end;
   /* Puedes cambiar 'end' a 'flex-end' para mayor claridad */
 }
 
@@ -71,10 +69,4 @@
   background-color: #ff9721;
   width: auto;
   height: 2px;
-}
-
-.picture{
-  width: 40px;
-  border: 2px solid white;
-  border-radius: 100%;
 }

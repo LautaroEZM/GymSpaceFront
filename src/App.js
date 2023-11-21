@@ -14,17 +14,9 @@ import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/UserList/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import { storage } from './firebaseConfig';
-import Profile from './pages/Profile/Profile'
-import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
 
 
 export default function App() {
-
-  const user = useAuth0()
-
-  // if() useNavigate('/signUp')
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="App">
@@ -39,7 +31,6 @@ export default function App() {
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/marketplace/detail/:id" component={<DetailProduct />} />
-            <Route path="/Profile" element={<Profile/>}/>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
