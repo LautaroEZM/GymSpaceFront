@@ -16,6 +16,7 @@ import DetailProduct from "./components/Date/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
 import { storage } from './firebaseConfig';
 import Dashboard from "./pages/Dashboard/Dashboard";
+import DetailService from "./components/DetailService/DetailService";
 
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/ShopCart" element={<ShopCart/>} />
             <Route path="/Users" element={<UserList />} />
             <Route path="/Marketplace/detail/:id" element={<DetailProduct />} />
+            <Route path="/ServiceDetail/:id" element={<DetailService/>}/>
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />

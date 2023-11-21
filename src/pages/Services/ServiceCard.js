@@ -49,9 +49,11 @@ const ServiceCard = ({ service }) => (
       </Typography>
     </CardContent>
     <CardActions>
+      <Link to= {`/ServiceDetail/${service.serviceID}`}>
       <SmallOrangeOutlinedButtonLess>
         View
       </SmallOrangeOutlinedButtonLess>
+      </Link>
       <SmallOrangeOutlinedButtonLess>Edit</SmallOrangeOutlinedButtonLess>
     </CardActions>
   </ServicesCard>
