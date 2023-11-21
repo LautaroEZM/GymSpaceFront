@@ -78,9 +78,9 @@ function TopBarMenu() {
               SERVICES
             </Button>
           </Link>
-          <Link to="/Users">
+          <Link to="/Dashboard">
             <Button variant="contained" color="menuButton" disableElevation>
-              USERS
+              DASHBOARD
             </Button>
           </Link>
         </div>

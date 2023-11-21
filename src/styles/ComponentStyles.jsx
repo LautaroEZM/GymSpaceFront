@@ -5,6 +5,8 @@ import {
   Menu,
   MenuItem,
   TextField,
+  List,
+  ListItem,
 } from "@mui/material";
 import { Link } from 'react-router-dom';
 
@@ -140,6 +142,26 @@ export const TextFieldForm = styled(TextField)`
     }
   }
 `;
+
+//----------------------- LIST
+
+export const DashBoardList = styled(List)`
+text-decoration: none;
+`;
+
+export const DashBoardCategory = styled(ListItem)`
+    user-Select: none;
+    cursor: default;
+`;
+
+export const DashBoardListItem = styled(ListItem)`
+    color: #bbbbbb;
+    &:hover {
+    background-color: #f3a143;
+    color: black;
+  }
+`;
+
 
 //----------------------- OTHER ELEMENTS
 

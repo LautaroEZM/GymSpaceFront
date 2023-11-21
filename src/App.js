@@ -11,9 +11,10 @@ import CreateService from "./pages/CreateService/CreateService";
 import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
-import UserList from "./pages/UserList/UserList";
+import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import { storage } from './firebaseConfig';
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 
 export default function App() {
@@ -26,11 +27,12 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
-            <Route path="/Users" element={<UserList />} />
+            
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/marketplace/detail/:id" component={<DetailProduct />} />
+            <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
