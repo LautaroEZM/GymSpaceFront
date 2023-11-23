@@ -1,18 +1,59 @@
 import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate  } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useAuth0 } from "@auth0/auth0-react";
 import LogIn from "../LogIn/logIn";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuth0 } from "@auth0/auth0-react";
+import { getUser } from "../../REDUX/actions";
+import axios from "axios";
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
-  const { user } = useAuth0();
+
+  const newUser = useSelector((state) => state.user)
+
+  const loadingImage = "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73"
+
+  const navigate = useNavigate()
+
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+
+    const checkUser = async () => {
+      console.log('user: ', user);
+      if (user && isAuthenticated) {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "https://gymspacebackend-production-421c.up.railway.app/",
+            scope: "read:current_user",
+          },
+        });
+        const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+        const { data } = await axios.get(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (data) {
+          dispatch(getUser(data))
+        }
+      }
+    };
+    checkUser();
+  }, [user]);
+
+  useEffect(() => {
+    console.log(newUser);
+    if (user && newUser.status === 'unregistered') navigate('/signUp')
+  }, [newUser]);
 
   const handleToggleMenuHome = (event) => {
     setAnchorElHome(anchorElHome ? null : event.currentTarget);
@@ -29,6 +70,11 @@ function TopBarMenu() {
     setAnchorElIcon(null);
     setLoginOpen(false);
   };
+
+  const handleRedirect = (url) => {
+    handleCloseMenu()
+    navigate(`/${url}`)
+  }
 
   return (
     <div className={style.topContainer}>
@@ -104,8 +150,8 @@ function TopBarMenu() {
             onClick={handleToggleMenuIcon}
           >
             {
-            user ? (
-              <img src={user.picture} className={style.picture} />
+            user && isAuthenticated ? (
+              <img src={ newUser.photo || loadingImage } className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
             )
@@ -135,6 +181,7 @@ function TopBarMenu() {
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
+                      onClick={() => handleRedirect('Profile')}
                     >
                       Profile
                     </Button>
@@ -143,6 +190,7 @@ function TopBarMenu() {
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
+                      onClick={() => handleRedirect('UserProducts')}
                     >
                       Your products
                     </Button>
@@ -151,6 +199,7 @@ function TopBarMenu() {
                       color="menuButton"
                       fullWidth='true'
                       disableElevation
+                      onClick={() => handleRedirect('UserServices')}
                     >
                       Your services
                     </Button>

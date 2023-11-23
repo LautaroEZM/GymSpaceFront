@@ -13,8 +13,8 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import {
   SmallOrangeOutlinedButton,
   ProductCard,
-  LinkNoDeco,
 } from "../../styles/ComponentStyles";
+import { Link } from "react-router-dom";
 
 export default function ProductList({ sortedProducts }) {
   return (
@@ -82,11 +82,11 @@ export default function ProductList({ sortedProducts }) {
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: "center" }}>
-                  <LinkNoDeco to= {`/Marketplace/detail/${product.productID}`}>
+                  <Link to= {`/Marketplace/detail/${product.productID}`}>
                   <SmallOrangeOutlinedButton> 
                     VIEW DETAIL
                   </SmallOrangeOutlinedButton>
-                  </LinkNoDeco>
+                  </Link>
                 </CardActions>
                 <CardActions sx={{ justifyContent:"right" }}>
                   <IconButton 
