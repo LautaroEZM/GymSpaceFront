@@ -1,7 +1,7 @@
 import {GET_USER} from './actions'
 
 const initState = {
-    user: null
+    user: {}
 }
 
 const reducer = (state = initState, action) => {

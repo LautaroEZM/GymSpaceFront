@@ -69,6 +69,11 @@ function TopBarMenu() {
     setLoginOpen(false);
   };
 
+  const handleRedirect = (url) => {
+    handleCloseMenu()
+    navigate(`/${url}`)
+  }
+
   return (
     <div className={style.topContainer}>
       <img src={fig} alt="Fig" className={style.overlayImage} />
@@ -143,8 +148,8 @@ function TopBarMenu() {
             onClick={handleToggleMenuIcon}
           >
             {
-            newUser.photo ? (
-              <img src={ newUser.photo } className={style.picture} />
+            user && isAuthenticated ? (
+              <img src={ newUser.photo && newUser.photo } className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
             )
@@ -174,7 +179,7 @@ function TopBarMenu() {
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
-                      onClick={() => navigate('/Profile')}
+                      onClick={() => handleRedirect('Profile')}
                     >
                       Profile
                     </Button>
@@ -183,6 +188,7 @@ function TopBarMenu() {
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
+                      onClick={() => handleRedirect('UserProducts')}
                     >
                       Your products
                     </Button>
@@ -191,6 +197,7 @@ function TopBarMenu() {
                       color="menuButton"
                       fullWidth='true'
                       disableElevation
+                      onClick={() => handleRedirect('UserServices')}
                     >
                       Your services
                     </Button>
