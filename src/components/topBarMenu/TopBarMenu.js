@@ -18,6 +18,8 @@ function TopBarMenu() {
 
   const newUser = useSelector((state) => state.user)
 
+  const loadingImage = "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73"
+
   const navigate = useNavigate()
 
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -26,6 +28,7 @@ function TopBarMenu() {
   useEffect(() => {
 
     const checkUser = async () => {
+      console.log('user: ', user);
       if (user && isAuthenticated) {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
@@ -51,7 +54,6 @@ function TopBarMenu() {
     console.log(newUser);
     if (user && newUser.status === 'unregistered') navigate('/signUp')
   }, [newUser]);
-
 
   const handleToggleMenuHome = (event) => {
     setAnchorElHome(anchorElHome ? null : event.currentTarget);
@@ -149,7 +151,7 @@ function TopBarMenu() {
           >
             {
             user && isAuthenticated ? (
-              <img src={ newUser.photo && newUser.photo } className={style.picture} />
+              <img src={ newUser.photo || loadingImage } className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
             )

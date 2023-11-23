@@ -1,17 +1,17 @@
-import { Container, Box } from "@mui/material";
+import { Container, Box, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import Typography from "@mui/material/Typography";
-import style from "../../styles/ComponentStyles";
-import styles from "./Profile.module.css";
-import { useEffect } from "react";
-import { display } from "@mui/system";
 import { useAuth0 } from "@auth0/auth0-react";
 import NotFound from "../NotFound/NotFound";
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { useNavigate } from "react-router";
 
 export default function Profile() {
   const {user, isAuthenticated } = useAuth0();
 
   const userProfile = useSelector((state) => state.user);
+
+  const navigate = useNavigate()
 
   if (user && isAuthenticated) {
     return (
@@ -22,7 +22,7 @@ export default function Profile() {
             {userProfile.firstName && userProfile.firstName}
           </Typography>
           <Typography variant="h1">{userProfile.lastName && userProfile.lastName}</Typography>
-        </Box>
+        <Button onClick={() => {navigate('/signUp')}} > Edit Profile <BorderColorIcon/> </Button>
         <Typography variant="h5">Birth: {userProfile.birth && userProfile.birth}</Typography>
         <Typography variant="h5">
           Adress: {userProfile.adress && userProfile.adress}
@@ -34,6 +34,7 @@ export default function Profile() {
         <Typography variant="h5">
           Contact phone: {userProfile.contactPhone && userProfile.contactPhone}
         </Typography>
+        </Box>
       </Container>
     );
   } else {
