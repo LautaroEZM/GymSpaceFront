@@ -2,26 +2,15 @@ import Container from "@mui/material/Container";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Typography from '@mui/material/Typography'
 
 export default function Profile() {
-  const { user } = useAuth0();
 
-  const [userInfo, setUserInfo] = useState()
+  const user = useSelector((state) => state.user)
 
-  useEffect(() => {
-    const sendUser = async () => {
-        console.log(user);
-      try {
-        const response = await axios.get(
-          "https://gymspacebackend-production-421c.up.railway.app/users",
-          user
-        );
-        const {data} = response
-        if (data) setUserInfo(data)
-      } catch (error) {}
-    };
-    if (user) sendUser();
-  }, [user]);
-
-  return <Container maxWidth="xs"></Container>;
+  return <Container maxWidth="xs">
+    <img src={user.photo} alt="user.photo" />
+    <Typography variant="h1" color="initial">{user.firstname && user.firstname}</Typography>
+  </Container>;
 }

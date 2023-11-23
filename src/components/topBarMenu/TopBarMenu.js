@@ -5,14 +5,23 @@ import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useAuth0 } from "@auth0/auth0-react";
 import LogIn from "../LogIn/logIn";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
-  const { user } = useAuth0();
+
+  const user = useSelector((state) => state.user)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user && user.status === 'unregistered') navigate('/signUp')
+  }, [user]);
+
 
   const handleToggleMenuHome = (event) => {
     setAnchorElHome(anchorElHome ? null : event.currentTarget);
@@ -105,7 +114,7 @@ function TopBarMenu() {
           >
             {
             user ? (
-              <img src={user.picture} className={style.picture} />
+              <img src={user.photo} className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
             )
@@ -135,6 +144,7 @@ function TopBarMenu() {
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
+                      onClick={() => navigate('/Profile')}
                     >
                       Profile
                     </Button>
