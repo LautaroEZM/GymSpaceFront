@@ -18,8 +18,8 @@ import {
   StyledSelect,
   StyledMenuItemSelect,
   TextFieldForm,
-  LinkNoDeco,
 } from "../../../styles/ComponentStyles";
+import { Link } from "react-router-dom";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -214,9 +214,11 @@ export default function UserList() {
               justifyContent: "center",
             }}
           >
-            <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
-              <OrangeContainedButton>DETAIL</OrangeContainedButton>
-            </LinkNoDeco>
+            <Link to= {`/UsersDetail/${user.userID}`}>
+            <OrangeContainedButton>
+              DETAIL
+              </OrangeContainedButton>
+            </Link>
             <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
               DELETE
             </RedOutlinedButton>
