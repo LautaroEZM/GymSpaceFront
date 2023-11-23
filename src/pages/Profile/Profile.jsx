@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Typography from '@mui/material/Typography'
+import style from '../../styles/ComponentStyles'
 
 export default function Profile() {
 

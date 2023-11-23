@@ -1,26 +1,56 @@
 import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate  } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogIn from "../LogIn/logIn";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { getUser } from "../../REDUX/actions";
+import axios from "axios";
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const user = useSelector((state) => state.user)
+  const newUser = useSelector((state) => state.user)
+
   const navigate = useNavigate()
 
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    if (user && user.status === 'unregistered') navigate('/signUp')
+
+    const checkUser = async () => {
+      if (user && isAuthenticated) {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "https://gymspacebackend-production-421c.up.railway.app/",
+            scope: "read:current_user",
+          },
+        });
+        const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+        const { data } = await axios.get(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (data) {
+          dispatch(getUser(data))
+        }
+      }
+    };
+    checkUser();
   }, [user]);
+
+  useEffect(() => {
+    console.log(newUser);
+    if (user && newUser.status === 'unregistered') navigate('/signUp')
+  }, [newUser]);
 
 
   const handleToggleMenuHome = (event) => {
@@ -113,8 +143,8 @@ function TopBarMenu() {
             onClick={handleToggleMenuIcon}
           >
             {
-            user ? (
-              <img src={user.photo} className={style.picture} />
+            newUser.photo ? (
+              <img src={ newUser.photo } className={style.picture} />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
             )
