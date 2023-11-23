@@ -2,6 +2,8 @@ import React from "react";
 import { CardMedia, CardContent, CardActions, Typography } from "@mui/material";
 import { SmallOrangeOutlinedButtonLess } from "../../styles/ComponentStyles";
 import { ServicesCard } from "../../styles/ComponentStyles";
+import { Link } from "react-router-dom";
+
 const ServiceCard = ({ service }) => (
   <ServicesCard>
     <CardMedia
@@ -47,7 +49,11 @@ const ServiceCard = ({ service }) => (
       </Typography>
     </CardContent>
     <CardActions>
-      <SmallOrangeOutlinedButtonLess>View</SmallOrangeOutlinedButtonLess>
+      <Link to= {`/ServiceDetail/${service.serviceID}`}>
+      <SmallOrangeOutlinedButtonLess>
+        View
+      </SmallOrangeOutlinedButtonLess>
+      </Link>
       <SmallOrangeOutlinedButtonLess>Edit</SmallOrangeOutlinedButtonLess>
     </CardActions>
   </ServicesCard>
