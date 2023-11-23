@@ -2,7 +2,7 @@ import React from "react";
 import { CardMedia, CardContent, CardActions, Typography } from "@mui/material";
 import { SmallOrangeOutlinedButtonLess } from "../../styles/ComponentStyles";
 import { ServicesCard } from "../../styles/ComponentStyles";
-import { Link } from "react-router-dom";
+import { LinkNoDeco } from "../../styles/ComponentStyles";
 
 const ServiceCard = ({ service }) => (
   <ServicesCard>
@@ -49,11 +49,11 @@ const ServiceCard = ({ service }) => (
       </Typography>
     </CardContent>
     <CardActions>
-      <Link to= {`/ServiceDetail/${service.serviceID}`}>
+      <LinkNoDeco to= {`/ServiceDetail/${service.serviceID}`}>
       <SmallOrangeOutlinedButtonLess>
         View
       </SmallOrangeOutlinedButtonLess>
-      </Link>
+      </LinkNoDeco>
       <SmallOrangeOutlinedButtonLess>Edit</SmallOrangeOutlinedButtonLess>
     </CardActions>
   </ServicesCard>
