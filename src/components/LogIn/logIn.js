@@ -33,6 +33,11 @@ export default function logIn() {
         >
           Login
         </Button>
+        <Link to="/SignUp">
+          <Button className={style.button} injectFirst variant="text" color="primary" fullWidth required>
+            Register
+          </Button>
+        </Link>
       </Container>
     );
   }
