@@ -7,6 +7,7 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  Button,
 } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -28,10 +29,10 @@ export default function ProductList({ sortedProducts }) {
     >
       <Box sx={{ width: "90%", marginBottom: "40px" }}>
         <Grid container spacing={2}>
-          {sortedProducts().map((product) => (
+          {sortedProducts().map((product, i) => (
             <Grid
               item
-              key={product.productID}
+              key={i}
               xs={12}
               sm={6}
               md={4}
@@ -92,7 +93,6 @@ export default function ProductList({ sortedProducts }) {
                   <IconButton 
                    color="primary"
                    aria-label="add to shopping cart"
-                   
                    >
                     <AddShoppingCartIcon />
                   </IconButton>

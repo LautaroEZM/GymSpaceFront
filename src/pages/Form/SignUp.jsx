@@ -36,7 +36,7 @@ export default function SignUp() {
     contactPhone: "",
     photo: '',
     enrollmentDate: "2023-11-10",
-    status: "registered",
+    status: "active",
     systemRole: "Admin",
   });
 

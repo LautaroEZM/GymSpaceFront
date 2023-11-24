@@ -16,8 +16,12 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 const CartPage = () => {
+
+  const [local, setLocal] = useLocalStorage('product', '')
+
   const [cartItems, setCartItems] = useState([]);
   const [subTotal, setSubTotal] = useState(0);
   const [billPopup, setBillPopup] = useState(false);
@@ -54,6 +58,10 @@ const CartPage = () => {
     });
     setSubTotal(total);
   }, [cartItems]);
+
+  useEffect(() => {
+    console.log('local: ', local);
+  }, [local])
 
   const columns = [
     {
