@@ -37,7 +37,7 @@ export default function SignUp() {
     photo: '',
     enrollmentDate: "2023-11-10",
     status: "registered",
-    systemRole: "User",
+    systemRole: "Admin",
   });
 
   const navigate = useNavigate();

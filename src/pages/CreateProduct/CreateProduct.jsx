@@ -22,7 +22,7 @@ export default function CreateProduct() {
 
   const navigate = useNavigate();
 
-  if (user.systemRole !== 'admin') navigate('/')
+  if (user.systemRole !== 'Admin') navigate('/')
 
   const [productData, setProductData] = useState({
     name: "",

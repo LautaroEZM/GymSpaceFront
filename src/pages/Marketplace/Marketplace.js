@@ -162,7 +162,7 @@ export default function Marketplace() {
                   <SortIcon />
                 </Badge>
               </IconButton>
-              {user.systemRole === "admin" ? 
+              {user.systemRole === "Admin" ? 
                 <LinkNoDeco to="/CreateProduct">
                   <OrangeOutlinedButton
                     variant="outlined"

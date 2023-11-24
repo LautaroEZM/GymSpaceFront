@@ -9,15 +9,16 @@ export function useLocalStorage(key, initValue) {
       return initValue;
     }
   });
+
+  const setValue = (value) => {
+    try {
+      setStored(value);
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  return [stored, setValue]; 
 }
 
-const setValue = (value) => {
-  try {
-    setStored(value);
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-return [stored, setStored];
