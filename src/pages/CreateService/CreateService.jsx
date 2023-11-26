@@ -5,7 +5,6 @@ import {
   MenuItem,
   InputLabel,
   Button,
-  FormControl,
   Typography,
   Box,
   Radio,
@@ -16,8 +15,15 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function CreateService() {
+  const user = useSelector((state) => state.user)
+
+  const navigate = useNavigate()
+
+  if (user.systemRole !== 'Admin') navigate('/')
+
   const [serviceData, setServiceData] = useState({
     name: "",
     description: "",
@@ -34,7 +40,6 @@ export default function CreateService() {
 
   const [coaches, setCoaches] = useState([]);
   const [newImage, setNewImage] = useState(undefined);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCoaches = async () => {

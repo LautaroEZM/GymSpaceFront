@@ -20,23 +20,25 @@ import { OrangeOutlinedButton, LinkNoDeco } from "../../styles/ComponentStyles";
 import FilterBar from "./FilterBar";
 import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
-
-import Loading from '../../components/Loading/loading'
+import { useSelector } from "react-redux";
+import Loading from "../../components/Loading/loading";
 
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const [loading, setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const [noProducts, setNoProducts] = useState(false)
+  const user = useSelector((state) => state.user);
+
+  const [noProducts, setNoProducts] = useState(false);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     fetch("https://gymspace-backend.onrender.com/products")
       .then((response) => response.json())
       .then((data) => setProducts(data))
@@ -118,9 +120,9 @@ export default function Marketplace() {
   };
 
   useEffect(() => {
-    if(filteredProducts.length === 0) setNoProducts(true)
-    else setNoProducts(false)
-  }, [filteredProducts])
+    if (filteredProducts.length === 0) setNoProducts(true);
+    else setNoProducts(false);
+  }, [filteredProducts]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -160,14 +162,16 @@ export default function Marketplace() {
                   <SortIcon />
                 </Badge>
               </IconButton>
-              <LinkNoDeco to="/CreateProduct">
-                <OrangeOutlinedButton
-                  variant="outlined"
-                  startIcon={<AddCircleOutlineIcon />}
-                >
-                  NEW PRODUCT
-                </OrangeOutlinedButton>
-              </LinkNoDeco>
+              {user.systemRole === "Admin" ? 
+                <LinkNoDeco to="/CreateProduct">
+                  <OrangeOutlinedButton
+                    variant="outlined"
+                    startIcon={<AddCircleOutlineIcon />}
+                  >
+                    NEW PRODUCT
+                  </OrangeOutlinedButton>
+                </LinkNoDeco>
+               : null}
             </Toolbar>
             <FilterBar
               allCategories={allCategories}
@@ -182,7 +186,6 @@ export default function Marketplace() {
             />
           </AppBar>
         </Box>
-
         <SortMenu
           anchorEl={anchorEl}
           handleSortChange={handleSortChange}
@@ -190,17 +193,16 @@ export default function Marketplace() {
           setAnchorEl={setAnchorEl}
         />
         {noProducts && !loading ? <h1>No products found</h1> : null}
-        {loading 
-        ? <Loading loading={loading} /> 
-        :
-        <>
-        <ProductList
-          sortedProducts={sortedProducts}
-          maxProductPrice={maxProductPrice}
-        />
-        </>
-        }
-
+        {loading ? (
+          <Loading loading={loading} />
+        ) : (
+          <>
+            <ProductList
+              sortedProducts={sortedProducts}
+              maxProductPrice={maxProductPrice}
+            />
+          </>
+        )}
       </Box>
     </ThemeProvider>
   );

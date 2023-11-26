@@ -14,8 +14,16 @@ import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { OrangeContainedButton, TextFieldForm } from "../../styles/ComponentStyles";
+import { useSelector } from "react-redux";
 
 export default function CreateProduct() {
+
+  const user = useSelector((state) => state.user )
+
+  const navigate = useNavigate();
+
+  if (user.systemRole !== 'Admin') navigate('/')
+
   const [productData, setProductData] = useState({
     name: "",
     description: "",
@@ -28,7 +36,6 @@ export default function CreateProduct() {
   });
 
   const [newImage, setNewImage] = useState(undefined);
-  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
