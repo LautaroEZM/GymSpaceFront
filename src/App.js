@@ -18,14 +18,18 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
 import DetailUsers from "./components/DetailUsers/DetailUsers";
 import Profile from "./pages/Profile/Profile";
+import ChatWidget from './components/ChatWidget'
+import useChatWidgetVisibility from "./hooks/ChatWidget/useChatWidgetVisibility";
 
 export default function App() {
+  const chatWidgetVisible = useChatWidgetVisibility()
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="App">
         <div className="contentContainer">
           <TopBarMenu></TopBarMenu>
+          {chatWidgetVisible && <ChatWidget />}
           <Routes>
             <Route path="/" element={ <Home /> } />
             <Route path="/Marketplace" element={<Marketplace />} />
