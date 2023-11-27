@@ -10,6 +10,7 @@ import {
   CssBaseline,
   ThemeProvider,
   Box,
+  MenuItem,
 } from "@mui/material";
 import theme from "../../../theme";
 import {
@@ -21,6 +22,10 @@ import {
   LinkNoDeco,
 } from "../../../styles/ComponentStyles";
 
+import ChangeRole from "./ChangeRole";
+
+import { useSelector } from "react-redux";
+
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [sortConfig, setSortConfig] = useState({
@@ -30,6 +35,8 @@ export default function UserList() {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("firstName");
+
+  const reduxUser = useSelector((state) => state.user);
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/Users")
@@ -61,6 +68,10 @@ export default function UserList() {
   );
 
   const handleDelete = (userId) => {
+    if (reduxUser.systemRole !== "Admin") {
+      window.alert("You do not have permission to do that");
+      return;
+    }
     fetch(`https://gymspace-backend.onrender.com/Users/${userId}`, {
       method: "DELETE",
     })
@@ -142,91 +153,106 @@ export default function UserList() {
     </TableHead>
   );
 
-  const renderTableData = () => (
-    <TableBody>
-      {sortedUsers().map((user, index) => (
-        <TableRow
-          key={user.userID}
-          sx={{
-            backgroundColor: index === hoveredRow ? "#333333" : "#414141",
-            color: "white",
-            border: "1px solid white",
-          }}
-          onMouseEnter={() => setHoveredRow(index)}
-          onMouseLeave={() => setHoveredRow(null)}
-        >
-          <TableCell
+  const renderTableData = () => {
+    const userRedux = useSelector((state) => state.user)
+
+
+    return (
+      <TableBody>
+        {sortedUsers().map((user, index) => (
+          <TableRow
+            key={user.userID}
             sx={{
-              fontSize: 14,
+              backgroundColor: index === hoveredRow ? "#333333" : "#414141",
               color: "white",
-              maxWidth: 100,
               border: "1px solid white",
             }}
+            onMouseEnter={() => setHoveredRow(index)}
+            onMouseLeave={() => setHoveredRow(null)}
           >
-            {user.firstName}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.lastName}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.gender}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.phone}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.status}
-          </TableCell>
-          <TableCell
-            sx={{
-              display: "flex",
-              gap: "8px",
-              minWidth: 150,
-              border: "1px solid white",
-              justifyContent: "center",
-            }}
-          >
-            <LinkNoDeco to= {`/UsersDetail/${user.userID}`}>
-            <OrangeContainedButton>
-              DETAIL
-              </OrangeContainedButton>
-            </LinkNoDeco>
-            <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
-              DELETE
-            </RedOutlinedButton>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  );
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.firstName}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.lastName}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.gender}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.phone}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.status}
+            </TableCell>
+            <TableCell
+              sx={{
+                display: "flex",
+                gap: "8px",
+                minWidth: 150,
+                border: "1px solid white",
+                justifyContent: "center",
+              }}
+            >
+              <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                <OrangeContainedButton>DETAIL</OrangeContainedButton>
+              </LinkNoDeco>
+              <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
+                DELETE
+              </RedOutlinedButton>
+            </TableCell>
+            {userRedux.systemRole === "Admin" ? (
+              <TableCell
+                sx={{
+                  fontSize: 14,
+                  color: "white",
+                  maxWidth: 100,
+                  border: "1px solid white",
+                }}
+              >
+                <ChangeRole role={user.systemRole} userID={user.userID} />
+              </TableCell>
+            ) : null}
+          </TableRow>
+        ))}
+      </TableBody>
+    );
+  };
 
   const SortableTableCell = ({
     onClick,
