@@ -1,7 +1,8 @@
-import {GET_USER} from './actions'
+import {GET_USER, WARNING} from './actions'
 
 const initState = {
-    user: {}
+    user: {},
+    warning: true,
 }
 
 const reducer = (state = initState, action) => {
@@ -9,6 +10,10 @@ const reducer = (state = initState, action) => {
         case GET_USER: return {
             ...state,
             user: action.payload
+        }
+        case WARNING: return {
+            ...state,
+            warning: action.payload
         }
         default: return state
     }

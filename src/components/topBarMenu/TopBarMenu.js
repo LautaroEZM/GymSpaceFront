@@ -1,34 +1,41 @@
 import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import style from "./TopBarMenu.module.css";
 import fig from "../../img/fig.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogIn from "../LogIn/logIn";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getUser } from "../../REDUX/actions";
 import axios from "axios";
+import {StatusChecker, status} from "../statusChecker/statusChecker";
+import { warning } from "../../REDUX/actions";
 
 function TopBarMenu() {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const newUser = useSelector((state) => state.user)
-
-  const loadingImage = "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73"
-
-  const navigate = useNavigate()
+  const warning = useSelector((state) => state.warning);
+  const newUser = useSelector((state) => state.user);
 
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const dispatch = useDispatch()
+
+  const currentStatus = status(newUser, user)
+  
+  console.log('status ', currentStatus);
+
+  const loadingImage =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-
     const checkUser = async () => {
-      console.log('user: ', user);
+      console.log("user: ", user);
       if (user && isAuthenticated) {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
@@ -43,7 +50,7 @@ function TopBarMenu() {
           },
         });
         if (data) {
-          dispatch(getUser(data))
+          dispatch(getUser(data));
         }
       }
     };
@@ -52,7 +59,7 @@ function TopBarMenu() {
 
   useEffect(() => {
     console.log(newUser);
-    if (user && newUser.status === 'unregistered') navigate('/signUp')
+    if (user && newUser.status === "unregistered") navigate("/signUp");
   }, [newUser]);
 
   const handleToggleMenuHome = (event) => {
@@ -72,9 +79,9 @@ function TopBarMenu() {
   };
 
   const handleRedirect = (url) => {
-    handleCloseMenu()
-    navigate(`/${url}`)
-  }
+    handleCloseMenu();
+    navigate(`/${url}`);
+  };
 
   return (
     <div className={style.topContainer}>
@@ -137,7 +144,7 @@ function TopBarMenu() {
         <div>
           <Link to="/ShopCart">
             <Button variant="contained" color="menuButton" disableElevation>
-              <ShoppingCartIcon/>
+              <ShoppingCartIcon />
             </Button>
           </Link>
         </div>
@@ -149,13 +156,14 @@ function TopBarMenu() {
             className={style.buttonAccount}
             onClick={handleToggleMenuIcon}
           >
-            {
-            user && isAuthenticated ? (
-              <img src={ newUser.photo || loadingImage } className={style.picture} />
+            {user && isAuthenticated ? (
+              <img
+                src={newUser.photo || loadingImage}
+                className={style.picture}
+              />
             ) : (
               <AccountCircleIcon className={style.accountIcon} />
-            )
-            }
+            )}
           </Button>
           <Menu
             anchorEl={anchorElIcon}
@@ -173,44 +181,49 @@ function TopBarMenu() {
               },
             }}
           >
-            <Box p={2} >
+            <Box p={2}>
               {user ? (
-                <div className={style.accountContainer} >
-                    <Button
-                      variant="contained"
-                      color="menuButton"
-                      disableElevation
-                      fullWidth={true}
-                      onClick={() => handleRedirect('Profile')}
-                    >
-                      Profile
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="menuButton"
-                      disableElevation
-                      fullWidth={true}
-                      onClick={() => handleRedirect('UserProducts')}
-                    >
-                      Your products
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="menuButton"
-                      fullWidth='true'
-                      disableElevation
-                      onClick={() => handleRedirect('UserServices')}
-                    >
-                      Your services
-                    </Button>
+                <div className={style.accountContainer}>
+                  <Button
+                    variant="contained"
+                    color="menuButton"
+                    disableElevation
+                    fullWidth={true}
+                    onClick={() => handleRedirect("Profile")}
+                  >
+                    Profile
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="menuButton"
+                    disableElevation
+                    fullWidth={true}
+                    onClick={() => handleRedirect("UserProducts")}
+                  >
+                    Your products
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="menuButton"
+                    fullWidth="true"
+                    disableElevation
+                    onClick={() => handleRedirect("UserServices")}
+                  >
+                    Your services
+                  </Button>
 
                   <LogIn />
                 </div>
-              ) : <LogIn />}
+              ) : (
+                <LogIn />
+              )}
             </Box>
           </Menu>
         </div>
       </div>
+      {currentStatus !== 'safe' && warning ? (
+        <StatusChecker status={currentStatus} />
+      ) : null}
     </div>
   );
 }
