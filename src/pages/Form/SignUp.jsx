@@ -36,8 +36,8 @@ export default function SignUp() {
     contactPhone: "",
     photo: '',
     enrollmentDate: "2023-11-10",
-    status: "registered",
-    systemRole: "User",
+    status: "active",
+    systemRole: "Admin",
   });
 
   const navigate = useNavigate();

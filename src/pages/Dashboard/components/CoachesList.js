@@ -16,8 +16,8 @@ import {
     OrangeContainedButton,
     RedOutlinedButton,
     TextFieldForm,
+    LinkNoDeco,
 } from "../../../styles/ComponentStyles";
-import { Link } from "react-router-dom";
 
 export default function CoachesList() {
 
@@ -175,11 +175,11 @@ export default function CoachesList() {
                             justifyContent: "center",
                         }}
                     >
-                        <Link to={`/UsersDetail/${coach.userID}`}>
+                        <LinkNoDeco to={`/UsersDetail/${coach.userID}`}>
                             <OrangeContainedButton>
                                 DETAIL
                             </OrangeContainedButton>
-                        </Link>
+                        </LinkNoDeco>
                         <RedOutlinedButton onClick={() => handleDelete(coach.userID)}>
                             DELETE
                         </RedOutlinedButton>
