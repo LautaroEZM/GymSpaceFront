@@ -18,6 +18,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
 import DetailUsers from "./components/DetailUsers/DetailUsers";
 import Profile from "./pages/Profile/Profile";
+import UpdateUser from './pages/UpdateUser/UpdateUser';
 
 export default function App() {
 
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/UpdateUser/:id" element={<UpdateUser />} />
             <Route path="/signUp" element={<SignUp/>} />
             <Route path="/CreateProduct" element={<CreateProduct />} />
             <Route path="/CreateService" element={<CreateService />} />

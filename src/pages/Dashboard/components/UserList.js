@@ -15,11 +15,13 @@ import theme from "../../../theme";
 import {
   OrangeContainedButton,
   RedOutlinedButton,
+  BlueContainedButton,
   StyledSelect,
   StyledMenuItemSelect,
   TextFieldForm,
 } from "../../../styles/ComponentStyles";
 import { Link } from "react-router-dom";
+import Loading from '../../../components/Loading/loading';
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -30,12 +32,14 @@ export default function UserList() {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("firstName");
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/Users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
+        setLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -96,19 +100,26 @@ export default function UserList() {
           label="FIRST NAME"
           sorted={sortConfig.key === "firstName"}
           direction={sortConfig.direction}
-          maxWidth={200}
+          maxWidth={150}
         />
         <SortableTableCell
           onClick={() => handleSort("lastName")}
           label="LAST NAME"
           sorted={sortConfig.key === "lastName"}
           direction={sortConfig.direction}
-          maxWidth={200}
+          maxWidth={150}
         />
         <SortableTableCell
           onClick={() => handleSort("gender")}
           label="GENDER"
           sorted={sortConfig.key === "gender"}
+          direction={sortConfig.direction}
+          maxWidth={150}
+        />
+        <SortableTableCell
+          onClick={() => handleSort("systemRole")}
+          label="ROLE"
+          sorted={sortConfig.key === "systemRole"}
           direction={sortConfig.direction}
           maxWidth={150}
         />
@@ -193,6 +204,16 @@ export default function UserList() {
               border: "1px solid white",
             }}
           >
+            {user.systemRole}
+          </TableCell>
+          <TableCell
+            sx={{
+              fontSize: 14,
+              color: "white",
+              maxWidth: 100,
+              border: "1px solid white",
+            }}
+          >
             {user.phone}
           </TableCell>
           <TableCell
@@ -214,10 +235,15 @@ export default function UserList() {
               justifyContent: "center",
             }}
           >
-            <Link to= {`/UsersDetail/${user.userID}`}>
-            <OrangeContainedButton>
-              DETAIL
+            <Link to={`/UsersDetail/${user.userID}`}>
+              <OrangeContainedButton>
+                DETAIL
               </OrangeContainedButton>
+            </Link>
+            <Link to={`/UpdateUser/${user.userID}`}>
+              <BlueContainedButton>
+                UPDATE
+              </BlueContainedButton>
             </Link>
             <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
               DELETE
@@ -273,30 +299,36 @@ export default function UserList() {
             marginTop: 5,
           }}
         >
-          <TextFieldForm
-            label="Search"
-            variant="outlined"
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-          />
-          <StyledSelect
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-          >
-            <StyledMenuItemSelect value="firstName">
-              First Name
-            </StyledMenuItemSelect>
-            <StyledMenuItemSelect value="lastName">
-              Last Name
-            </StyledMenuItemSelect>
-            <StyledMenuItemSelect value="phone">Phone</StyledMenuItemSelect>
-          </StyledSelect>
-          <TableContainer component={Paper}>
-            <Table>
-              {renderTableHeader()}
-              {renderTableData()}
-            </Table>
-          </TableContainer>
+          {
+            loading ?
+              <Loading loading={loading} /> :
+              <>
+                <TextFieldForm
+                  label="Search"
+                  variant="outlined"
+                  value={searchTerm}
+                  onChange={handleSearchTermChange}
+                />
+                <StyledSelect
+                  value={selectedCategory}
+                  onChange={handleCategoryChange}
+                >
+                  <StyledMenuItemSelect value="firstName">
+                    First Name
+                  </StyledMenuItemSelect>
+                  <StyledMenuItemSelect value="lastName">
+                    Last Name
+                  </StyledMenuItemSelect>
+                  <StyledMenuItemSelect value="phone">Phone</StyledMenuItemSelect>
+                </StyledSelect>
+                <TableContainer component={Paper}>
+                  <Table>
+                    {renderTableHeader()}
+                    {renderTableData()}
+                  </Table>
+                </TableContainer>
+              </>
+          }
         </Box>
       </Box>
     </ThemeProvider>

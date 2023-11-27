@@ -67,6 +67,19 @@ align-items: center;
   }
 `;
 
+export const BlueContainedButton = styled(Button)`
+background-color: #0019ce;
+color: white;
+border-radius: 5px;
+height: 30px;
+width: auto;
+display: flex;
+align-items: center;
+&:hover {
+    background-color: #00118d;
+  }
+`;
+
 export const RedOutlinedButton = styled(Button)`
 background-color: #ff2121;
 color: white;
