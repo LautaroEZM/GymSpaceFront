@@ -65,7 +65,7 @@ export default function SignUp() {
 
   const formatDate = (value) => {
     const year = value.$y.toString();
-    const month = value.$M < 10 ? '0' + ( value.$M + 1) : (value.$M + 1).toString();
+    const month = value.$M < 10 ? '0' + (value.$M + 1) : (value.$M + 1).toString();
     const day = value.$D < 10 ? '0' + value.$D : value.$D.toString();
     const newDate = `${year}-${month}-${day}`;
     return newDate;
@@ -189,7 +189,7 @@ export default function SignUp() {
         userData={userData} // errors component
       />
       <div className={styles.photoDiv}>
-      <PhotoUpload photo={photo} setPhoto={setPhoto} />
+        <PhotoUpload photo={photo} setPhoto={setPhoto} />
       </div>
     </Container>
   );

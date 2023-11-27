@@ -13,6 +13,20 @@ import { Link } from 'react-router-dom';
 
 //----------------------- BUTTONS
 
+export const TopBarButton = styled(Button)`
+height: 100%;
+border: none;
+border-radius: 5px;
+&:hover {
+
+}
+height: 50px;
+width: auto;
+display: flex;
+align-items: center;
+
+`;
+
 export const OrangeOutlinedButton = styled(Button)`
 color: #ff9721;
 border: none;
@@ -150,6 +164,12 @@ export const StyledMenuItemSelect = styled(MenuItem)`
 
 export const StyledMenuItem = styled(MenuItem)`
 background-color: #1c181397;
+  &:hover {
+    background-color: #1c181397;
+  }
+`;
+
+export const StyledMenuItemBar = styled(MenuItem)`
   &:hover {
     background-color: #1c181397;
   }
