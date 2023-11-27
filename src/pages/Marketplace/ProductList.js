@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -14,9 +14,15 @@ import {
   SmallOrangeOutlinedButton,
   ProductCard,
 } from "../../styles/ComponentStyles";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
 
 export default function ProductList({ sortedProducts }) {
+  const [CartInfo, setCartInfo] = useLocalStorage("product","");
+  const [selectedProducts, setSelectedProducts] = useLocalStorage("product","");
+
+  // console.log(selectedProducts);
+  // console.log(CartInfo);
   return (
     <Box
       sx={{
@@ -28,10 +34,10 @@ export default function ProductList({ sortedProducts }) {
     >
       <Box sx={{ width: "90%", marginBottom: "40px" }}>
         <Grid container spacing={2}>
-          {sortedProducts().map((product) => (
+          {sortedProducts().map((product,i) => (
             <Grid
               item
-              key={product.productID}
+              key={i}
               xs={12}
               sm={6}
               md={4}
@@ -92,8 +98,13 @@ export default function ProductList({ sortedProducts }) {
                   <IconButton 
                    color="primary"
                    aria-label="add to shopping cart"
-                   
+                   sx={{fontSize: '13px' }}
+                  onClick={()=> setCartInfo(product)}
                    >
+                    <div>Añadir</div>
+                    <div>Al</div>
+                    <div>Carrito</div>
+
                     <AddShoppingCartIcon />
                   </IconButton>
                 </CardActions>
