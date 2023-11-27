@@ -1,8 +1,6 @@
-import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import style from "./TopBarMenu.module.css";
-import fig from "../../img/fig.png";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppBar, Box, MenuItem, Container } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogIn from "../LogIn/logIn";
@@ -10,32 +8,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getUser } from "../../REDUX/actions";
 import axios from "axios";
-import {StatusChecker, status} from "../statusChecker/statusChecker";
+import { StatusChecker, status } from "../statusChecker/statusChecker";
 import { warning } from "../../REDUX/actions";
+import style from "./TopBarMenu.module.css";
+import {
+  TopBarButton,
+  LinkNoDeco,
+  StyledMenu,
+} from "../../styles/ComponentStyles";
 
-function TopBarMenu() {
+const loadingImage =
+  "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+const TopBarMenu = () => {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const warning = useSelector((state) => state.warning);
+  const warningState = useSelector((state) => state.warning);
   const newUser = useSelector((state) => state.user);
 
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-
-  const currentStatus = status(newUser, user)
-  
-  console.log('status ', currentStatus);
-
-  const loadingImage =
-    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+  const currentStatus = status(newUser, user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const checkUser = async () => {
-      console.log("user: ", user);
       if (user && isAuthenticated) {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
@@ -58,7 +58,6 @@ function TopBarMenu() {
   }, [user]);
 
   useEffect(() => {
-    console.log(newUser);
     if (user && newUser.status === "unregistered") navigate("/signUp");
   }, [newUser]);
 
@@ -84,107 +83,70 @@ function TopBarMenu() {
   };
 
   return (
-    <div className={style.topContainer}>
-      <img src={fig} alt="Fig" className={style.overlayImage} />
-      <div className={style.topBar}>
-        <div className={style.buttonsContainer}>
-          <Link to="/">
-            <Button variant="contained" color="menuButton" disableElevation>
-              HOME
-            </Button>
-          </Link>
-          <Button
-            variant="contained"
-            color="menuButton"
-            onClick={handleToggleMenuHome}
-            disableElevation
-            className={style.homeButton}
-          >
+    <AppBar
+      position="static"
+      sx={{
+        width: "100%",
+        marginTop: "10px",
+        backgroundColor: "#414141",
+      }}
+    >
+      <Box sx={{ display: "flex" }}>
+        <Container
+          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
+          <LinkNoDeco to="/">
+            <TopBarButton disableElevation>HOME</TopBarButton>
+          </LinkNoDeco>
+          <TopBarButton onClick={handleToggleMenuHome} disableElevation>
             INFO
-          </Button>
-          <Menu
+          </TopBarButton>
+          <StyledMenu
             anchorEl={anchorElHome}
             open={Boolean(anchorElHome)}
             onClose={handleCloseMenu}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            PaperProps={{
-              style: {
-                backgroundColor: "#1111119a",
-                color: "white",
-                width: "200px",
-                borderRadius: "0px",
-                position: "absolute",
-                transform: "translate(0, 5px)",
-                boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-              },
-            }}
           >
-            <MenuItem className={style.menuItemPaper}>asd1</MenuItem>
+            <MenuItem>asd1</MenuItem>
             <MenuItem>asd2</MenuItem>
             <MenuItem>asd3</MenuItem>
-            <div className={style.bottomLine}></div>
-          </Menu>
-          <Link to="/Marketplace">
-            <Button variant="contained" color="menuButton" disableElevation>
-              MARKETPLACE
-            </Button>
-          </Link>
-          <Link to="/Services">
-            <Button variant="contained" color="menuButton" disableElevation>
-              SERVICES
-            </Button>
-          </Link>
-          <Link to="/Dashboard">
-            <Button variant="contained" color="menuButton" disableElevation>
-              DASHBOARD
-            </Button>
-          </Link>
-        </div>
-        <div>
-          <Link to="/ShopCart">
-            <Button variant="contained" color="menuButton" disableElevation>
+          </StyledMenu>
+          <LinkNoDeco to="/Marketplace">
+            <TopBarButton disableElevation>MARKETPLACE</TopBarButton>
+          </LinkNoDeco>
+          <LinkNoDeco to="/Services">
+            <TopBarButton disableElevation>SERVICES</TopBarButton>
+          </LinkNoDeco>
+          <LinkNoDeco to="/Dashboard">
+            <TopBarButton disableElevation>DASHBOARD</TopBarButton>
+          </LinkNoDeco>
+        </Container>
+        <Box>
+          <LinkNoDeco to="/ShopCart">
+            <TopBarButton disableElevation>
               <ShoppingCartIcon />
-            </Button>
-          </Link>
-        </div>
-        <div className={style.accountContainer}>
-          <Button
-            variant="contained"
-            color="menuButton"
-            disableElevation
-            className={style.buttonAccount}
-            onClick={handleToggleMenuIcon}
-          >
+            </TopBarButton>
+          </LinkNoDeco>
+        </Box>
+        <Box className={style.accountContainer}>
+          <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
             {user && isAuthenticated ? (
               <img
                 src={newUser.photo || loadingImage}
                 className={style.picture}
               />
             ) : (
-              <AccountCircleIcon className={style.accountIcon} />
+              <AccountCircleIcon />
             )}
-          </Button>
-          <Menu
+          </TopBarButton>
+          <StyledMenu
             anchorEl={anchorElIcon}
             open={loginOpen}
             onClose={handleCloseMenu}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            transformOrigin={{ vertical: "top", horizontal: "center" }}
-            PaperProps={{
-              style: {
-                backgroundColor: "#111111",
-                width: "200px",
-                borderRadius: "0px",
-                transform: "translate(0, 5px)",
-                boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-              },
-            }}
           >
             <Box p={2}>
               {user ? (
-                <div className={style.accountContainer}>
-                  <Button
+                <Box className={style.accountContainer}>
+                  <TopBarButton
                     variant="contained"
                     color="menuButton"
                     disableElevation
@@ -192,8 +154,8 @@ function TopBarMenu() {
                     onClick={() => handleRedirect("Profile")}
                   >
                     Profile
-                  </Button>
-                  <Button
+                  </TopBarButton>
+                  <TopBarButton
                     variant="contained"
                     color="menuButton"
                     disableElevation
@@ -201,8 +163,8 @@ function TopBarMenu() {
                     onClick={() => handleRedirect("UserProducts")}
                   >
                     Your products
-                  </Button>
-                  <Button
+                  </TopBarButton>
+                  <TopBarButton
                     variant="contained"
                     color="menuButton"
                     fullWidth="true"
@@ -210,22 +172,21 @@ function TopBarMenu() {
                     onClick={() => handleRedirect("UserServices")}
                   >
                     Your services
-                  </Button>
-
+                  </TopBarButton>
                   <LogIn />
-                </div>
+                </Box>
               ) : (
                 <LogIn />
               )}
             </Box>
-          </Menu>
-        </div>
-      </div>
-      {currentStatus !== 'safe' && warning ? (
+          </StyledMenu>
+        </Box>
+      </Box>
+      {currentStatus !== "safe" && warningState ? (
         <StatusChecker status={currentStatus} />
       ) : null}
-    </div>
+    </AppBar>
   );
-}
+};
 
 export default TopBarMenu;
