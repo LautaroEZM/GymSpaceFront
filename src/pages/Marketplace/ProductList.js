@@ -16,13 +16,19 @@ import {
 } from "../../styles/ComponentStyles";
 import { Link} from "react-router-dom";
 import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
+import { useEffect } from "react";
 
 export default function ProductList({ sortedProducts }) {
-  const [CartInfo, setCartInfo] = useLocalStorage("product","");
+  // const [CartInfo, setCartInfo] = useState(null);
   const [selectedProducts, setSelectedProducts] = useLocalStorage("product","");
 
-  // console.log(selectedProducts);
-  // console.log(CartInfo);
+  //localStorage.setItem, localStorage.getItem
+
+
+  //  useEffect(()=>{if(CartInfo)setSelectedProducts((prevData)=>[...prevData, CartInfo])},[CartInfo])
+   useEffect(()=>{console.log(selectedProducts)},[selectedProducts])
+
+
   return (
     <Box
       sx={{
@@ -99,7 +105,7 @@ export default function ProductList({ sortedProducts }) {
                    color="primary"
                    aria-label="add to shopping cart"
                    sx={{fontSize: '13px' }}
-                  onClick={()=> setCartInfo(product)}
+                  onClick={()=>setSelectedProducts((prevData)=>[...prevData, product])}
                    >
                     <div>Añadir</div>
                     <div>Al</div>

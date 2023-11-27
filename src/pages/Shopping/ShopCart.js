@@ -5,33 +5,30 @@ import { useLocalStorage } from '../../components/Hooks/useLocalStorage';
 
 const ShopCart = () => {
 
-  const [selectedProducts, setSelectedProducts] = useLocalStorage("product","");
-  const [total, setTotal] = useState(0);
-  const [CartInfo, setCartInfo] = useLocalStorage("product","");
-
-  if (!Array.isArray(selectedProducts)) {
-    setSelectedProducts([]);
-  }
   
+  const [total, setTotal] = useState(0);
+  // const [CartInfo, setCartInfo] = useLocalStorage("product","");
+
+  
+useEffect(()=>{console.log(selectedProducts)},[])
+
 
   const handleAddToCartWithQuantity = (product, quantity) => {
     // Manejar la lógica de agregar al carrito con cantidad
     handleAddToCart(product, quantity);
   
-    // Obtener el valor actualizado directamente del localStorage
-    const currentSelectedProducts = JSON.parse(localStorage.getItem("product")) || [];
-  
+    
     // Actualizar la cantidad del producto en el carrito
-    const existingProduct = currentSelectedProducts.find((item) => item.id === product.id);
+    // const existingProduct = currentSelectedProducts.find((item) => item.id === product.id);
   
-    if (existingProduct) {
-      const updatedCart = currentSelectedProducts.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-      );
-      setSelectedProducts(updatedCart);
-    } else {
-      setSelectedProducts([...currentSelectedProducts, { ...product, quantity }]);
-    }
+    // if (existingProduct) {
+    //   const updatedCart = currentSelectedProducts.map((item) =>
+    //     item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+    //   );
+    //   setSelectedProducts(updatedCart);
+    // } else {
+    //   setSelectedProducts([...currentSelectedProducts, { ...product, quantity }]);
+    // }
   
     // Recalcular el total
     const newTotal = currentSelectedProducts.reduce((acc, p) => acc + p.price * p.quantity, 0);
@@ -62,8 +59,8 @@ const ShopCart = () => {
       {/* <label key='productID' onChange={e => setCartInfo(e.target.value)} value={CartInfo}></label>  */}
 
       {/* Formulario para gestionar cantidades */}
-      {selectedProducts.map((product) => (
-        <div key={product.id}>
+      {selectedProducts && selectedProducts.length> 0 ? selectedProducts.map((product, i) => (
+        <div key={i}>
           <label>
             Cantidad para {product.name}:
             <input
@@ -72,19 +69,17 @@ const ShopCart = () => {
               onChange={(e) => handleAddToCartWithQuantity(product, e.target.value)}
             />
           </label>
+          <button onClick={handleBuy}>Comprar</button>
+          <button key={product.id} onClick={() => handleDeleteFromCart(product.id)}>
+          Eliminar {product.name} del Carrito
+        </button>
         </div>
-      ))}
+      )):null}
 
       {/* Mostrar el total */}
       <p>Total: ${total}</p>
 
       {/* Botones para eliminar y comprar */}
-      <button onClick={handleBuy}>Comprar</button>
-      {selectedProducts.map(({product}) => (
-        <button key={product.id} onClick={() => handleDeleteFromCart(product.id)}>
-          Eliminar {product.name} del Carrito
-        </button>
-      ))}
     </div>
   );
 };
