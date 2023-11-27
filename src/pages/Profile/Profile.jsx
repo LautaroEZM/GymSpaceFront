@@ -25,7 +25,7 @@ export default function Profile() {
         <Button onClick={() => {navigate('/signUp')}} > Edit Profile <BorderColorIcon/> </Button>
         <Typography variant="h5">Birth: {userProfile.birth && userProfile.birth}</Typography>
         <Typography variant="h5">
-          Adress: {userProfile.adress && userProfile.adress}
+          Address: {userProfile.address && userProfile.address}
         </Typography>
         <Typography variant="h5">
           Gender: {userProfile.gender && userProfile.gender}
