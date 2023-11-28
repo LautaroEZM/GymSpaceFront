@@ -20,8 +20,8 @@ import { useEffect } from "react";
 
 export default function ProductList({ sortedProducts }) {
   // const [CartInfo, setCartInfo] = useState(null);
-  const [selectedProducts, setSelectedProducts] = useLocalStorage("product","");
-
+  const [selectedProducts, setSelectedProducts] = useLocalStorage("product",[]);
+  
   //localStorage.setItem, localStorage.getItem
 
 
@@ -101,18 +101,29 @@ export default function ProductList({ sortedProducts }) {
                   </Link>
                 </CardActions>
                 <CardActions sx={{ justifyContent:"right" }}>
-                  <IconButton 
+                  {selectedProducts.filter(item => item.productID ===product.productID).length?<IconButton 
                    color="primary"
                    aria-label="add to shopping cart"
                    sx={{fontSize: '13px' }}
-                  onClick={()=>setSelectedProducts((prevData)=>[...prevData, product])}
+                  onClick={()=>setSelectedProducts(selectedProducts.filter(item => item.productID !== product.productID))}
+                   >
+                    <div>X</div>
+                    
+
+                    
+                  </IconButton>:<IconButton 
+                   color="primary"
+                   aria-label="add to shopping cart"
+                   sx={{fontSize: '13px' }}
+                  onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1,status:"inCart"}])}
                    >
                     <div>Añadir</div>
                     <div>Al</div>
                     <div>Carrito</div>
 
                     <AddShoppingCartIcon />
-                  </IconButton>
+                  </IconButton>}
+                  
                 </CardActions>
               </ProductCard>
             </Grid>

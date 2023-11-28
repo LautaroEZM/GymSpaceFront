@@ -1,53 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import ProductList from '../Marketplace/ProductList';
-import { useLocalStorage } from '../../components/Hooks/useLocalStorage';
-
+import React, { useEffect, useState } from "react";
+import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
 
 const ShopCart = () => {
-
   
-  const [total, setTotal] = useState(0);
-  // const [CartInfo, setCartInfo] = useLocalStorage("product","");
+  const [productsCart, setproductsCart] = useLocalStorage("product", "");
+  const [total, setTotal] = useState(productsCart.reduce(
+    (acc, p) => acc + p.price * p.quantity,
+    0
+  ));
 
-  
-useEffect(()=>{console.log(selectedProducts)},[])
+  useEffect(() => {
+    setTotal(productsCart.reduce(
+      (acc, p) => acc + p.price * p.quantity,
+      0
+    ))
+  }, [productsCart]);
 
-
-  const handleAddToCartWithQuantity = (product, quantity) => {
-    // Manejar la lógica de agregar al carrito con cantidad
-    handleAddToCart(product, quantity);
-  
+  const handleAddToCartWithQuantity = (quantity, i) => {
     
-    // Actualizar la cantidad del producto en el carrito
-    // const existingProduct = currentSelectedProducts.find((item) => item.id === product.id);
-  
-    // if (existingProduct) {
-    //   const updatedCart = currentSelectedProducts.map((item) =>
-    //     item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-    //   );
-    //   setSelectedProducts(updatedCart);
-    // } else {
-    //   setSelectedProducts([...currentSelectedProducts, { ...product, quantity }]);
-    // }
-  
-    // Recalcular el total
-    const newTotal = currentSelectedProducts.reduce((acc, p) => acc + p.price * p.quantity, 0);
-    setTotal(newTotal + product.price * quantity);
+    const newproducts = [...productsCart]
+    
+    newproducts[i]["quantity"] = parseInt(quantity)
+    setproductsCart(newproducts)
   };
 
   const handleDeleteFromCart = (productId) => {
     // Eliminar el producto del carrito
-    const updatedCart = selectedProducts.filter((item) => item.id !== productId);
-    setSelectedProducts(updatedCart);
+    const updatedCart = productsCart.filter(
+      (item) => item.productID !== productId
+    );
 
-    // Recalcular el total
-    const newTotal = updatedCart.reduce((acc, p) => acc + p.price * p.quantity, 0);
-    setTotal(newTotal);
+    setproductsCart(updatedCart);
   };
 
   const handleBuy = () => {
     // Aquí puedes implementar la lógica para la compra
-    alert('Compra exitosa');
+    alert("Compra exitosa");
     setSelectedProducts([]);
     setTotal(0);
   };
@@ -59,25 +47,38 @@ useEffect(()=>{console.log(selectedProducts)},[])
       {/* <label key='productID' onChange={e => setCartInfo(e.target.value)} value={CartInfo}></label>  */}
 
       {/* Formulario para gestionar cantidades */}
-      {selectedProducts && selectedProducts.length> 0 ? selectedProducts.map((product, i) => (
-        <div key={i}>
-          <label>
-            Cantidad para {product.name}:
-            <input
-              type="number"
-              value={product.quantity}
-              onChange={(e) => handleAddToCartWithQuantity(product, e.target.value)}
-            />
-          </label>
-          <button onClick={handleBuy}>Comprar</button>
-          <button key={product.id} onClick={() => handleDeleteFromCart(product.id)}>
-          Eliminar {product.name} del Carrito
-        </button>
-        </div>
-      )):null}
+      {productsCart && productsCart.length > 0
+        ? productsCart.map((product, i) => (
+            <div key={i}>
+              <div>
+                <h3>{product.name}</h3>
+                <img src={product.image} />
+                <h3 style={{color:"white"}}>{product.price} US$</h3>
+                <input type="number" value={product.quantity} 
+                onChange=
+                {(e)=>handleAddToCartWithQuantity(e.target.value, i)}
+                />
+              </div>
+              
+              <button
+                onClick={(e) =>
+                  handleAddToCartWithQuantity(e.target.value, i)
+                }
+              >
+                Comprar
+              </button>
+              <button
+                key={product.id}
+                onClick={() => handleDeleteFromCart(product.productID)}
+              >
+                Eliminar {product.name} del Carrito
+              </button>
+            </div>
+          ))
+        : null}
 
       {/* Mostrar el total */}
-      <p>Total: ${total}</p>
+      <p style={{color:"white"}}>Total: ${total}</p>
 
       {/* Botones para eliminar y comprar */}
     </div>
