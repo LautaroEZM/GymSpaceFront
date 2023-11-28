@@ -83,14 +83,14 @@ function Dashboard() {
               button
               onClick={() => {setShowClientsUserList(true);setShowCoachesList(false)}}
             >
-              <ListItemText primary="Clients" />
+              <ListItemText primary="People" />
             </DashBoardListItem>
-            <DashBoardListItem 
+            {/* <DashBoardListItem 
               button
               onClick={() => {setShowCoachesList(true);setShowClientsUserList(false)}}
             >
               <ListItemText primary="Professors" />
-            </DashBoardListItem>
+            </DashBoardListItem> */}
           </List>
 
           {/* Categoría Personalization */}
@@ -122,7 +122,7 @@ function Dashboard() {
       >
         {/* Contenido de la página a la derecha del menú */}
         {showClientsUserList && <UserList />}
-        {showCoachesList && <CoachesList />}
+        {/* {showCoachesList && <CoachesList />} */}
       </Box>
     </Box>
   );

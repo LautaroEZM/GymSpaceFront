@@ -147,6 +147,18 @@ export default function UserList() {
             textAlign: "center",
           }}
         >
+          ROLE
+        </TableCell>
+        <TableCell
+          sx={{
+            fontSize: 18,
+            color: "white",
+            minWidth: 150,
+            backgroundColor: "#414141",
+            border: "1px solid white",
+            textAlign: "center",
+          }}
+        >
           ACTIONS
         </TableCell>
       </TableRow>
@@ -154,8 +166,7 @@ export default function UserList() {
   );
 
   const renderTableData = () => {
-    const userRedux = useSelector((state) => state.user)
-
+    const userRedux = useSelector((state) => state.user);
 
     return (
       <TableBody>
@@ -220,22 +231,18 @@ export default function UserList() {
             >
               {user.status}
             </TableCell>
+
             <TableCell
               sx={{
-                display: "flex",
-                gap: "8px",
-                minWidth: 150,
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
                 border: "1px solid white",
-                justifyContent: "center",
               }}
             >
-              <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
-                <OrangeContainedButton>DETAIL</OrangeContainedButton>
-              </LinkNoDeco>
-              <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
-                DELETE
-              </RedOutlinedButton>
+              {user.systemRole}
             </TableCell>
+
             {userRedux.systemRole === "Admin" ? (
               <TableCell
                 sx={{
@@ -245,9 +252,28 @@ export default function UserList() {
                   border: "1px solid white",
                 }}
               >
+                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
+                </LinkNoDeco>
                 <ChangeRole role={user.systemRole} userID={user.userID} />
+                <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
+                  DELETE
+                </RedOutlinedButton>
               </TableCell>
-            ) : null}
+            ) : (
+              <TableCell
+                sx={{
+                  fontSize: 14,
+                  color: "white",
+                  maxWidth: 100,
+                  border: "1px solid white",
+                }}
+              >
+                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
+                </LinkNoDeco>
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
