@@ -4,7 +4,6 @@ import {
   CssBaseline,
   Box,
   Container,
-  Typography,
   ThemeProvider,
   Grid,
 } from "@mui/material";
@@ -13,6 +12,8 @@ import ServiceFilter from "./ServiceFilter";
 import ServiceChip from "./ServiceChip";
 import ServiceCard from "./ServiceCard";
 import Loading from '../../components/Loading/loading'
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 export default function Album() {
   const [services, setServices] = useState([]);

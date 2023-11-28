@@ -14,20 +14,25 @@ import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/Dashboard/components/UserList";
 import DetailProduct from "./components/Date/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
-import { storage } from './firebaseConfig';
 import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
 import DetailUsers from "./components/DetailUsers/DetailUsers";
-
+import Profile from "./pages/Profile/Profile";
+import UpdateUser from './pages/UpdateUser/UpdateUser';
+import ChatWidget from './components/ChatWidget'
+import useChatWidgetVisibility from "./hooks/ChatWidget/useChatWidgetVisibility";
 
 export default function App() {
+  const chatWidgetVisible = useChatWidgetVisibility()
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="App">
         <div className="contentContainer">
           <TopBarMenu></TopBarMenu>
+          {chatWidgetVisible && <ChatWidget />}
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={ <Home /> } />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
             <Route path="/ShopCart" element={<ShopCart/>} />
@@ -39,7 +44,11 @@ export default function App() {
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Dashboard" element={<Dashboard />} />
-
+            <Route path="/UpdateUser/:id" element={<UpdateUser />} />
+            <Route path="/signUp" element={<SignUp/>} />
+            <Route path="/CreateProduct" element={<CreateProduct />} />
+            <Route path="/CreateService" element={<CreateService />} />
+            <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

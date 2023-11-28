@@ -16,9 +16,9 @@ const ShopCart = () => {
     setTotal(productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0));
   }, [productsCart]);
 
+
   const handleAddToCartWithQuantity = (quantity, i) => {
     const newproducts = [...productsCart];
-
     newproducts[i]["quantity"] = parseInt(quantity);
     setproductsCart(newproducts);
   };

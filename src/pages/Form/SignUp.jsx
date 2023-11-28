@@ -1,51 +1,55 @@
 import {
   Container,
   TextField,
-  IconButton,
   Button,
   Select,
   MenuItem,
   InputLabel,
 } from "@mui/material";
-import theme from "../../theme"; 
+import theme from "../../theme";
 import { useState, useEffect } from "react";
-import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
-import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
 import styles from "./Form.module.css";
 import { DatePicker } from "@mui/x-date-pickers";
 import Errors from "./Errors";
-import { MuiFileInput } from "mui-file-input";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../REDUX/actions";
+import PhotoUpload from '../../components/PhotoUpload/PhotoUpload'
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 export default function SignUp() {
+
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  const newUser = useSelector((state) => state.user)
+
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
-    password: "",
+    email: "", // Inicializar email con un valor predeterminado
     birth: "YYYY-MM-DD",
     gender: "",
     address: "",
     phone: "",
     contactPhone: "",
-    photo: "undefined",
+    photo: '',
     enrollmentDate: "2023-11-10",
-    status: "unregistered",
+    status: "active",
     systemRole: "User",
   });
 
-  const [showPassword, setShowPassword] = useState({
-    icon: <VisibilityOffSharpIcon />,
-    value: false,
-  });
+  const navigate = useNavigate();
 
-  const handleShowPassword = () => {
-    showPassword.value
-      ? setShowPassword({ icon: <VisibilityOffSharpIcon />, value: false })
-      : setShowPassword({ icon: <VisibilitySharpIcon />, value: true });
-  };
+  const dispatch = useDispatch()
+
+
+  const [photo, setPhoto] = useState(newUser.photo || user.photo)
+
+  useEffect(() => {
+    setUserData((prevData) => ({ ...prevData, photo: photo }));
+  }, [photo]);
 
   const handleChange = (event) => {
     // handles the input changes of the form
@@ -59,38 +63,37 @@ export default function SignUp() {
     setUserData((prevData) => ({ ...prevData, birth: newDate }));
   };
 
-  const handlePhoto = (file) => {
-    if (userData.photo)
-      setUserData((prevData) => ({ ...prevData, photo: undefined }));
-    const url = URL.createObjectURL(file);
-    setUserData((prevData) => ({ ...prevData, photo: url }));
-  };
-
   const formatDate = (value) => {
     const year = value.$y.toString();
-    const month = (value.$M + 1).toString();
-    const day = value.$D.toString();
+    const month = value.$M < 10 ? '0' + ( value.$M + 1) : (value.$M + 1).toString();
+    const day = value.$D < 10 ? '0' + value.$D : value.$D.toString();
     const newDate = `${year}-${month}-${day}`;
     return newDate;
   };
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    console.log(newUser);
+    if (newUser && newUser.email) {
+      // Establecer el valor de email solo si newUser tiene un valor y tiene la propiedad email
+      setUserData((prevData) => ({ ...prevData, email: newUser.email }));
+    }
+  }, [newUser]);
 
   const handleSubmit = async () => {
     try {
-      const user = await axios.post("https://gymspace-backend.onrender.com/Users", userData);
-      if (user) {
-        window.alert("User created");
-        navigate("/"); 
+      const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+      const { data } = await axios.put(userDetailsByIdUrl, userData);
+      if (data) {
+        dispatch(getUser(userData))
+        navigate("/");
       }
     } catch (error) {
       window.alert("Could not create user: " + error.message);
     }
   };
 
-
   return (
-    <Container sx={{ width: 1200, height: 600 }} className={styles.container}>
+    <Container className={styles.container}>
       <div className={styles.div3}></div>
       <div className={styles.div}>
         <TextField // name input
@@ -164,28 +167,13 @@ export default function SignUp() {
       </div>
       <div className={styles.div}>
         <TextField // email input
+          disabled
           name="email"
           label="Email"
           value={userData.email}
           onChange={handleChange}
           className={styles.input}
         />
-        <TextField //password input
-          name="password"
-          type={showPassword.value ? "text" : "password"} //manages the visibility of the password
-          label="Password"
-          value={userData.password}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <div className={styles.div}>
-          <IconButton // triggers the visibility of the password on/off
-            onClick={() => handleShowPassword()}
-            className={styles.showPassword}
-          >
-            {showPassword.icon}
-          </IconButton>
-        </div>
       </div>
       <div className={styles.buttonContainer}>
         <Button // sends the form info to the back-end controller and registers the user
@@ -201,24 +189,7 @@ export default function SignUp() {
         userData={userData} // errors component
       />
       <div className={styles.photoDiv}>
-        {userData.photo ? (
-          <img
-            className={styles.photo}
-            src={userData.photo}
-            alt="Could not load photo"
-          />
-        ) : (
-          <div className={styles.photo}>
-            <h3>Please submit a photo</h3>
-          </div>
-        )}
-        <MuiFileInput
-          name="photo"
-          value={userData.photo}
-          onChange={handlePhoto}
-          className={styles.photoUpload}
-          inputProps={{ accept: ".png, .jpeg" }}
-        />
+      <PhotoUpload photo={photo} setPhoto={setPhoto} />
       </div>
     </Container>
   );

@@ -16,6 +16,7 @@ import {
   DashBoardListItem,
 } from "../../styles/ComponentStyles";
 import UserList from "./components/UserList";
+import CoachesList from "./components/CoachesList";
 
 function Dashboard() {
   const [showClientsUserList, setShowClientsUserList] = useState(false);
@@ -81,10 +82,7 @@ function Dashboard() {
               button
               onClick={() => setShowClientsUserList(true)}
             >
-              <ListItemText primary="Clients" />
-            </DashBoardListItem>
-            <DashBoardListItem button>
-              <ListItemText primary="Professors" />
+              <ListItemText primary="People" />
             </DashBoardListItem>
           </List>
 

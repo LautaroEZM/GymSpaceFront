@@ -28,6 +28,21 @@ align-items: center;
 
 `;
 
+export const TopBarButton = styled(Button)`
+color: #ff9721;
+border: none;
+height: 100%;
+border-radius: 0;
+&:hover {
+  background-color: #1c1813;
+}
+height: 50px;
+width: auto;
+display: flex;
+align-items: center;
+
+`;
+
 export const SmallOrangeOutlinedButton = styled(OrangeOutlinedButton)`
 font-size: 12px;
 height: auto;
@@ -64,6 +79,19 @@ display: flex;
 align-items: center;
 &:hover {
     background-color: #c26c0b;
+  }
+`;
+
+export const BlueContainedButton = styled(Button)`
+background-color: #0019ce;
+color: white;
+border-radius: 5px;
+height: 30px;
+width: auto;
+display: flex;
+align-items: center;
+&:hover {
+    background-color: #00118d;
   }
 `;
 
@@ -120,6 +148,8 @@ export const StyledMenu = styled(Menu)`
   }
 `;
 
+
+
 export const StyledSelect = styled(Select)`
 
     background-color: #111111f4;
@@ -141,6 +171,14 @@ background-color: #1c181397;
     background-color: #1c181397;
   }
 `;
+
+export const StyledMenuItemBar = styled(MenuItem)`
+background-color: #1c181397;
+  &:hover {
+    background-color: #1c181397;
+  }
+`;
+
 
 //----------------------- TEXT FIELD
 
