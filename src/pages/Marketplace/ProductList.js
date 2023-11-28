@@ -19,14 +19,10 @@ import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
 import { useEffect } from "react";
 
 export default function ProductList({ sortedProducts }) {
-  // const [CartInfo, setCartInfo] = useState(null);
+  
   const [selectedProducts, setSelectedProducts] = useLocalStorage("product",[]);
   
-  //localStorage.setItem, localStorage.getItem
-
-
-  //  useEffect(()=>{if(CartInfo)setSelectedProducts((prevData)=>[...prevData, CartInfo])},[CartInfo])
-   useEffect(()=>{console.log(selectedProducts)},[selectedProducts])
+  useEffect(()=>{},[selectedProducts])
 
 
   return (
@@ -115,7 +111,7 @@ export default function ProductList({ sortedProducts }) {
                    color="primary"
                    aria-label="add to shopping cart"
                    sx={{fontSize: '13px' }}
-                  onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1,status:"inCart"}])}
+                  onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1}])}
                    >
                     <div>Añadir</div>
                     <div>Al</div>

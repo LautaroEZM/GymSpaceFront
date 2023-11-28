@@ -3,14 +3,14 @@ import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
 import { buildReq } from "../../utils/auth0Utils";
 import { API_URL } from "../../utils/constants";
 import axios from "axios"
-// import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const ShopCart = () => {
-  const [productsCart, setproductsCart] = useLocalStorage("product", "");
+  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
   const [total, setTotal] = useState(
     productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0)
   );
-  // const {user, getAccessTokenSilently} = useAuth0()
+  const {user, getAccessTokenSilently} = useAuth0()
 
   useEffect(() => {
     setTotal(productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0));
@@ -35,11 +35,7 @@ const ShopCart = () => {
   const handleBuy = async() => {
     // Aquí puedes implementar la lógica para la compra
     try{
-    // const req = await buildReq({},getAccessTokenSilently)
-
-    console.log("Compra exitosa");
-    // setSelectedProducts([]);
-    // setTotal(0);
+    
     } catch(error) {
 
     }

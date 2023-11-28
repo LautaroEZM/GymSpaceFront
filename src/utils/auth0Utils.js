@@ -5,10 +5,12 @@ const buildReq = async (data, getAccessTokenSilently) => {
       scope: "read:current_user",
     },
   });
+  
 
   const req = {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
     },
     data: data,
   };
