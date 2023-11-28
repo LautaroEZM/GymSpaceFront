@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppBar, Box, MenuItem, Container } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  MenuItem,
+  Container,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogIn from "../LogIn/logIn";
@@ -24,6 +32,11 @@ const TopBarMenu = () => {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuPosition, setMobileMenuPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
   const warningState = useSelector((state) => state.warning);
   const newUser = useSelector((state) => state.user);
@@ -66,9 +79,23 @@ const TopBarMenu = () => {
     setLoginOpen(false);
   };
 
+  useEffect(() => {
+    updateMobileMenuPosition();
+  }, [mobileMenuOpen]);
+
+  const updateMobileMenuPosition = () => {
+    if (anchorElHome) {
+      const rect = anchorElHome.getBoundingClientRect();
+      setMobileMenuPosition({ top: rect.bottom, left: rect.left });
+    }
+  };
   const handleToggleMenuIcon = (event) => {
     setAnchorElIcon(anchorElIcon ? null : event.currentTarget);
     setLoginOpen(!loginOpen);
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   const handleCloseMenu = () => {
@@ -91,25 +118,27 @@ const TopBarMenu = () => {
         backgroundColor: "#414141",
       }}
     >
-      <Box sx={{ display: "flex" }}>
-        <Container
-          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            size="large"
+            color="inherit"
+            onClick={handleMobileMenuToggle}
+            sx={{ display: { md: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
           <LinkNoDeco to="/">
             <TopBarButton disableElevation>HOME</TopBarButton>
           </LinkNoDeco>
-          <TopBarButton onClick={handleToggleMenuHome} disableElevation>
-            INFO
-          </TopBarButton>
-          <StyledMenu
-            anchorEl={anchorElHome}
-            open={Boolean(anchorElHome)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem>asd1</MenuItem>
-            <MenuItem>asd2</MenuItem>
-            <MenuItem>asd3</MenuItem>
-          </StyledMenu>
+        </Box>
+        <Box sx={{ display: { xs: "none", md: "flex" } }}>
           <LinkNoDeco to="/Marketplace">
             <TopBarButton disableElevation>MARKETPLACE</TopBarButton>
           </LinkNoDeco>
@@ -119,69 +148,112 @@ const TopBarMenu = () => {
           <LinkNoDeco to="/Dashboard">
             <TopBarButton disableElevation>DASHBOARD</TopBarButton>
           </LinkNoDeco>
-        </Container>
-        <Box>
+        </Box>
+        <Box sx={{ display: "flex" }}>
           <LinkNoDeco to="/ShopCart">
             <TopBarButton disableElevation>
               <ShoppingCartIcon />
             </TopBarButton>
           </LinkNoDeco>
-        </Box>
-        <Box className={style.accountContainer}>
-          <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
-            {user && isAuthenticated ? (
-              <img
-                src={newUser.photo || loadingImage}
-                className={style.picture}
-              />
-            ) : (
-              <AccountCircleIcon />
-            )}
-          </TopBarButton>
-          <StyledMenu
-            anchorEl={anchorElIcon}
-            open={loginOpen}
-            onClose={handleCloseMenu}
-          >
-            <Box p={2}>
-              {user ? (
-                <Box className={style.accountContainer}>
-                  <TopBarButton
-                    variant="contained"
-                    color="menuButton"
-                    disableElevation
-                    fullWidth={true}
-                    onClick={() => handleRedirect("Profile")}
-                  >
-                    Profile
-                  </TopBarButton>
-                  <TopBarButton
-                    variant="contained"
-                    color="menuButton"
-                    disableElevation
-                    fullWidth={true}
-                    onClick={() => handleRedirect("UserProducts")}
-                  >
-                    Your products
-                  </TopBarButton>
-                  <TopBarButton
-                    variant="contained"
-                    color="menuButton"
-                    fullWidth="true"
-                    disableElevation
-                    onClick={() => handleRedirect("UserServices")}
-                  >
-                    Your services
-                  </TopBarButton>
-                  <LogIn />
-                </Box>
+          <Box className={style.accountContainer}>
+            <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
+              {user && isAuthenticated ? (
+                <img
+                  src={newUser.photo || loadingImage}
+                  className={style.picture}
+                  alt="user"
+                />
               ) : (
-                <LogIn />
+                <AccountCircleIcon />
               )}
-            </Box>
-          </StyledMenu>
+            </TopBarButton>
+            <StyledMenu
+              anchorEl={anchorElIcon}
+              open={loginOpen}
+              onClose={handleCloseMenu}
+            >
+              <Box p={2}>
+                {user ? (
+                  <Box className={style.accountContainer}>
+                    <TopBarButton
+                      variant="contained"
+                      color="menuButton"
+                      disableElevation
+                      fullWidth={true}
+                      onClick={() => handleRedirect("Profile")}
+                    >
+                      Profile
+                    </TopBarButton>
+                    <TopBarButton
+                      variant="contained"
+                      color="menuButton"
+                      disableElevation
+                      fullWidth={true}
+                      onClick={() => handleRedirect("UserProducts")}
+                    >
+                      Your products
+                    </TopBarButton>
+                    <TopBarButton
+                      variant="contained"
+                      color="menuButton"
+                      fullWidth="true"
+                      disableElevation
+                      onClick={() => handleRedirect("UserServices")}
+                    >
+                      Your services
+                    </TopBarButton>
+                    <LogIn />
+                  </Box>
+                ) : (
+                  <LogIn />
+                )}
+              </Box>
+            </StyledMenu>
+          </Box>
         </Box>
-      </Box>
+      </Container>
+
+      {/* Mobile Menu */}
+      <StyledMenu
+        anchorEl={mobileMenuOpen ? anchorElHome : null}
+        open={mobileMenuOpen}
+        onClose={handleMobileMenuToggle}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        style={{
+          marginTop: `${mobileMenuPosition.top}px`,
+          marginLeft: `${mobileMenuPosition.left}px`,
+        }}
+        sx={{
+          "& .MuiTypography-root": {
+            color: "orange",
+            
+          },
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Marketplace">
+            <Typography variant="inherit">MARKETPLACE</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Services">
+            <Typography variant="inherit">SERVICES</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Dashboard">
+            <Typography variant="inherit">DASHBOARD</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+      </StyledMenu>
+
       {currentStatus !== "safe" && warningState ? (
         <StatusChecker status={currentStatus} />
       ) : null}
