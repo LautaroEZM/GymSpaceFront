@@ -1,4 +1,4 @@
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
 import {
   Button,
   Card,
@@ -9,37 +9,36 @@ import {
   ListItem,
   Select,
 } from "@mui/material";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 //----------------------- BUTTONS
 
 export const OrangeOutlinedButton = styled(Button)`
-color: #ff9721;
-border: none;
-border-radius: 5px;
-&:hover {
-  background-color: #1c1813;
-  border: 1px solid #ff9721;
-}
-height: 50px;
-width: auto;
-display: flex;
-align-items: center;
-
+  color: #ff9721;
+  border: none;
+  border-radius: 5px;
+  &:hover {
+    background-color: #1c1813;
+    border: 1px solid #ff9721;
+  }
+  height: 50px;
+  width: auto;
+  display: flex;
+  align-items: center;
 `;
 
 export const SmallOrangeOutlinedButton = styled(OrangeOutlinedButton)`
-font-size: 12px;
-height: auto;
+  font-size: 12px;
+  height: auto;
   &:hover {
-  border: none;
-}
+    border: none;
+  }
 `;
 
 export const SmallOrangeOutlinedButtonLess = styled(SmallOrangeOutlinedButton)`
   &:hover {
-background-color: #48443f;
-}
+    background-color: #48443f;
+  }
 `;
 
 export const OrangeButtonFilter = styled(Button)`
@@ -54,47 +53,58 @@ export const OrangeButtonFilter = styled(Button)`
   }
 `;
 
+export const BlueContainedButton = styled(Button)`
+  background-color: #0019ce;
+  color: white;
+  border-radius: 5px;
+  height: 30px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  &:hover {
+    background-color: #00118d;
+  }
+`;
+
 export const OrangeContainedButton = styled(Button)`
-background-color: #ff9721;
-color: white;
-border-radius: 5px;
-height: 30px;
-width: auto;
-display: flex;
-align-items: center;
-&:hover {
+  background-color: #ff9721;
+  color: white;
+  border-radius: 5px;
+  height: 30px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  &:hover {
     background-color: #c26c0b;
   }
 `;
 
 export const RedOutlinedButton = styled(Button)`
-background-color: #ff2121;
-color: white;
-border: none;
-border-radius: 5px;
-&:hover {
-  background-color: #a81b08;
-}
-height: 30px;
-width: auto;
-display: flex;
-align-items: center;
-
+  background-color: #ff2121;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  &:hover {
+    background-color: #a81b08;
+  }
+  height: 30px;
+  width: auto;
+  display: flex;
+  align-items: center;
 `;
 
 //----------------------- CARDS
 
 export const ProductCard = styled(Card)`
-background-color: transparent;
-box-shadow: none;
-border: none;
-transition: box-shadow 0.3s, border 0.3s;
-&:hover {
-  border: 1px solid #fff;
-  box-shadow: 0px 0px 10px 0px rgba(255,255,255,0.5);
-}
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  transition: box-shadow 0.3s, border 0.3s;
+  &:hover {
+    border: 1px solid #fff;
+    box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.5);
+  }
 `;
-
 
 export const ServicesCard = styled(Card)`
   margin: 25px;
@@ -104,7 +114,6 @@ export const ServicesCard = styled(Card)`
   color: white;
   box-shadow: 0px 0px 5px 1px rgba(207, 207, 207, 0.75);
 `;
-
 
 //----------------------- MENU
 
@@ -116,17 +125,15 @@ export const StyledMenu = styled(Menu)`
     transform: translate(0, 5px);
     box-shadow: 0px 0px 5px 1px rgba(207, 207, 207, 0.75);
     color: #ff9721;
-
   }
 `;
 
 export const StyledSelect = styled(Select)`
-
-    background-color: #111111f4;
-    width: 350px;
-    border-radius: 5px;
-    transform: translate(0, 5px);
-    color: #ff9721;
+  background-color: #111111f4;
+  width: 350px;
+  border-radius: 5px;
+  transform: translate(0, 5px);
+  color: #ff9721;
 `;
 
 export const StyledMenuItemSelect = styled(MenuItem)`
@@ -136,7 +143,7 @@ export const StyledMenuItemSelect = styled(MenuItem)`
 `;
 
 export const StyledMenuItem = styled(MenuItem)`
-background-color: #1c181397;
+  background-color: #1c181397;
   &:hover {
     background-color: #1c181397;
   }
@@ -178,27 +185,24 @@ export const TextFieldForm = styled(TextField)`
 //----------------------- LIST
 
 export const DashBoardList = styled(List)`
-text-decoration: none;
+  text-decoration: none;
 `;
 
 export const DashBoardCategory = styled(ListItem)`
-    user-Select: none;
-    cursor: default;
+  user-select: none;
+  cursor: default;
 `;
 
 export const DashBoardListItem = styled(ListItem)`
-    color: #bbbbbb;
-    &:hover {
+  color: #bbbbbb;
+  &:hover {
     background-color: #f3a143;
     color: black;
   }
 `;
 
-
 //----------------------- OTHER ELEMENTS
 
 export const LinkNoDeco = styled(Link)`
-text-decoration: none;
+  text-decoration: none;
 `;
-
-

@@ -15,12 +15,15 @@ import {
 import theme from "../../../theme";
 import {
   OrangeContainedButton,
+  BlueContainedButton,
   RedOutlinedButton,
   StyledSelect,
   StyledMenuItemSelect,
   TextFieldForm,
   LinkNoDeco,
 } from "../../../styles/ComponentStyles";
+
+import UpdateUser from "../../UpdateUser/UpdateUser";
 
 import ChangeRole from "./ChangeRole";
 
@@ -246,16 +249,19 @@ export default function UserList() {
             {userRedux.systemRole === "Admin" ? (
               <TableCell
                 sx={{
-                  fontSize: 14,
-                  color: "white",
-                  maxWidth: 100,
+                  display: "flex",
+                  gap: "8px",
+                  minWidth: 150,
                   border: "1px solid white",
+                  justifyContent: "center",
                 }}
               >
                 <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
                   <OrangeContainedButton>DETAIL</OrangeContainedButton>
                 </LinkNoDeco>
-                <ChangeRole role={user.systemRole} userID={user.userID} />
+                <LinkNoDeco to={`/UpdateUser/${user.userID}`}>
+                  <BlueContainedButton>UPDATE</BlueContainedButton>
+                </LinkNoDeco>
                 <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
                   DELETE
                 </RedOutlinedButton>

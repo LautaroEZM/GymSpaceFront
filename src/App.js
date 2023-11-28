@@ -20,6 +20,7 @@ import DetailUsers from "./components/DetailUsers/DetailUsers";
 import Profile from "./pages/Profile/Profile";
 import ChatWidget from './components/ChatWidget'
 import useChatWidgetVisibility from "./hooks/ChatWidget/useChatWidgetVisibility";
+import UpdateUser from "./pages/UpdateUser/UpdateUser";
 
 export default function App() {
   const chatWidgetVisible = useChatWidgetVisibility()
@@ -39,7 +40,7 @@ export default function App() {
             <Route path="/Marketplace/detail/:id" element={<DetailProduct />} />
             <Route path="/ServiceDetail/:id" element={<DetailService/>} />
             <Route path="/UsersDetail/:id" element={<DetailUsers />} />
-            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/UpdateUser/:id" element={<UpdateUser />} />
             <Route path="/CreateProduct" element={<CreateProduct/>} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Dashboard" element={<Dashboard />} />

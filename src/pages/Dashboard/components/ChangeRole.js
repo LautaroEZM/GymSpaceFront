@@ -11,7 +11,6 @@ import {
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { API_URL } from "../../../utils/constants";
-import { buildReq } from "../../../utils/auth0utils";
 import { async } from "q";
 
 function RoleDialog({
