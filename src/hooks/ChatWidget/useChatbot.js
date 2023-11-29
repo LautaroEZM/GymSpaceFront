@@ -1,62 +1,73 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useLocalStorage } from '../useLocalStorage';
+import createPaymentLink from '../../utils/payments/createPayment';
+import generateGymBotContext from '../../utils/chat/contextGenerators/generateGymBotContext';
+import shoppingCart from '../../utils/chat/shoppingCart';
+import getGPTResponse from '../../utils/chat/getGPTResponse';
+import { getMenuMessage } from '../../utils/chat/objects/menu';
 
 const useChatbot = (initialMessage) => {
-    const CHATBOT_NAME = "assistant";
+    const CHATBOT_NAME = "GymBot";
 
     const [typing, setTyping] = useState(false);
-    const [messages, setMessages] = useState([
+    const [paymentLink, setPaymentLink] = useLocalStorage("mplink", null)
+    const [messages, setMessages] = useLocalStorage("chat", [
         {
             message: initialMessage,
             sender: CHATBOT_NAME,
+            displayMenu: true,
         },
     ]);
 
     const sendMessage = async (userMessage) => {
-        const newMessage = {
+        const userMessageObject = {
             message: userMessage,
             sender: "user",
             direction: "outgoing",
         };
 
-        const newMessages = [...messages, newMessage];
+        const newMessages = [...messages, userMessageObject];
         setMessages(newMessages);
         setTyping(true);
 
         try {
-            const apiData = await getResponse(newMessages);
+
+            const mpData = await createPaymentLink()
+            const mpLink = mpData?.response.init_point
+            console.log(mpLink);
+            setPaymentLink(mpLink)
+            const apiMessages = newMessages.map((message) => {
+                return {
+                    role: message.sender === CHATBOT_NAME ? "assistant" : "user",
+                    content: message.message,
+                };
+            });
+
+            // Get GPT Message
+            const systemMessage = {
+                role: "system",
+                content: generateGymBotContext({ mpLink, shoppingCart })
+                // content: generateGymBotContext({ linkCreated: true, shoppingCart })
+            }
+            const apiData = await getGPTResponse({
+                model: "gpt-3.5-turbo-1106",
+                messages: [systemMessage, ...apiMessages],
+                max_tokens: 120,
+                temperature: 0.2,
+                n: 1
+            });
+
+            // Add bot message
             const botResponse = {
                 message: apiData.choices[0].message.content,
                 sender: CHATBOT_NAME,
+                displayMenu: userMessage.toLowerCase().includes("menu")
             };
-
-            setMessages((prevMessages) => [...prevMessages, botResponse]);
+            setMessages([...newMessages, botResponse]);
         } catch (error) {
             console.log(error);
         } finally {
             setTyping(false);
-        }
-    };
-
-    const getResponse = async (chatMessages) => {
-        const apiMessages = chatMessages.map((messageObject) => {
-            return {
-                role: messageObject.sender === CHATBOT_NAME ? "assistant" : "user",
-                content: messageObject.message,
-            };
-        });
-
-        const options = {
-            method: 'POST',
-            url: "http://localhost:3001/chat/response",
-            data: { "messages": apiMessages },
-        };
-
-        try {
-            const response = await axios.request(options);
-            return response.data;
-        } catch (error) {
-            throw new Error(error);
         }
     };
 
