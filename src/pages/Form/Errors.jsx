@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./Errors.module.css";
-import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from '@mui/material/Typography'
 
 export default function Errors({ userData }) {
   const [error, setError] = useState("");
@@ -84,12 +85,12 @@ export default function Errors({ userData }) {
   }, [userData]);
 
   return (
-    <Container maxWidth="xs" className={styles.container}>
+    <Box>
       {error.length > 1 ? (
-        <h4 className={styles.errors}>{error}</h4>
+        <Typography variant="h5" color="initial">{error}</Typography>
       ) : (
-        <h4 className={styles.noErrors}>All good to go</h4>
+        <Typography variant="h5" color="alternative">All good to go</Typography>
       )}
-    </Container>
+    </Box>
   );
 }
