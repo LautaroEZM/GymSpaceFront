@@ -13,7 +13,6 @@ export default function ChatMessage({ message, sendMessage, typing }) {
         {message.sender != "user" && <Message.CustomContent>
             {message.message}
             <ChatMenu sendMessage={sendMessage} typing={typing} />
-            {/* {message.displayMenu && <ChatMenu sendMessage={sendMessage} />} */}
         </Message.CustomContent>}
     </Message>
 }

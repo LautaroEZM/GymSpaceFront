@@ -29,7 +29,7 @@ const generatePaymentLinkContext = () => {
 }
 
 const generateShoppingCartContext = (shoppingCart) => {
-    let context = `El sistema de GymSpace guardan los datos del carrito de compras del cliente. Por tanto podrás visualizar el estado del carrito en todo momento.`
+    let context = `Puedes visualizar el carrito de compras del cliente.`
     context += shoppingCart ?
         `\nEl carrito de compras del cliente es el siguiente: ${JSON.stringify(shoppingCart)}` :
         `\nAhora mismo el carrito está vacío. El cliente deberá llenarlo agregando productos y servicios de GymSpace.`

@@ -71,7 +71,16 @@ const useChatbot = (initialMessage) => {
         }
     };
 
-    return { messages, typing, sendMessage };
+    const clearChat = () => {
+        setMessages([
+            {
+                message: initialMessage,
+                sender: CHATBOT_NAME,
+                // displayMenu: true,
+            },
+        ])
+    }
+    return { messages, typing, sendMessage, clearChat };
 };
 
 function containsKeyword(message, keywords) {
