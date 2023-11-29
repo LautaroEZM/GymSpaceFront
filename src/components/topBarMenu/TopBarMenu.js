@@ -62,10 +62,11 @@ const TopBarMenu = () => {
   useEffect(() => {
     const getcartAPI = async () => {
       if (user && isAuthenticated) {
+        if(!productsCart.length){
         const req = await buildReq({},getAccessTokenSilently)
         const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
         console.log(data)
-        setproductsCart(data)
+        setproductsCart(data)}
       }
     };
     getcartAPI();
