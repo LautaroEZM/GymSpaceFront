@@ -21,6 +21,9 @@ import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function SignUp() {
+  const loadingImage =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const newUser = useSelector((state) => state.user);
@@ -40,11 +43,13 @@ export default function SignUp() {
     systemRole: "User",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  const [photo, setPhoto] = useState(newUser.photo || user.photo);
+  const [photo, setPhoto] = useState();
 
   useEffect(() => {
     setUserData((prevData) => ({ ...prevData, photo: photo }));
@@ -58,21 +63,24 @@ export default function SignUp() {
 
   const handleBirth = (value) => {
     // handles the date of birth changes
+    console.log("handleBirth: ", value);
     const newDate = formatDate(value);
     setUserData((prevData) => ({ ...prevData, birth: newDate }));
   };
 
   const formatDate = (value) => {
+    console.log("formatDate: ", value);
     const year = value.$y.toString();
     const month =
       value.$M < 10 ? "0" + (value.$M + 1) : (value.$M + 1).toString();
     const day = value.$D < 10 ? "0" + value.$D : value.$D.toString();
+
     const newDate = `${year}-${month}-${day}`;
+    console.log("format date: ", newDate);
     return newDate;
   };
 
   useEffect(() => {
-    console.log(newUser);
     if (newUser && newUser.email) {
       // Establecer el valor de email solo si newUser tiene un valor y tiene la propiedad email
       setUserData((prevData) => ({ ...prevData, email: newUser.email }));
@@ -83,14 +91,39 @@ export default function SignUp() {
         systemRole: newUser.systemRole,
       }));
     }
+    if (newUser && newUser.photo) {
+      setPhoto(newUser.photo);
+    }
+    if (newUser && newUser.firstName) {
+      setUserData((prevData) => ({
+        ...prevData,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        gender: newUser.gender,
+        address: newUser.address,
+        phone: newUser.phone,
+        contactPhone: newUser.contactPhone,
+      }));
+    }
+    setLoading(false);
   }, [newUser]);
 
+  useEffect(() => {
+    if (!newUser.email) setLoading(true);
+  }, [user]);
+
   const handleSubmit = async () => {
+    if (userData.birth === "YYYY-MM-DD") {
+      window.alert("Select a date of birth");
+      return;
+    }
+    setLoading(true);
     try {
       const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
       const { data } = await axios.put(userDetailsByIdUrl, userData);
       if (data) {
         dispatch(getUser(userData));
+        setLoading(false);
         navigate("/");
       }
     } catch (error) {
@@ -108,6 +141,20 @@ export default function SignUp() {
         flexDirection: "column",
       }}
     >
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            padding: 5,
+            justifyContent: "center",
+            width: "800px",
+            alignSelf: "center",
+            backgroundColor: "#414141",
+          }}
+        >
+          <img src={loadingImage} className={styles.picture2}></img>
+        </Box>
+      ) : null}
       <Box
         sx={{
           display: "flex",
@@ -243,7 +290,11 @@ export default function SignUp() {
           color={theme.primary}
           onClick={() => handleSubmit()}
         >
-          Sign Up
+          {loading ? (
+            <img src={loadingImage} className={styles.picture}></img>
+          ) : (
+            "Save"
+          )}
         </Button>
         <Errors
           userData={userData} // errors component
