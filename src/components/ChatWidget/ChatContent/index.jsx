@@ -26,7 +26,12 @@ export default function ChatContent() {
                     scrollBehavior='smooth'
                     typingIndicator={typing ? <TypingIndicator content="GymBot is typing" /> : null}
                 >
-                    {messages.map((message, index) => <ChatMessage key={index} message={message} />)}
+                    {messages.map((message, index) => <ChatMessage
+                        key={index}
+                        message={message}
+                        sendMessage={sendMessage}
+                        typing={typing}
+                    />)}
                 </MessageList>
                 <MessageInput placeholder="Type message here" onSend={sendMessage} />
             </ChatContainer>

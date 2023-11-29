@@ -4,7 +4,7 @@ import createPaymentLink from '../../utils/payments/createPayment';
 import generateGymBotContext from '../../utils/chat/contextGenerators/generateGymBotContext';
 import shoppingCart from '../../utils/chat/shoppingCart';
 import getGPTResponse from '../../utils/chat/getGPTResponse';
-import { getMenuMessage } from '../../utils/chat/objects/menu';
+import { getMenuMessage } from '../../components/ChatWidget/ChatMenu';
 
 const useChatbot = (initialMessage) => {
     const CHATBOT_NAME = "GymBot";
@@ -15,7 +15,7 @@ const useChatbot = (initialMessage) => {
         {
             message: initialMessage,
             sender: CHATBOT_NAME,
-            displayMenu: true,
+            // displayMenu: true,
         },
     ]);
 
@@ -33,9 +33,9 @@ const useChatbot = (initialMessage) => {
         try {
 
             const mpData = await createPaymentLink()
-            const mpLink = mpData?.response.init_point
-            console.log(mpLink);
-            setPaymentLink(mpLink)
+            // const mpLink = mpData?.response.init_point
+            // console.log(mpLink);
+            // setPaymentLink(mpLink)
             const apiMessages = newMessages.map((message) => {
                 return {
                     role: message.sender === CHATBOT_NAME ? "assistant" : "user",
@@ -46,7 +46,7 @@ const useChatbot = (initialMessage) => {
             // Get GPT Message
             const systemMessage = {
                 role: "system",
-                content: generateGymBotContext({ mpLink, shoppingCart })
+                content: generateGymBotContext({ shoppingCart })
                 // content: generateGymBotContext({ linkCreated: true, shoppingCart })
             }
             const apiData = await getGPTResponse({
@@ -61,7 +61,7 @@ const useChatbot = (initialMessage) => {
             const botResponse = {
                 message: apiData.choices[0].message.content,
                 sender: CHATBOT_NAME,
-                displayMenu: userMessage.toLowerCase().includes("menu")
+                // displayMenu: containsKeyword(userMessage, ["menu", "link"])
             };
             setMessages([...newMessages, botResponse]);
         } catch (error) {
@@ -73,5 +73,10 @@ const useChatbot = (initialMessage) => {
 
     return { messages, typing, sendMessage };
 };
+
+function containsKeyword(message, keywords) {
+    const lowerCaseMessage = message.toLowerCase();
+    return keywords.some(keyword => lowerCaseMessage.includes(keyword.toLowerCase()));
+}
 
 export default useChatbot;
