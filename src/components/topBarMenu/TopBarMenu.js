@@ -1,34 +1,54 @@
-import { Menu, Button, MenuItem, Box, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import { Link, useNavigate  } from "react-router-dom";
-import style from "./TopBarMenu.module.css";
-import fig from "../../img/fig.png";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Box,
+  MenuItem,
+  Container,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogIn from "../LogIn/logIn";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getUser } from "../../REDUX/actions";
 import axios from "axios";
+import { StatusChecker, status } from "../statusChecker/statusChecker";
+import { warning } from "../../REDUX/actions";
+import style from "./TopBarMenu.module.css";
+import {
+  TopBarButton,
+  LinkNoDeco,
+  StyledMenu,
+} from "../../styles/ComponentStyles";
 
-function TopBarMenu() {
+const loadingImage =
+  "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+const TopBarMenu = () => {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuPosition, setMobileMenuPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
-  const newUser = useSelector((state) => state.user)
-
-  const loadingImage = "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73"
-
-  const navigate = useNavigate()
+  const warningState = useSelector((state) => state.warning);
+  const newUser = useSelector((state) => state.user);
 
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const dispatch = useDispatch()
+  const currentStatus = status(newUser, user);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-
     const checkUser = async () => {
-      console.log('user: ', user);
       if (user && isAuthenticated) {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
@@ -43,7 +63,7 @@ function TopBarMenu() {
           },
         });
         if (data) {
-          dispatch(getUser(data))
+          dispatch(getUser(data));
         }
       }
     };
@@ -51,8 +71,7 @@ function TopBarMenu() {
   }, [user]);
 
   useEffect(() => {
-    console.log(newUser);
-    if (user && newUser.status === 'unregistered') navigate('/signUp')
+    if (user && newUser.status === "unregistered") navigate("/signUp");
   }, [newUser]);
 
   const handleToggleMenuHome = (event) => {
@@ -60,9 +79,23 @@ function TopBarMenu() {
     setLoginOpen(false);
   };
 
+  useEffect(() => {
+    updateMobileMenuPosition();
+  }, [mobileMenuOpen]);
+
+  const updateMobileMenuPosition = () => {
+    if (anchorElHome) {
+      const rect = anchorElHome.getBoundingClientRect();
+      setMobileMenuPosition({ top: rect.bottom, left: rect.left });
+    }
+  };
   const handleToggleMenuIcon = (event) => {
     setAnchorElIcon(anchorElIcon ? null : event.currentTarget);
     setLoginOpen(!loginOpen);
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   const handleCloseMenu = () => {
@@ -72,147 +105,160 @@ function TopBarMenu() {
   };
 
   const handleRedirect = (url) => {
-    handleCloseMenu()
-    navigate(`/${url}`)
-  }
+    handleCloseMenu();
+    navigate(`/${url}`);
+  };
 
   return (
-    <div className={style.topContainer}>
-      <img src={fig} alt="Fig" className={style.overlayImage} />
-      <div className={style.topBar}>
-        <div className={style.buttonsContainer}>
-          <Link to="/">
-            <Button variant="contained" color="menuButton" disableElevation>
-              HOME
-            </Button>
-          </Link>
-          <Button
-            variant="contained"
-            color="menuButton"
-            onClick={handleToggleMenuHome}
-            disableElevation
-            className={style.homeButton}
+    <AppBar
+      position="static"
+      sx={{
+        width: "100%",
+        marginTop: "10px",
+        backgroundColor: "#414141",
+      }}
+    >
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            size="large"
+            color="inherit"
+            onClick={handleMobileMenuToggle}
+            sx={{ display: { md: "none" } }}
           >
-            INFO
-          </Button>
-          <Menu
-            anchorEl={anchorElHome}
-            open={Boolean(anchorElHome)}
-            onClose={handleCloseMenu}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            PaperProps={{
-              style: {
-                backgroundColor: "#1111119a",
-                color: "white",
-                width: "200px",
-                borderRadius: "0px",
-                position: "absolute",
-                transform: "translate(0, 5px)",
-                boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-              },
-            }}
-          >
-            <MenuItem className={style.menuItemPaper}>asd1</MenuItem>
-            <MenuItem>asd2</MenuItem>
-            <MenuItem>asd3</MenuItem>
-            <div className={style.bottomLine}></div>
-          </Menu>
-          <Link to="/Marketplace">
-            <Button variant="contained" color="menuButton" disableElevation>
-              MARKETPLACE
-            </Button>
-          </Link>
-          <Link to="/Services">
-            <Button variant="contained" color="menuButton" disableElevation>
-              SERVICES
-            </Button>
-          </Link>
-          <Link to="/Dashboard">
-            <Button variant="contained" color="menuButton" disableElevation>
-              DASHBOARD
-            </Button>
-          </Link>
-        </div>
-        <div>
-          <Link to="/ShopCart">
-            <Button variant="contained" color="menuButton" disableElevation>
-              <ShoppingCartIcon/>
-            </Button>
-          </Link>
-        </div>
-        <div className={style.accountContainer}>
-          <Button
-            variant="contained"
-            color="menuButton"
-            disableElevation
-            className={style.buttonAccount}
-            onClick={handleToggleMenuIcon}
-          >
-            {
-            user && isAuthenticated ? (
-              <img src={ newUser.photo || loadingImage } className={style.picture} />
-            ) : (
-              <AccountCircleIcon className={style.accountIcon} />
-            )
-            }
-          </Button>
-          <Menu
-            anchorEl={anchorElIcon}
-            open={loginOpen}
-            onClose={handleCloseMenu}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            transformOrigin={{ vertical: "top", horizontal: "center" }}
-            PaperProps={{
-              style: {
-                backgroundColor: "#111111",
-                width: "200px",
-                borderRadius: "0px",
-                transform: "translate(0, 5px)",
-                boxShadow: "0px 0px 5px 1px rgba(207, 207, 207, 0.75)",
-              },
-            }}
-          >
-            <Box p={2} >
-              {user ? (
-                <div className={style.accountContainer} >
-                    <Button
+            <MenuIcon />
+          </IconButton>
+          <LinkNoDeco to="/">
+            <TopBarButton disableElevation>HOME</TopBarButton>
+          </LinkNoDeco>
+        </Box>
+        <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <LinkNoDeco to="/Marketplace">
+            <TopBarButton disableElevation>MARKETPLACE</TopBarButton>
+          </LinkNoDeco>
+          <LinkNoDeco to="/Services">
+            <TopBarButton disableElevation>SERVICES</TopBarButton>
+          </LinkNoDeco>
+          <LinkNoDeco to="/Dashboard">
+            <TopBarButton disableElevation>DASHBOARD</TopBarButton>
+          </LinkNoDeco>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <LinkNoDeco to="/ShopCart">
+            <TopBarButton disableElevation>
+              <ShoppingCartIcon />
+            </TopBarButton>
+          </LinkNoDeco>
+          <Box className={style.accountContainer}>
+            <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
+              {user && isAuthenticated ? (
+                <img
+                  src={newUser.photo || loadingImage}
+                  className={style.picture}
+                  alt="user"
+                />
+              ) : (
+                <AccountCircleIcon />
+              )}
+            </TopBarButton>
+            <StyledMenu
+              anchorEl={anchorElIcon}
+              open={loginOpen}
+              onClose={handleCloseMenu}
+            >
+              <Box p={2}>
+                {user ? (
+                  <Box className={style.accountContainer}>
+                    <TopBarButton
                       variant="contained"
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
-                      onClick={() => handleRedirect('Profile')}
+                      onClick={() => handleRedirect("Profile")}
                     >
                       Profile
-                    </Button>
-                    <Button
+                    </TopBarButton>
+                    <TopBarButton
                       variant="contained"
                       color="menuButton"
                       disableElevation
                       fullWidth={true}
-                      onClick={() => handleRedirect('UserProducts')}
+                      onClick={() => handleRedirect("UserProducts")}
                     >
                       Your products
-                    </Button>
-                    <Button
+                    </TopBarButton>
+                    <TopBarButton
                       variant="contained"
                       color="menuButton"
-                      fullWidth='true'
+                      fullWidth="true"
                       disableElevation
-                      onClick={() => handleRedirect('UserServices')}
+                      onClick={() => handleRedirect("UserServices")}
                     >
                       Your services
-                    </Button>
-
+                    </TopBarButton>
+                    <LogIn />
+                  </Box>
+                ) : (
                   <LogIn />
-                </div>
-              ) : <LogIn />}
-            </Box>
-          </Menu>
-        </div>
-      </div>
-    </div>
+                )}
+              </Box>
+            </StyledMenu>
+          </Box>
+        </Box>
+      </Container>
+
+      {/* Mobile Menu */}
+      <StyledMenu
+        anchorEl={mobileMenuOpen ? anchorElHome : null}
+        open={mobileMenuOpen}
+        onClose={handleMobileMenuToggle}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        style={{
+          marginTop: `${mobileMenuPosition.top}px`,
+          marginLeft: `${mobileMenuPosition.left}px`,
+        }}
+        sx={{
+          "& .MuiTypography-root": {
+            color: "orange",
+            
+          },
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Marketplace">
+            <Typography variant="inherit">MARKETPLACE</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Services">
+            <Typography variant="inherit">SERVICES</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+        <MenuItem onClick={handleMobileMenuToggle}>
+          <LinkNoDeco to="/Dashboard">
+            <Typography variant="inherit">DASHBOARD</Typography>
+          </LinkNoDeco>
+        </MenuItem>
+      </StyledMenu>
+
+      {currentStatus !== "safe" && warningState ? (
+        <StatusChecker status={currentStatus} />
+      ) : null}
+    </AppBar>
   );
-}
+};
 
 export default TopBarMenu;

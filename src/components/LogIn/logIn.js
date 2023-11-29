@@ -5,7 +5,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import style from './login.module.css'
 
 export default function logIn() {
-  const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
+  const { loginWithRedirect, isAuthenticated, logout, } = useAuth0();
+
 
   if (isAuthenticated) {
     return (
@@ -33,11 +34,6 @@ export default function logIn() {
         >
           Login
         </Button>
-        <Link to="/SignUp">
-          <Button className={style.button} injectFirst variant="text" color="primary" fullWidth required>
-            Register
-          </Button>
-        </Link>
       </Container>
     );
   }

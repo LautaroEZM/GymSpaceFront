@@ -1,0 +1,16 @@
+.container{
+    height: 30px;
+    position: absolute;
+    top: 50px;
+    background-color: red;
+    border-top: 2px solid rgb(155, 0, 0);
+    border-bottom: 2px solid rgb(155, 0, 0);
+    display: flex;
+    right: 0px;
+}
+
+.btn{
+    height: 30px;
+    right: 0px;
+    position: absolute;
+}

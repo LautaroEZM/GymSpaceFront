@@ -37,7 +37,7 @@ const ServiceFilter = ({
     }}
     spacing={2}
   >
-    {user.systemRole === 'Admin' ? <LinkNoDeco to="/CreateService">
+    {user.systemRole === 'Admin' || user.systemRole === 'Coach' ? <LinkNoDeco to="/CreateService">
       <OrangeOutlinedButton
         variant="outlined"
         startIcon={<AddCircleOutlineIcon />}

@@ -20,7 +20,6 @@ import CoachesList from "./components/CoachesList";
 
 function Dashboard() {
   const [showClientsUserList, setShowClientsUserList] = useState(false);
-  const [showCoachesList, setShowCoachesList] = useState(false);
 
   return (
     <Box sx={{ display: "flex", height: "90vh" }}>
@@ -81,16 +80,16 @@ function Dashboard() {
           <List>
             <DashBoardListItem
               button
-              onClick={() => {setShowClientsUserList(true);setShowCoachesList(false)}}
+              onClick={() => setShowClientsUserList(true)}
             >
-              <ListItemText primary="Clients" />
+              <ListItemText primary="People" />
             </DashBoardListItem>
-            <DashBoardListItem 
+            {/* <DashBoardListItem 
               button
               onClick={() => {setShowCoachesList(true);setShowClientsUserList(false)}}
             >
               <ListItemText primary="Professors" />
-            </DashBoardListItem>
+            </DashBoardListItem> */}
           </List>
 
           {/* Categoría Personalization */}
@@ -122,7 +121,8 @@ function Dashboard() {
       >
         {/* Contenido de la página a la derecha del menú */}
         {showClientsUserList && <UserList />}
-        {showCoachesList && <CoachesList />}
+        {/* {showCoachesList && <CoachesList />} */}
+
       </Box>
     </Box>
   );
