@@ -6,8 +6,8 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { DatePicker } from "@mui/x-date-pickers";
 import Container from "@mui/material/Container";
-import { LocalizationProvider } from "@mui/x-date-pickers";
 import { getDate, getDateTimestamp } from "../../utils/shopCartUtils";
+import dayjs from "dayjs";
 
 const ShopCart = () => {
   const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
@@ -31,9 +31,9 @@ const ShopCart = () => {
     const newServices = [...servicesCart];
     if(timestamp>Date.now()){
       
-      newServices[i]["startDate"] = value;
+      newServices[i]["startDate"] = dayjs(value);
     } else {
-      newServices[i]["startDate"] = "";
+      newServices[i]["startDate"] = dayjs();
     }
       setServicesCart(newServices);
   }
@@ -163,7 +163,7 @@ const ShopCart = () => {
                   name="birth"
                   format="YYYY-MM-DD"
                   
-                  value={service.startDate}
+                  value={dayjs(service.startDate)}
                   
                   onChange={(e)=>handleDate(e,i)}
                 />
