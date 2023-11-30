@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import {
   CssBaseline,
   Box,
@@ -11,15 +11,80 @@ import BusinessIcon from "@mui/icons-material/Business";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import {
   DashBoardCategory,
   DashBoardListItem,
 } from "../../styles/ComponentStyles";
 import UserList from "./components/UserList";
-import CoachesList from "./components/CoachesList";
+import ServiceCardList from "./components/ServiceCardList";
+import ServiceGraph from "./components/ServiceGraph";
+import { API_URL } from "./../../utils/constants";
+import axios from 'axios';
 
 function Dashboard() {
   const [showClientsUserList, setShowClientsUserList] = useState(false);
+  const [showCardServiceList, setShowCardServiceList] = useState(false);
+  const [showServiceGraph, setShowServiceGraph] = useState(false);
+  const [services, setServices] = useState([]);
+  const [userservices, setUserservices] = useState([]);
+
+  useEffect(()=>{
+    const getServices = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/services`);
+        const { data } = response;
+
+        setServices(data);
+
+      } catch (error) {
+        console.error('Error fetching Services:',error.message);
+      }
+    }
+    const getUserservices = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/userservices`);
+        const { data } = response;
+
+        setUserservices(data);
+
+      } catch (error) {
+        console.error('Error fetching Userservices:',error.message);
+      }
+    }
+    getServices();
+    getUserservices();
+  },[]);
+
+  const enrolledPeople = ['angel', 'lautaro', 'adrian', 'kevin'];
+
+  const transformedServices = services.map(service => {
+    const enrolledPeople = userservices
+      .filter(userService => userService.serviceID === service.serviceID)
+      .map(userService => `${userService.User.firstName} ${userService.User.lastName}`);
+  
+    return {
+      serviceName: service.name,
+      extraInfo: service.description,
+      coaches: service.Users.map(user => `${user.firstName} ${user.lastName}`),
+      enrolledPeople: enrolledPeople
+    };
+  });
+
+  const graphdata = userservices.reduce((acc, userService) => {
+    const serviceKey = `${userService.Service.name} ${userService.Service.startTime}`;
+    if (acc[serviceKey]) {
+      acc[serviceKey] += 1;
+    } else {
+      acc[serviceKey] = 1;
+    }
+    return acc;
+  }, {});
+  
+  const formattedGraphData = Object.keys(graphdata).map(service => ({
+    service: service,
+    users: graphdata[service]
+  }));
 
   return (
     <Box sx={{ display: "flex", height: "90vh" }}>
@@ -48,6 +113,36 @@ function Dashboard() {
             </DashBoardListItem>
             <DashBoardListItem button>
               <ListItemText primary="Option 3" />
+            </DashBoardListItem>
+          </List>
+
+          {/* Categoria de Servicios */}
+          <DashBoardCategory>
+            <ListItemIcon>
+              <HomeRepairServiceIcon sx={{ color: "#bbbbbb" }} />
+            </ListItemIcon>
+            <ListItemText primary="Services" sx={{ color: "#bbbbbb" }} />
+          </DashBoardCategory>
+          <List>
+            <DashBoardListItem
+              button
+              onClick={() => {
+                setShowClientsUserList(false);
+                setShowServiceGraph(false);
+                setShowCardServiceList(true);
+              }}
+            >
+              <ListItemText primary="List" />
+            </DashBoardListItem>
+            <DashBoardListItem
+              button
+              onClick={() => {
+                setShowClientsUserList(false);
+                setShowCardServiceList(false);
+                setShowServiceGraph(true);
+              }}
+            >
+              <ListItemText primary="Stats" />
             </DashBoardListItem>
           </List>
 
@@ -80,7 +175,11 @@ function Dashboard() {
           <List>
             <DashBoardListItem
               button
-              onClick={() => setShowClientsUserList(true)}
+              onClick={() => {
+                setShowCardServiceList(false);
+                setShowServiceGraph(false);
+                setShowClientsUserList(true);
+              }}
             >
               <ListItemText primary="People" />
             </DashBoardListItem>
@@ -115,6 +214,8 @@ function Dashboard() {
       >
         {/* Contenido de la página a la derecha del menú */}
         {showClientsUserList && <UserList />}
+        {showCardServiceList && <ServiceCardList services={transformedServices} />}
+        {showServiceGraph && <ServiceGraph data={formattedGraphData} />}
       </Box>
     </Box>
   );
