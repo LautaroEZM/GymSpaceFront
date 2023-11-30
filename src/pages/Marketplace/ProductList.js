@@ -73,6 +73,7 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
             justifyContent: "center",
           }}
       >
+        
         <Box sx={{ width: "90%", marginBottom: "40px" }}>
           <Grid container spacing={2}>
             {sortedProducts()
@@ -147,7 +148,6 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
                               color="primary"
                               aria-label="add to shopping cart"
                           >
-                            <AddShoppingCartIcon />
                           </IconButton>
                         </CardActions>
                         <CardActions sx={{ justifyContent: "center" }}>
@@ -157,27 +157,23 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
                             </SmallOrangeOutlinedButton>
                           </LinkNoDeco>
                         </CardActions>
-                        <CardActions sx={{ justifyContent:"right" }}>
+                        <CardActions sx={{ justifyContent:"center" }}>
                           {selectedProducts.filter(item => item.productID ===product.productID).length?<IconButton
                               color="primary"
                               aria-label="add to shopping cart"
                               sx={{fontSize: '13px' }}
                               onClick={()=>setSelectedProducts(selectedProducts.filter(item => item.productID !== product.productID))}
                           >
-                            <div>X</div>
-
-
-
+                            <Box>X</Box>
                           </IconButton>:<IconButton
                               color="primary"
                               aria-label="add to shopping cart"
                               sx={{fontSize: '13px' }}
                               onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1}])}
                           >
-                            <div>Añadir</div>
-                            <div>Al</div>
-                            <div>Carrito</div>
-
+                            <Typography>
+                              Add to cart
+                            </Typography>
                             <AddShoppingCartIcon />
                           </IconButton>}
 
