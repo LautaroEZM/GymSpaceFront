@@ -20,8 +20,8 @@ export default (data) => {
         // Contexto del carrito del cliente
         (() => {
             let context = `\n\n ** Información del carrito del cliente **`
-            const serviceCart = JSON.parse(localStorage.service)
-            const productCart = JSON.parse(localStorage.product)
+            const serviceCart = JSON.parse(localStorage.service || "[]")
+            const productCart = JSON.parse(localStorage.product || "[]")
 
             // Ver si hay items en el carrito
             if (isEmpty(serviceCart) && isEmpty(productCart)) {
@@ -45,8 +45,8 @@ export default (data) => {
                     // context += `\n- Identifiación del profesor: ${service.coachID}.`
                     context += `\n- Descripción del servicio: ${service.description}.`
                     // context += `\n- Duración de la clase: ${service.duration}.`
-                    // context += `\n- Número de meses por comprar: ${service.quantity}.`
-                    // context += `\n- Precio del servicio: ${service.price}.`
+                    context += `\n- Número de meses por comprar: ${service.quantity}.`
+                    context += `\n- Precio del servicio: ${service.price}.`
                     context += `\n- Url del servicio: ${protocol}//${host}/ServiceDetail/${service.serviceID}.`
                     // context += `\n- Fecha de inicio del servicio: ${service.startDate}.`
                     // context += `\n- Horario de inicio del servicio: ${service.startTime}.`
@@ -62,10 +62,9 @@ export default (data) => {
                     // context += `\n- Categoría: ${product.category}.`
                     context += `\n- Nombre del producto: ${product.name}.`
                     context += `\n- Descripción del producto: ${product.description}.`
-                    // context += `\n- Precio del producto: ${product.price}.`
+                    context += `\n- Precio del producto: ${product.price}.`
+                    context += `\n- Cantidad a comprar: ${product.quantity}.`
                     context += `\n- Url del producto: ${protocol}//${host}/Marketplace/detail/${product.productID}.`
-                    // context += `\n- Cantidad a comprar: ${product.quantity}.`
-                    context += product.stockNow < 10 ? `\n- Stock: Quedan menos de 10 unidades.` : ``
                 }
             }
             return context
