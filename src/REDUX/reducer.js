@@ -1,4 +1,4 @@
-import {GET_USER, WARNING, SET_USER} from './actions'
+import {GET_USER, WARNING} from './actions'
 
 const initState = {
     user: {},
@@ -8,10 +8,6 @@ const initState = {
 const reducer = (state = initState, action) => {
     switch(action.type){
         case GET_USER: return {
-            ...state,
-            user: action.payload
-        }
-        case SET_USER: return {
             ...state,
             user: action.payload
         }
