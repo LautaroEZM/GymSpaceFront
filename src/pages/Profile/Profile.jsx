@@ -1,19 +1,18 @@
-import { Container, Box, Button } from "@mui/material";
+import React from "react";
 import { useSelector } from "react-redux";
-import Typography from "@mui/material/Typography";
 import { useAuth0 } from "@auth0/auth0-react";
-import NotFound from "../NotFound/NotFound";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Hidden from "@mui/material/Hidden";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useNavigate } from "react-router";
 import { OrangeOutlinedButton } from "../../styles/ComponentStyles";
+import NotFound from "../NotFound/NotFound";
 import styles from "./Profile.module.css";
-import { Hidden } from "@mui/material";
 
-export default function Profile() {
+const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
-
   const userProfile = useSelector((state) => state.user);
-
   const navigate = useNavigate();
 
   if (user && isAuthenticated) {
@@ -24,6 +23,8 @@ export default function Profile() {
           color: "white",
           justifyContent: "center",
           flexDirection: "column",
+          width: "100%",
+          alignItems: "center",
         }}
       >
         <Box
@@ -32,7 +33,8 @@ export default function Profile() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            padding: 3,
+            padding: 1,
+            width: "95%",
           }}
         >
           <img
@@ -44,6 +46,7 @@ export default function Profile() {
             onClick={() => {
               navigate("/signUp");
             }}
+            sx={{ marginTop: "5px" }}
           >
             {" "}
             Edit Profile <BorderColorIcon />{" "}
@@ -52,143 +55,80 @@ export default function Profile() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
+            flexDirection: "column",
             alignItems: "center",
+            width: "95%",
           }}
         >
-          <Typography variant="h2" sx={{ margin: 2 }}>
-            {userProfile.firstName && userProfile.firstName}
+          <Typography sx={{ marginY: 2 }}>
+            {userProfile.firstName && (
+              <>
+                <strong>First Name:</strong> {userProfile.firstName}
+              </>
+            )}
           </Typography>
-          <Typography variant="h2" sx={{ margin: 2 }}>
-            {userProfile.lastName && userProfile.lastName}
+          <Typography sx={{ marginY: 2 }}>
+            {userProfile.lastName && (
+              <>
+                <strong>Last Name:</strong> {userProfile.lastName}
+              </>
+            )}
           </Typography>
         </Box>
-        {/*para pantallas grandes*/}
-        <Hidden xsDown>
+        {/* Para pantallas grandes */}
+        <Box
+          sx={{
+            justifyContent: "center",
+            alignSelf: "center",
+            backgroundColor: "#414141",
+            width: "95%",
+            margin: "5px",
+          }}
+        >
+          {/* Detalles grandes */}
           <Box
             sx={{
-              display: "flex",
-              padding: 5,
-              justifyContent: "space-between",
-              width: "800px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
+              marginY: "5px",
+              width: "100%",
             }}
           >
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Email: {userProfile.email && userProfile.email}
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{ paddingTop: 3, alignSelf: "center" }}
-            >
-              Address: {userProfile.address && userProfile.address}
-            </Typography>
+            {userProfile.email && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Email:</strong> {userProfile.email}
+              </Typography>
+            )}
+            {userProfile.address && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Address:</strong> {userProfile.address}
+              </Typography>
+            )}
+            {userProfile.birth && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Birth:</strong> {userProfile.birth}
+              </Typography>
+            )}
+            {userProfile.gender && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Gender:</strong> {userProfile.gender}
+              </Typography>
+            )}
+            {userProfile.phone && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Phone:</strong> {userProfile.phone}
+              </Typography>
+            )}
+            {userProfile.contactPhone && (
+              <Typography sx={{ marginY: 2 }}>
+                <strong>Contact Phone:</strong> {userProfile.contactPhone}
+              </Typography>
+            )}
           </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              padding: 5,
-              justifyContent: "space-between",
-              width: "800px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ paddingTop: 3, alignSelf: "center" }}
-            >
-              Birth: {userProfile.birth && userProfile.birth}
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{ paddingTop: 3, alignSelf: "center" }}
-            >
-              Gender: {userProfile.gender && userProfile.gender}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              padding: 5,
-              justifyContent: "space-between",
-              width: "800px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
-            }}
-          >
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Phone: {userProfile.phone && userProfile.phone}
-            </Typography>
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Contact phone:{" "}
-              {userProfile.contactPhone && userProfile.contactPhone}
-            </Typography>
-          </Box>
-        </Hidden>
-        {/*para pantallas pequeas*/}
-        <Hidden smUp>
-          <Box
-            sx={{
-              display: "flex",
-              padding: 5,
-              flexDirection: "column",
-              justifyContent: "center",
-              width: "500px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
-            }}
-          >
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Email: {userProfile.email && userProfile.email}
-            </Typography>
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Address: {userProfile.address && userProfile.address}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              padding: 5,
-              flexDirection: "column",
-              justifyContent: "center",
-              width: "500px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
-            }}
-          >
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Birth: {userProfile.birth && userProfile.birth}
-            </Typography>
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Gender: {userProfile.gender && userProfile.gender}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              padding: 5,
-              justifyContent: "space-between",
-              width: "800px",
-              alignSelf: "center",
-              backgroundColor: "#414141",
-            }}
-          >
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Phone: {userProfile.phone && userProfile.phone}
-            </Typography>
-            <Typography variant="h5" sx={{ paddingTop: 3, alignSelf: "center" }}>
-              Contact phone:{" "}
-              {userProfile.contactPhone && userProfile.contactPhone}
-            </Typography>
-          </Box>
-        </Hidden>
+        </Box>
       </Box>
     );
   } else {
     return <NotFound />;
   }
-}
+};
+
+export default Profile;
