@@ -16,26 +16,52 @@ import {
 } from "@mui/icons-material";
 import theme from "../../theme";
 import { OrangeOutlinedButton, LinkNoDeco } from "../../styles/ComponentStyles";
-
 import FilterBar from "./FilterBar";
 import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch} from "react-redux";
 import Loading from "../../components/Loading/loading";
+import { setUser } from "../../REDUX/actions";
+import axios from "axios";
 
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
-
   const user = useSelector((state) => state.user);
-
   const [noProducts, setNoProducts] = useState(false);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getFavorites = async () => {
+      const userFavorites = `https://gymspace-backend.onrender.com/users/favorites/${user.userID}`;
+      const { data } = await axios.get(userFavorites);
+      const favoriteProducts = [];
+      const favoriteServices = [];
+      for (const fav of data) {
+        if (fav.type === "prod") {
+          favoriteProducts.push(fav.id);
+        }
+        if (fav.type === "serv") {
+          favoriteServices.push(fav.id);
+        }
+      }
+      dispatch(
+        setUser({
+          ...user,
+          favoriteProducts,
+          favoriteServices,
+        })
+      );
+    };
+    if (user.userID) getFavorites();
+  }, [user.userID]);
 
   useEffect(() => {
     setLoading(true);
@@ -71,6 +97,10 @@ export default function Marketplace() {
       }
       return prevPriceRange;
     });
+  };
+
+  const handleShowOnlyFavorites = (newShowOnlyFavorites) => {
+    setShowOnlyFavorites(newShowOnlyFavorites);
   };
 
   const handleSortClick = (event) => setAnchorEl(event.currentTarget);
@@ -162,7 +192,7 @@ export default function Marketplace() {
                   <SortIcon />
                 </Badge>
               </IconButton>
-              {user.systemRole === "Admin" ? 
+              {user.systemRole === "Admin" ? (
                 <LinkNoDeco to="/CreateProduct">
                   <OrangeOutlinedButton
                     variant="outlined"
@@ -171,7 +201,7 @@ export default function Marketplace() {
                     NEW PRODUCT
                   </OrangeOutlinedButton>
                 </LinkNoDeco>
-               : null}
+              ) : null}
             </Toolbar>
             <FilterBar
               allCategories={allCategories}
@@ -183,6 +213,7 @@ export default function Marketplace() {
               filterOpen={filterOpen}
               setFilterOpen={setFilterOpen}
               maxProductPrice={maxProductPrice}
+              handleShowOnlyFavorites={handleShowOnlyFavorites}
             />
           </AppBar>
         </Box>
@@ -198,6 +229,8 @@ export default function Marketplace() {
         ) : (
           <>
             <ProductList
+              user={user}
+              showOnlyFavorites={showOnlyFavorites}
               sortedProducts={sortedProducts}
               maxProductPrice={maxProductPrice}
             />
