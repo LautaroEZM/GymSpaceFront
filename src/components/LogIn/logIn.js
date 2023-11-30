@@ -12,10 +12,10 @@ export default function logIn() {
   const { user, loginWithRedirect, isAuthenticated, logout, getAccessTokenSilently } = useAuth0();
 
   const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
-
+  const [servicesCart, setServicesCart] = useLocalStorage("service", []);
   const handleLogout = async ()=>{
-    const req = await buildReq({products: productsCart},getAccessTokenSilently)
-    
+    const req = await buildReq({products: productsCart, services:servicesCart},getAccessTokenSilently)
+    console.log(req)
     await axios.put(API_URL + "/cart/"+user.sub,req)
     window.localStorage.clear()
 

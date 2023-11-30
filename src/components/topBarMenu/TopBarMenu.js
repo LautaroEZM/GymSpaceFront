@@ -36,6 +36,7 @@ const TopBarMenu = () => {
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
+  const [servicesCart, setServicesCart] = useLocalStorage("service", []);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPosition, setMobileMenuPosition] = useState({
     top: 0,
@@ -60,7 +61,7 @@ const TopBarMenu = () => {
             scope: "read:current_user",
           },
         });
-        const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+        const userDetailsByIdUrl = `https://gymspace-backend.onrender.com/users/${user.sub}`;
         const { data } = await axios.get(userDetailsByIdUrl, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -80,7 +81,12 @@ const TopBarMenu = () => {
         const req = await buildReq({},getAccessTokenSilently)
         const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
         console.log(data)
-        setproductsCart(data)}
+        setproductsCart(data.products)}
+        if(!servicesCart.length){
+          const req = await buildReq({},getAccessTokenSilently)
+          const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
+          console.log(data)
+          setServicesCart(data.services)}
       }
     };
     getcartAPI();
