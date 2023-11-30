@@ -16,6 +16,7 @@ import {
   ProductCard,
   LinkNoDeco,
 } from "../../styles/ComponentStyles";
+
 import { useDispatch } from "react-redux";
 import axios from "axios";
 
@@ -57,6 +58,17 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
     }
   };
 
+=======
+import { Link} from "react-router-dom";
+import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
+import { useEffect } from "react";
+
+export default function ProductList({ sortedProducts }) {
+  
+  const [selectedProducts, setSelectedProducts] = useLocalStorage("product",[]);
+  
+  useEffect(()=>{},[selectedProducts])
+
   return (
     <Box
       sx={{
@@ -79,6 +91,33 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
             .map((product, i) => (
               <Grid item key={i} xs={12} sm={6} md={4} lg={2} xl={2}>
                 <ProductCard
+          {sortedProducts().map((product,i) => (
+            <Grid
+              item
+              key={i}
+              xs={12}
+              sm={6}
+              md={4}
+              lg={2}
+              xl={2}
+            >
+              <ProductCard
+                sx={{
+                  height: "100%",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={product.image}
+                  alt={product.name}
+                  style={{
+                    color: "#fff",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                />
+                <CardContent
                   sx={{
                     height: "100%",
                     display: "flex",
@@ -153,6 +192,44 @@ export default function ProductList({ sortedProducts, showOnlyFavorites, user })
                 </ProductCard>
               </Grid>
             ))}
+                    ${product.price}
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: "center" }}>
+                  <Link to= {`/Marketplace/detail/${product.productID}`}>
+                  <SmallOrangeOutlinedButton> 
+                    VIEW DETAIL
+                  </SmallOrangeOutlinedButton>
+                  </Link>
+                </CardActions>
+                <CardActions sx={{ justifyContent:"right" }}>
+                  {selectedProducts.filter(item => item.productID ===product.productID).length?<IconButton 
+                   color="primary"
+                   aria-label="add to shopping cart"
+                   sx={{fontSize: '13px' }}
+                  onClick={()=>setSelectedProducts(selectedProducts.filter(item => item.productID !== product.productID))}
+                   >
+                    <div>X</div>
+                    
+
+                    
+                  </IconButton>:<IconButton 
+                   color="primary"
+                   aria-label="add to shopping cart"
+                   sx={{fontSize: '13px' }}
+                  onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1}])}
+                   >
+                    <div>Añadir</div>
+                    <div>Al</div>
+                    <div>Carrito</div>
+
+                    <AddShoppingCartIcon />
+                  </IconButton>}
+                  
+                </CardActions>
+              </ProductCard>
+            </Grid>
+          ))
         </Grid>
       </Box>
     </Box>
