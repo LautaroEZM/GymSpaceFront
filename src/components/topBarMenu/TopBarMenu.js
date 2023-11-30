@@ -24,6 +24,9 @@ import {
   LinkNoDeco,
   StyledMenu,
 } from "../../styles/ComponentStyles";
+import { buildReq } from "../../utils/auth0Utils";
+import { API_URL } from "../../utils/constants";
+import { useLocalStorage } from "../Hooks/useLocalStorage";
 
 const loadingImage =
   "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
@@ -32,6 +35,7 @@ const TopBarMenu = () => {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPosition, setMobileMenuPosition] = useState({
     top: 0,
@@ -69,7 +73,18 @@ const TopBarMenu = () => {
     };
     checkUser();
   }, [user]);
-
+  useEffect(() => {
+    const getcartAPI = async () => {
+      if (user && isAuthenticated) {
+        if(!productsCart.length){
+        const req = await buildReq({},getAccessTokenSilently)
+        const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
+        console.log(data)
+        setproductsCart(data)}
+      }
+    };
+    getcartAPI();
+  }, [user]);
   useEffect(() => {
     if (user && newUser.status === "unregistered") navigate("/signUp");
   }, [newUser]);

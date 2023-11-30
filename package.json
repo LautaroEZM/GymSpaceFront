@@ -26,6 +26,7 @@
     "mui-file-input": "^3.0.2",
     "react": "latest",
     "react-dom": "latest",
+    "react-linkify": "^1.0.0-alpha",
     "react-material-ui-carousel": "^3.4.2",
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.18.0",
@@ -34,7 +35,8 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "serve": "^14.2.1",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "uuid": "^9.0.1"
   },
   "browserslist": {
     "production": [

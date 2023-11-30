@@ -1,237 +1,189 @@
-import React, { useEffect, useState } from 'react';
-import {
-  DeleteOutlined,
-  AddCircleOutline,
-  RemoveCircleOutline,
-} from '@mui/icons-material';
-import {
-  Table,
-  Button,
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-} from '@mui/material';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import React, { useEffect, useState } from "react";
+import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
+import { buildReq, getUUID } from "../../utils/auth0Utils";
+import { API_URL } from "../../utils/constants";
+import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import { DatePicker } from "@mui/x-date-pickers";
+import Container from "@mui/material/Container";
+import { getDate, getDateTimestamp } from "../../utils/shopCartUtils";
+import dayjs from "dayjs";
 
-const CartPage = () => {
-
-  const [local, setLocal] = useLocalStorage('product', '')
-
-  const [cartItems, setCartItems] = useState([]);
-  const [subTotal, setSubTotal] = useState(0);
-  const [billPopup, setBillPopup] = useState(false);
-  const navigate = useNavigate();
-
-  const handleIncrement = (record) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === record._id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-
-  const handleDecrement = (record) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === record._id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const handleDelete = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
-  };
+const ShopCart = () => {
+  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
+  const [servicesCart, setServicesCart] = useLocalStorage("service", []);
+  const [total, setTotal] = useState(
+    productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0) +
+      servicesCart.reduce((acc, p) => acc + p.price * p.quantity, 0)
+  );
+  const { user, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
-    let total = 0;
-    cartItems.forEach((item) => {
-      total += item.price * item.quantity;
-    });
-    setSubTotal(total);
-  }, [cartItems]);
+    setTotal(
+      productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0) +
+        servicesCart.reduce((acc, p) => acc + p.price * p.quantity, 0)
+    );
+  }, [productsCart, servicesCart]);
 
-  useEffect(() => {
-    console.log('local: ', local);
-  }, [local])
+  const handleDate = (value,i) => {
+    const timestamp = value.$d.getTime()
+    
+    const newServices = [...servicesCart];
+    if(timestamp>Date.now()){
+      
+      newServices[i]["startDate"] = dayjs(value);
+    } else {
+      newServices[i]["startDate"] = dayjs();
+    }
+      setServicesCart(newServices);
+  }
+  const handleAddToCartWithQuantity = (item, quantity, i) => {
+    const { serviceID } = item;
+    if (serviceID) {
+      const newServices = [...servicesCart];
+      newServices[i]["quantity"] = parseInt(quantity);
+      setServicesCart(newServices);
+    } else {
+      const newproducts = [...productsCart];
+      newproducts[i]["quantity"] = parseInt(quantity);
+      setproductsCart(newproducts);
+    }
+  };
 
-  const columns = [
-    {
-      field: 'name',
-      headerName: 'Name',
-      flex: 1,
-    },
-    {
-      field: 'image',
-      headerName: 'Image',
-      flex: 1,
-      renderCell: (params) => (
-        <img
-          src={params.value}
-          alt={params.row.name}
-          height="60"
-          width="60"
-          style={{ borderRadius: '5px' }} // Estilo en línea para la imagen
-        />
-      ),
-    },
-    {
-      field: 'price',
-      headerName: 'Price',
-      flex: 1,
-    },
-    {
-      field: 'quantity',
-      headerName: 'Quantity',
-      flex: 1,
-      renderCell: (params) => (
-        <Box>
-          <AddCircleOutline
-            style={{ cursor: 'pointer', marginRight: '2px' }} // Estilo en línea para el botón
-            onClick={() => handleIncrement(params.row)}
-          />
-          <Typography variant="subtitle1">{params.value}</Typography>
-          <RemoveCircleOutline
-            style={{ cursor: 'pointer', marginLeft: '2px' }} // Estilo en línea para el botón
-            onClick={() => handleDecrement(params.row)}
-          />
-        </Box>
-      ),
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      flex: 1,
-      renderCell: (params) => (
-        <DeleteOutlined
-          style={{ cursor: 'pointer' }} // Estilo en línea para el icono
-          onClick={() => handleDelete(params.row._id)}
-        />
-      ),
-    },
-  ];
-
-  const handleSubmit = async (values) => {
-    try {
-      const newObject = {
-        ...values,
-        subTotal: subTotal,
-        tax: (subTotal * 0.19).toFixed(2),
-        totalAmount: (subTotal + subTotal * 0.19).toFixed(2),
-        cartItems: cartItems,
-        userId: JSON.parse(localStorage.getItem('auth'))._id,
-      };
-
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/bills/add-bill',
-        newObject
+  const handleDeleteFromCart = (prodServ) => {
+    // Eliminar el producto del carrito
+    const { serviceID } = prodServ;
+    if (serviceID) {
+      const updatedCart = servicesCart.filter(
+        (item) => item.serviceID !== prodServ.serviceID
       );
 
-      // Verificar el estado de la respuesta (código HTTP)
-      if (response.status === 201) {
-        // La factura se generó con éxito
+      setServicesCart(updatedCart);
+    } else {
+      const updatedCart = productsCart.filter(
+        (item) => item.productID !== prodServ.productId
+      );
 
-        // Limpiar el carrito después de generar la factura
-        setCartItems([]);
-        setSubTotal(0);
+      setproductsCart(updatedCart);
+    }
+  };
 
-        // Cerrar el modal y navegar a la página de facturas
-        setBillPopup(false);
-        navigate('/bills');
+  const handleBuy = async () => {
+    // Aquí puedes implementar la lógica para la compra
+    try {
+      let itemsToPay = productsCart.map((item) => {
+        return {
+          id: item.productID,
+          quantity: item.quantity,
+        };
+      });
+      itemsToPay = [
+        ...itemsToPay,
+        ...servicesCart.map((item) => {
+          let {startDate} = item
+          !startDate ? startDate = new Date():startDate =new Date(startDate)
+          let finishDate = startDate.getTime() + (item.quantity * 30 + 1) * 24 * 60 * 60 * 1000
+          startDate = getDate(startDate)
+          finishDate = getDateTimestamp(finishDate)
+          
+          return {
+            id: item.serviceID,
+            quantity: item.quantity,
+            startDate: startDate,
+            finishDate: finishDate,
+            days_notice: 2,
+          };
+        }),
+      ];
+      const userId = await getUUID(user.sub);
+      console.log(itemsToPay);
+      const { data } = await axios.post(API_URL + "/payments/create-order", {
+        userId: userId,
+        items: itemsToPay,
+      });
 
-        // Mensaje de éxito
-        console.log('Bill Generated Successfully');
-      } else {
-        // Manejar otros estados de respuesta según sea necesario
-        console.error('Unexpected status code:', response.status);
-      }
+      const urlToPay = data.response.init_point;
+      const external_reference = data.response.external_reference;
+      window.open(urlToPay, "_blank");
     } catch (error) {
-      // Manejar errores de red u otros errores
-      console.error('Something went wrong', error);
+      console.log(error);
     }
   };
 
   return (
-    <>
-      <h1>Cart Page</h1>
-      <Table columns={columns} rows={cartItems} autoHeight />
-      <Box display="flex" flexDirection="column" alignItems="flex-end" mt={2}>
-        <Typography variant="h6">Sub Total: {subTotal}</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ backgroundColor: '#ff9721', color: 'white', borderRadius: '5px' }} // Estilo en línea para el botón
-          onClick={() => setBillPopup(true)}
-        >
-          Create Invoice
-        </Button>
-        <Modal
-          open={billPopup}
-          onClose={() => setBillPopup(false)}
-          aria-labelledby="create-invoice-modal"
-        >
-          <Box p={3}>
-            <Typography variant="h4">Create Invoice</Typography>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <TextField
-                label="Customer Name"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                InputProps={{ style: { color: 'white' } }} // Estilo en línea para el color del texto
-                InputLabelProps={{ style: { color: 'white' } }} // Estilo en línea para el color de la etiqueta
-              />
-              <TextField
-                label="Customer Contact"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                InputProps={{ style: { color: 'white' } }} // Estilo en línea para el color del texto
-                InputLabelProps={{ style: { color: 'white' } }} // Estilo en línea para el color de la etiqueta
-              />
-              <Select
-                fullWidth
-                variant="outlined"
-                label="Payment Method"
-                style={{ color: 'white' }} // Estilo en línea para el color del texto
+    <div>
+      <h1>Shop Cart</h1>
+
+      {/* Productos */}
+      {productsCart && productsCart.length > 0
+        ? productsCart.map((product, i) => (
+            <div key={i}>
+              <div>
+                <h3>{product.name}</h3>
+                <img src={product.image} />
+                <h3 style={{ color: "white" }}>{product.price} US$</h3>
+                <input
+                  type="number"
+                  value={product.quantity}
+                  onChange={(e) =>
+                    handleAddToCartWithQuantity(product, e.target.value, i)
+                  }
+                />
+              </div>
+
+              <button
+                key={product.id}
+                onClick={() => handleDeleteFromCart(product)}
               >
-                <MenuItem value="cash">Cash</MenuItem>
-                <MenuItem value="digital">Digital</MenuItem>
-              </Select>
-              <Box mt={2}>
-                <Typography variant="h6">Sub Total: {subTotal}</Typography>
-                <Typography variant="h5">
-                  I.V.A: <b> {(subTotal * 0.19).toFixed(2)}</b>
-                </Typography>
-                <Typography variant="h4">
-                  TOTAL: <b>{Number(subTotal) + Number((subTotal * 0.19).toFixed(2))}</b>
-                </Typography>
-              </Box>
-              <Box mt={2} display="flex" justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  style={{ backgroundColor: '#ff9721', color: 'white', borderRadius: '5px' }} // Estilo en línea para el botón
-                  onClick={handleSubmit}
-                >
-                  Generate Bill
-                </Button>
-              </Box>
-            </form>
-          </Box>
-        </Modal>
-      </Box>
-    </>
+                Delete
+              </button>
+            </div>
+          ))
+        : null}
+      {/* Services */}
+      {servicesCart && servicesCart.length > 0
+        ? servicesCart.map((service, i) => (
+            <div key={i}>
+              <div>
+                <h3>{service.name}</h3>
+                <img src={service.image} />
+                <h3 style={{ color: "white" }}>{service.price} US$</h3>
+                <input
+                  type="number"
+                  value={service.quantity}
+                  onChange={(e) =>
+                    handleAddToCartWithQuantity(service, e.target.value, i)
+                  }
+                />
+              </div>
+              <Container maxWidth="xs">
+                <DatePicker
+                  // className={styles.date}
+                  label="Start Date"
+                  name="birth"
+                  format="YYYY-MM-DD"
+                  
+                  value={dayjs(service.startDate)}
+                  
+                  onChange={(e)=>handleDate(e,i)}
+                />
+              </Container>
+              <button
+                key={service.id}
+                onClick={() => handleDeleteFromCart(service)}
+              >
+                Delete
+              </button>
+            </div>
+          ))
+        : null}
+
+      {/* Mostrar el total */}
+      <p style={{ color: "white" }}>Total: ${total}</p>
+      <button onClick={handleBuy}>Pay</button>
+      {/* Botones para eliminar y comprar */}
+    </div>
   );
 };
 
-export default CartPage
+export default ShopCart;

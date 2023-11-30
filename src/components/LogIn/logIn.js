@@ -3,10 +3,24 @@ import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import style from './login.module.css'
+import { buildReq } from "../../utils/auth0Utils";
+import { useLocalStorage } from "../Hooks/useLocalStorage";
+import axios from "axios";
+import { API_URL } from "../../utils/constants";
 
 export default function logIn() {
-  const { loginWithRedirect, isAuthenticated, logout, } = useAuth0();
+  const { user, loginWithRedirect, isAuthenticated, logout, getAccessTokenSilently } = useAuth0();
 
+  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
+
+  const handleLogout = async ()=>{
+    const req = await buildReq({products: productsCart},getAccessTokenSilently)
+    
+    await axios.put(API_URL + "/cart/"+user.sub,req)
+    window.localStorage.clear()
+
+    logout()
+  }
 
   if (isAuthenticated) {
     return (
@@ -15,7 +29,7 @@ export default function logIn() {
         color="regularButton"
         fullWidth
         required
-        onClick={() => logout()}
+        onClick={handleLogout}
         className={style.button}
       >
         Logout
@@ -29,7 +43,7 @@ export default function logIn() {
           color="regularButton"
           fullWidth
           required
-          onClick={() => loginWithRedirect()}
+          onClick={()=>loginWithRedirect()}
           className={style.button}
         >
           Login

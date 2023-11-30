@@ -183,6 +183,12 @@ function Dashboard() {
             >
               <ListItemText primary="People" />
             </DashBoardListItem>
+            {/* <DashBoardListItem 
+              button
+              onClick={() => {setShowCoachesList(true);setShowClientsUserList(false)}}
+            >
+              <ListItemText primary="Professors" />
+            </DashBoardListItem> */}
           </List>
 
           {/* Categoría Personalization */}
@@ -214,8 +220,10 @@ function Dashboard() {
       >
         {/* Contenido de la página a la derecha del menú */}
         {showClientsUserList && <UserList />}
+
         {showCardServiceList && <ServiceCardList services={transformedServices} />}
         {showServiceGraph && <ServiceGraph data={formattedGraphData} />}
+
       </Box>
     </Box>
   );
