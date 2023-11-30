@@ -22,6 +22,7 @@ import UpdateUser from "./pages/UpdateUser/UpdateUser";
 import ChatWidget from "./components/ChatWidget";
 import useChatWidgetVisibility from "./hooks/ChatWidget/useChatWidgetVisibility";
 import UserServices from "./pages/UserServices/UserServices";
+import UserProducts from "./pages/UserProducts/UserProducts";
 
 export default function App() {
   const chatWidgetVisible = useChatWidgetVisibility();
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
             <Route path="UserServices" element={<UserServices />} />
+            <Route path="UserProducts" element={<UserProducts />} />
           </Routes>
         </div>
       </div>
