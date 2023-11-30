@@ -21,9 +21,11 @@ export default function PhotoUPload({ photo, setPhoto }) {
     const name = Math.random().toString(); //sets a random name for the img
     const imageRef = ref(storage, `/${name}`); // sets it for uploading
     setLoading(true); // enables loading gif
-    uploadBytes(imageRef, file).then(() => { // uploads the image to firebase
+    uploadBytes(imageRef, file).then(() => {
+      // uploads the image to firebase
       const uploadedImg = ref(storage, name); // saves the info for retrieval of the url
-      getDownloadURL(uploadedImg).then((url) => { //retrieves the url 
+      getDownloadURL(uploadedImg).then((url) => {
+        //retrieves the url
         setPhoto(url); // sets the url in the father local state
         setLoading(false); // disables the loading gif
       });
@@ -38,40 +40,24 @@ export default function PhotoUPload({ photo, setPhoto }) {
       }}
     >
       {photo ? ( // if there's a photo it will ask if you want a preview
-        !preview ? ( // if you click preview it will show the photo
-          <button className={styles.preview} onClick={() => setPreview(true)}>
-            {" "}
-            Preview{" "}
-          </button>
-        ) : (
-          <div className={styles.div}>
-            <img
-              className={styles.img}
-              src={photo}
-              alt="Could not load photo"
-            />
-            {
-              // if you click the X it will close the preview
-            }
-            <Button
-              variant="contained"
-              sx={{ position: "absolute", top: 0, right: 0 }}
-              onClick={() => setPreview(false)}
-            >
-              X
-            </Button>
-          </div>
-        )
+        <div className={styles.div}>
+          <img className={styles.img} src={photo} alt="Could not load photo" />
+        </div>
       ) : (
         // if there's not, it will ask you to submit a photo
         <div>
-          {loading ? <img className={styles.img} src={loadingGIF} /> : <h3>Please submit a photo</h3>}
+          {loading ? (
+            <img className={styles.img} src={loadingGIF} />
+          ) : (
+            <h3>Please submit a photo</h3>
+          )}
         </div>
       )}
       <MuiFileInput
         value={photo} // the value is passed down throught props by the father
         onChange={handlePhoto} // pretty self-explanatory
         inputProps={{ accept: ".png, .jpeg" }} // makes sure the file uploaded is a png or jpeg
+        sx={{ color: "white", border: "1px solid white" }}
       />
     </Container>
   );

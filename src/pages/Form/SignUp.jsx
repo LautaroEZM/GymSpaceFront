@@ -1,84 +1,125 @@
 import {
-  Container,
   TextField,
-  IconButton,
   Button,
   Select,
   MenuItem,
-  InputLabel,
+  Box,
+  Typography,
 } from "@mui/material";
 import theme from "../../theme";
 import { useState, useEffect } from "react";
-import VisibilitySharpIcon from "@mui/icons-material/VisibilitySharp";
-import VisibilityOffSharpIcon from "@mui/icons-material/VisibilityOffSharp";
 import styles from "./Form.module.css";
 import { DatePicker } from "@mui/x-date-pickers";
 import Errors from "./Errors";
-import { MuiFileInput } from "mui-file-input";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../REDUX/actions";
+import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
+import { useAuth0 } from "@auth0/auth0-react";
+import { TextFieldForm, OrangeOutlinedButton } from "../../styles/ComponentStyles";
 
-export default function SignUp({ newUser }) {
+export default function SignUp() {
+  const loadingImage =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  const newUser = useSelector((state) => state.user);
 
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
     email: "", // Inicializar email con un valor predeterminado
     birth: "YYYY-MM-DD",
-    gender: "",
+    gender: "Select a gender",
     address: "",
     phone: "",
     contactPhone: "",
-    photo: "undefined",
+    photo: "",
     enrollmentDate: "2023-11-10",
-    status: "unregistered",
+    status: "active",
     systemRole: "User",
   });
 
-  const { user } = newUser || {}; // Desestructurar user solo si newUser tiene un valor
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const [photo, setPhoto] = useState();
+
+  useEffect(() => {
+    setUserData((prevData) => ({ ...prevData, photo: photo }));
+  }, [photo]);
 
   const handleChange = (event) => {
-    // handles the input changes of the form
     const { name, value } = event.target;
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleBirth = (value) => {
-    // handles the date of birth changes
+    console.log("handleBirth: ", value);
     const newDate = formatDate(value);
     setUserData((prevData) => ({ ...prevData, birth: newDate }));
   };
 
-  const handlePhoto = (file) => {
-    if (userData.photo)
-      setUserData((prevData) => ({ ...prevData, photo: undefined }));
-    const url = URL.createObjectURL(file);
-    setUserData((prevData) => ({ ...prevData, photo: url }));
-  };
-
   const formatDate = (value) => {
+    console.log("formatDate: ", value);
     const year = value.$y.toString();
-    const month = (value.$M + 1).toString();
-    const day = value.$D.toString();
+    const month =
+      value.$M < 10 ? "0" + (value.$M + 1) : (value.$M + 1).toString();
+    const day = value.$D < 10 ? "0" + value.$D : value.$D.toString();
+
     const newDate = `${year}-${month}-${day}`;
+    console.log("format date: ", newDate);
     return newDate;
   };
 
   useEffect(() => {
-    console.log(newUser);
     if (newUser && newUser.email) {
-      // Establecer el valor de email solo si newUser tiene un valor y tiene la propiedad email
       setUserData((prevData) => ({ ...prevData, email: newUser.email }));
     }
+    if (newUser && newUser.systemRole) {
+      setUserData((prevData) => ({
+        ...prevData,
+        systemRole: newUser.systemRole,
+      }));
+    }
+    if (newUser && newUser.photo) {
+      setPhoto(newUser.photo);
+    }
+    if (newUser && newUser.firstName) {
+      setUserData((prevData) => ({
+        ...prevData,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        gender: newUser.gender,
+        address: newUser.address,
+        phone: newUser.phone,
+        contactPhone: newUser.contactPhone,
+      }));
+    }
+    setLoading(false);
   }, [newUser]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (!newUser.email) setLoading(true);
+  }, [user]);
 
   const handleSubmit = async () => {
+    if (userData.birth === "YYYY-MM-DD") {
+      window.alert("Select a date of birth");
+      return;
+    }
+    setLoading(true);
     try {
-      const user = await axios.post("https://gymspace-backend.onrender.com/Users", userData);
-      if (user) {
-        window.alert("User created");
+      const userDetailsByIdUrl = `https://gymspacebackend-production-421c.up.railway.app/users/${user.sub}`;
+      const { data } = await axios.put(userDetailsByIdUrl, userData);
+      if (data) {
+        dispatch(getUser(userData));
+        setLoading(false);
         navigate("/");
       }
     } catch (error) {
@@ -86,123 +127,184 @@ export default function SignUp({ newUser }) {
     }
   };
 
-
   return (
-    <Container sx={{ width: 1200, height: 600 }} className={styles.container}>
-      <div className={styles.div3}></div>
-      <div className={styles.div}>
-        <TextField // name input
-          name="firstName"
-          label="Name"
-          value={userData.firstName}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <TextField // lastname input
-          name="lastName"
-          label="Lastname"
-          value={userData.lastName}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <TextField //adress input
-          name="address"
-          label="Address"
-          value={userData.address}
-          onChange={handleChange}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.div2}>
-        <InputLabel name="selectGender" className={styles.input3}>
-          Gender:
-        </InputLabel>
-        <Select // the gender select with it's 3 options
-          labelId="selectGender"
-          name="gender"
-          label="Gender"
-          value={userData.gender}
-          onChange={handleChange}
-          className={styles.input2}
+    <Box
+      sx={{
+        display: "flex",
+        color: "white",
+        minWidth: 150,
+        justifyContent: "center",
+        flexDirection: "column",
+        width: "100%",
+        alignItems: "center",
+      }}
+    >
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            padding: 5,
+            justifyContent: "center",
+            width: "800px",
+            alignSelf: "center",
+            backgroundColor: "#414141",
+          }}
         >
-          <MenuItem id="gender" value={"male"}>
-            Male
-          </MenuItem>
-          <MenuItem id="gender" value={"female"}>
-            Female
-          </MenuItem>
-          <MenuItem id="gender" value={"prefer not to say"}>
-            Prefer not to say
-          </MenuItem>
-        </Select>
-        <DatePicker //the date of birth datePicker
-          className={styles.date}
-          label="Birth"
-          name="birth"
-          format="YYYY-MM-DD"
-          value={userData.birth}
-          onChange={handleBirth}
-        />
-      </div>
-      <div className={styles.div}>
-        <TextField
-          name="phone"
-          label="Phone"
-          value={userData.phone}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <TextField //contact phone input
-          name="contactPhone"
-          label="Contact phone"
-          value={userData.contactPhone}
-          onChange={handleChange}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.div}>
-        <TextField // email input
-          disabled
-          name="email"
-          label="Email"
-          value={userData.email}
-          onChange={handleChange}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.buttonContainer}>
-        <Button // sends the form info to the back-end controller and registers the user
-          variant="contained"
-          color={theme.primary}
-          className={styles.button}
-          onClick={() => handleSubmit()}
+          <img src={loadingImage} className={styles.picture2}></img>
+        </Box>
+      ) : null}
+      <Box sx={{
+        width: "95%",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#414141",
+        maxWidth: "600px",
+        marginTop: "10px",
+      }}>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
         >
-          Sign Up
-        </Button>
-      </div>
-      <Errors
-        userData={userData} // errors component
-      />
-      <div className={styles.photoDiv}>
-        {userData.photo ? (
-          <img
-            className={styles.photo}
-            src={userData.photo}
-            alt="Could not load photo"
+
+          <TextFieldForm // name input
+            name="firstName"
+            label="Name"
+            value={userData.firstName}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
           />
-        ) : (
-          <div className={styles.photo}>
-            <h3>Please submit a photo</h3>
-          </div>
-        )}
-        <MuiFileInput
-          name="photo"
-          value={userData.photo}
-          onChange={handlePhoto}
-          className={styles.photoUpload}
-          inputProps={{ accept: ".png, .jpeg" }}
-        />
-      </div>
-    </Container>
+          <TextFieldForm // lastname input
+            name="lastName"
+            label="Lastname"
+            value={userData.lastName}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+            alignItems: "center",
+          }}
+        >
+          <TextFieldForm //adress input
+            name="address"
+            label="Address"
+            value={userData.address}
+            onChange={handleChange}
+            sx={{ width: "200px" }}
+          />
+          <Select // the gender select with it's 3 options
+            labelId="selectGender"
+            name="gender"
+            label="Gender"
+            value={userData.gender}
+            onChange={handleChange}
+            sx={{ width: "250px", height: "60px" }}
+          >
+            <MenuItem id="gender" value={"Select a gender"}>
+              Select a gender
+            </MenuItem>
+            <MenuItem id="gender" value={"male"}>
+              Male
+            </MenuItem>
+            <MenuItem id="gender" value={"female"}>
+              Female
+            </MenuItem>
+            <MenuItem id="gender" value={"prefer not to say"}>
+              Prefer not to say
+            </MenuItem>
+          </Select>
+          <DatePicker //the date of birth datePicker
+            label="Birth"
+            name="birth"
+            format="YYYY-MM-DD"
+            value={userData.birth}
+            onChange={handleBirth}
+            sx={{ width: "250px" }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <TextFieldForm
+            name="phone"
+            label="Phone"
+            value={userData.phone}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+          <TextFieldForm //contact phone input
+            name="contactPhone"
+            label="Contact phone"
+            value={userData.contactPhone}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+
+        </Box>
+        <Box sx={{
+          display: "flex",
+          padding: 2,
+          justifyContent: "center",
+          alignSelf: "center",
+        }}>
+          <TextFieldForm // email input
+            disabled
+            name="email"
+            label="Email"
+            value={userData.email}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+        </Box >
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <PhotoUpload photo={photo} setPhoto={setPhoto} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <Box>
+            <Errors
+              userData={userData} // errors component
+            />
+          </Box>
+          <OrangeOutlinedButton // sends the form info to the back-end controller and registers the user
+            onClick={() => handleSubmit()}
+          >
+            {loading ? (
+              <img src={loadingImage} className={styles.picture}></img>
+            ) : (
+              "Save"
+            )}
+          </OrangeOutlinedButton>
+
+        </Box>
+      </Box>
+    </Box>
   );
 }

@@ -1,4 +1,6 @@
 .container {
+  width: 100vw;
+  height: 100vh;
   background-color: aliceblue;
 }
 
@@ -57,4 +59,16 @@
   height: 235px;
   width: 290px;
   margin-left: 5px;
+}
+
+.picture{
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+}
+
+.picture{
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
 }

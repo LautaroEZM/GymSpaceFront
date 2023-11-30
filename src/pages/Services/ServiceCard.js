@@ -1,8 +1,8 @@
 import React from "react";
 import { CardMedia, CardContent, CardActions, Typography } from "@mui/material";
 import { SmallOrangeOutlinedButtonLess } from "../../styles/ComponentStyles";
-import { ServicesCard } from "../../styles/ComponentStyles";
-import { LinkNoDeco } from "../../styles/ComponentStyles";
+import { ServicesCard, LinkNoDeco } from "../../styles/ComponentStyles";
+
 
 const ServiceCard = ({ service }) => (
   <ServicesCard>

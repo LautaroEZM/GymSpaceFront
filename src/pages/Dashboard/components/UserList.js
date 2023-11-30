@@ -10,16 +10,27 @@ import {
   CssBaseline,
   ThemeProvider,
   Box,
+  MenuItem,
 } from "@mui/material";
 import theme from "../../../theme";
 import {
   OrangeContainedButton,
+  BlueContainedButton,
   RedOutlinedButton,
   StyledSelect,
   StyledMenuItemSelect,
   TextFieldForm,
   LinkNoDeco,
 } from "../../../styles/ComponentStyles";
+
+import UpdateUser from "../../UpdateUser/UpdateUser";
+import { API_URL } from "../../../utils/constants";
+import { buildReq } from "../../../utils/auth0Utils";
+import axios from "axios";
+
+import { useAuth0 } from "@auth0/auth0-react";
+import Loading from "../../../components/Loading/loading";
+import { useSelector } from "react-redux";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -31,11 +42,22 @@ export default function UserList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("firstName");
 
+  const { getAccessTokenSilently } = useAuth0();
+
+  const loadingImage =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+  const [loading, setLoading] = useState(false);
+
+  const reduxUser = useSelector((state) => state.user);
+
   useEffect(() => {
+    setLoading(true);
     fetch("https://gymspace-backend.onrender.com/Users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
+        setLoading(true);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -60,16 +82,22 @@ export default function UserList() {
     user[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDelete = (userId) => {
-    fetch(`https://gymspace-backend.onrender.com/Users/${userId}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then(() => {
-        const updatedUsers = users.filter((user) => user.userID !== userId);
+  const handleDelete = async (id) => {
+    if (reduxUser.systemRole !== "Admin") {
+      window.alert("You do not have permission to do that");
+      return;
+    }
+    try {
+      const req = await buildReq({}, getAccessTokenSilently);
+      const response = await axios.delete(`${API_URL}/Users/${id}`, req);
+      const { data } = response;
+      if (data) {
+        const updatedUsers = users.filter((user) => user.userID !== id);
         setUsers(updatedUsers);
-      })
-      .catch((error) => console.error("Error deleting user:", error));
+      }
+    } catch (error) {
+      window.alert(error.message);
+    }
   };
 
   const sortedUsers = () => {
@@ -136,95 +164,141 @@ export default function UserList() {
             textAlign: "center",
           }}
         >
+          ROLE
+        </TableCell>
+        <TableCell
+          sx={{
+            fontSize: 18,
+            color: "white",
+            minWidth: 150,
+            backgroundColor: "#414141",
+            border: "1px solid white",
+            textAlign: "center",
+          }}
+        >
           ACTIONS
         </TableCell>
       </TableRow>
     </TableHead>
   );
 
-  const renderTableData = () => (
-    <TableBody>
-      {sortedUsers().map((user, index) => (
-        <TableRow
-          key={user.userID}
-          sx={{
-            backgroundColor: index === hoveredRow ? "#333333" : "#414141",
-            color: "white",
-            border: "1px solid white",
-          }}
-          onMouseEnter={() => setHoveredRow(index)}
-          onMouseLeave={() => setHoveredRow(null)}
-        >
-          <TableCell
+  const renderTableData = () => {
+    const userRedux = useSelector((state) => state.user);
+
+    return (
+      <TableBody>
+        {sortedUsers().map((user, index) => (
+          <TableRow
+            key={user.userID}
             sx={{
-              fontSize: 14,
+              backgroundColor: index === hoveredRow ? "#333333" : "#414141",
               color: "white",
-              maxWidth: 100,
               border: "1px solid white",
             }}
+            onMouseEnter={() => setHoveredRow(index)}
+            onMouseLeave={() => setHoveredRow(null)}
           >
-            {user.firstName}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.lastName}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.gender}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.phone}
-          </TableCell>
-          <TableCell
-            sx={{
-              fontSize: 14,
-              color: "white",
-              maxWidth: 100,
-              border: "1px solid white",
-            }}
-          >
-            {user.status}
-          </TableCell>
-          <TableCell
-            sx={{
-              display: "flex",
-              gap: "8px",
-              minWidth: 150,
-              border: "1px solid white",
-              justifyContent: "center",
-            }}
-          >
-            <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
-              <OrangeContainedButton>DETAIL</OrangeContainedButton>
-            </LinkNoDeco>
-            <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
-              DELETE
-            </RedOutlinedButton>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  );
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.firstName}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.lastName}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.gender}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.phone}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.status}
+            </TableCell>
+
+            <TableCell
+              sx={{
+                fontSize: 14,
+                color: "white",
+                maxWidth: 100,
+                border: "1px solid white",
+              }}
+            >
+              {user.systemRole}
+            </TableCell>
+
+            {userRedux.systemRole === "Admin" ? (
+              <TableCell
+                sx={{
+                  display: "flex",
+                  gap: "8px",
+                  minWidth: 150,
+                  border: "1px solid white",
+                  justifyContent: "center",
+                }}
+              >
+                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
+                </LinkNoDeco>
+                <LinkNoDeco to={`/UpdateUser/${user.userID}`}>
+                  <BlueContainedButton>UPDATE</BlueContainedButton>
+                </LinkNoDeco>
+                <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
+                  "DELETE"
+                </RedOutlinedButton>
+              </TableCell>
+            ) : (
+              <TableCell
+                sx={{
+                  fontSize: 14,
+                  color: "white",
+                  maxWidth: 100,
+                  border: "1px solid white",
+                }}
+              >
+                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
+                </LinkNoDeco>
+              </TableCell>
+            )}
+          </TableRow>
+        ))}
+      </TableBody>
+    );
+  };
 
   const SortableTableCell = ({
     onClick,

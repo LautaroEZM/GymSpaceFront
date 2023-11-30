@@ -16,27 +16,55 @@ import {
 } from "@mui/icons-material";
 import theme from "../../theme";
 import { OrangeOutlinedButton, LinkNoDeco } from "../../styles/ComponentStyles";
-
 import FilterBar from "./FilterBar";
 import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
-
-import Loading from '../../components/Loading/loading'
+import { useSelector, useDispatch} from "react-redux";
+import Loading from "../../components/Loading/loading";
+import { setUser } from "../../REDUX/actions";
+import axios from "axios";
 
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
-  const [loading, setLoading ] = useState(false)
-
+  const [loading, setLoading] = useState(false);
   const [sorting, setSorting] = useState({ type: "none", order: "asc" });
   const [anchorEl, setAnchorEl] = useState(null);
+  const user = useSelector((state) => state.user);
+  const [noProducts, setNoProducts] = useState(false);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
-  const [noProducts, setNoProducts] = useState(false)
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoading(true)
+    const getFavorites = async () => {
+      const userFavorites = `https://gymspace-backend.onrender.com/users/favorites/${user.userID}`;
+      const { data } = await axios.get(userFavorites);
+      const favoriteProducts = [];
+      const favoriteServices = [];
+      for (const fav of data) {
+        if (fav.type === "prod") {
+          favoriteProducts.push(fav.id);
+        }
+        if (fav.type === "serv") {
+          favoriteServices.push(fav.id);
+        }
+      }
+      dispatch(
+        setUser({
+          ...user,
+          favoriteProducts,
+          favoriteServices,
+        })
+      );
+    };
+    if (user.userID) getFavorites();
+  }, [user.userID]);
+
+  useEffect(() => {
+    setLoading(true);
     fetch("https://gymspace-backend.onrender.com/products")
       .then((response) => response.json())
       .then((data) => setProducts(data))
@@ -69,6 +97,10 @@ export default function Marketplace() {
       }
       return prevPriceRange;
     });
+  };
+
+  const handleShowOnlyFavorites = (newShowOnlyFavorites) => {
+    setShowOnlyFavorites(newShowOnlyFavorites);
   };
 
   const handleSortClick = (event) => setAnchorEl(event.currentTarget);
@@ -118,9 +150,9 @@ export default function Marketplace() {
   };
 
   useEffect(() => {
-    if(filteredProducts.length === 0) setNoProducts(true)
-    else setNoProducts(false)
-  }, [filteredProducts])
+    if (filteredProducts.length === 0) setNoProducts(true);
+    else setNoProducts(false);
+  }, [filteredProducts]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -160,14 +192,16 @@ export default function Marketplace() {
                   <SortIcon />
                 </Badge>
               </IconButton>
-              <LinkNoDeco to="/CreateProduct">
-                <OrangeOutlinedButton
-                  variant="outlined"
-                  startIcon={<AddCircleOutlineIcon />}
-                >
-                  NEW PRODUCT
-                </OrangeOutlinedButton>
-              </LinkNoDeco>
+              {user.systemRole === "Admin" ? (
+                <LinkNoDeco to="/CreateProduct">
+                  <OrangeOutlinedButton
+                    variant="outlined"
+                    startIcon={<AddCircleOutlineIcon />}
+                  >
+                    NEW PRODUCT
+                  </OrangeOutlinedButton>
+                </LinkNoDeco>
+              ) : null}
             </Toolbar>
             <FilterBar
               allCategories={allCategories}
@@ -179,10 +213,10 @@ export default function Marketplace() {
               filterOpen={filterOpen}
               setFilterOpen={setFilterOpen}
               maxProductPrice={maxProductPrice}
+              handleShowOnlyFavorites={handleShowOnlyFavorites}
             />
           </AppBar>
         </Box>
-
         <SortMenu
           anchorEl={anchorEl}
           handleSortChange={handleSortChange}
@@ -190,17 +224,18 @@ export default function Marketplace() {
           setAnchorEl={setAnchorEl}
         />
         {noProducts && !loading ? <h1>No products found</h1> : null}
-        {loading 
-        ? <Loading loading={loading} /> 
-        :
-        <>
-        <ProductList
-          sortedProducts={sortedProducts}
-          maxProductPrice={maxProductPrice}
-        />
-        </>
-        }
-
+        {loading ? (
+          <Loading loading={loading} />
+        ) : (
+          <>
+            <ProductList
+              user={user}
+              showOnlyFavorites={showOnlyFavorites}
+              sortedProducts={sortedProducts}
+              maxProductPrice={maxProductPrice}
+            />
+          </>
+        )}
       </Box>
     </ThemeProvider>
   );

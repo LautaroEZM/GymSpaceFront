@@ -6,6 +6,8 @@ import App from "./App";
 import theme from "./theme";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { Provider } from "react-redux";
+import store from "./REDUX/store";
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
@@ -23,6 +25,7 @@ const providerConfig = {
 root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
+    <Provider store={store}>
     <BrowserRouter>
       <Auth0Provider
           {...providerConfig}
@@ -30,5 +33,6 @@ root.render(
         <App/>
       </Auth0Provider>
     </BrowserRouter>
+    </Provider>
   </ThemeProvider>
 );

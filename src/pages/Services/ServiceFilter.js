@@ -11,6 +11,8 @@ import {
   StyledMenuItem,
 } from "../../styles/ComponentStyles";
 
+import { useSelector } from "react-redux";
+
 const ServiceFilter = ({
   categories,
   selectedCategories,
@@ -18,7 +20,11 @@ const ServiceFilter = ({
   handleMenuClick,
   handleMenuItemClick,
   handleClose,
-}) => (
+}) => {
+
+  const user = useSelector((state) => state.user)
+
+ return (
   <Container
     sx={{
       height: "40px",
@@ -31,14 +37,15 @@ const ServiceFilter = ({
     }}
     spacing={2}
   >
-    <LinkNoDeco to="/CreateService">
+    {user.systemRole === 'Admin' || user.systemRole === 'Coach' ? <LinkNoDeco to="/CreateService">
       <OrangeOutlinedButton
         variant="outlined"
         startIcon={<AddCircleOutlineIcon />}
       >
         ADD SERVICE
       </OrangeOutlinedButton>
-    </LinkNoDeco>
+    </LinkNoDeco> : null}
+
     <OrangeOutlinedButton
       variant="outlined"
       onClick={handleMenuClick}
@@ -64,5 +71,5 @@ const ServiceFilter = ({
     </StyledMenu>
   </Container>
 );
-
+      }
 export default ServiceFilter;

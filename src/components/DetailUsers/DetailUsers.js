@@ -3,19 +3,28 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import { Card,CardMedia, Typography, CardContent } from "@mui/material";
 import { Link } from 'react-router-dom';
+import { buildReq } from './../../utils/auth0Utils';
+import { API_URL } from './../../utils/constants';
+import { useAuth0 } from "@auth0/auth0-react";
+
 
 export default function DetailUsers() {
     const { id } = useParams();
     const [User, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    
+    const { getAccessTokenSilently } = useAuth0();
 
-    console.log(id);
     useEffect(() => {
         const getUser = async (id) => {
             try {
-                const response = await axios.get(`https://gymspace-backend.onrender.com/Users/${id}`);
-                const data = response.data
+
+                const req = await buildReq({},getAccessTokenSilently);
+                const response = await axios.get(`${API_URL}/Users/${id}`,req);
+
+                const { data }  = response;
+                console.log(data)
                 if (data) {
                     setUser(data);
                 } else {

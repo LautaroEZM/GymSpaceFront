@@ -5,7 +5,6 @@ import {
   MenuItem,
   InputLabel,
   Button,
-  FormControl,
   Typography,
   Box,
   Radio,
@@ -16,34 +15,57 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function CreateService() {
+  const user = useSelector((state) => state.user);
+
+  const loading =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+  const navigate = useNavigate();
+
+  if (user.systemRole === "User" || user.systemRole === "Guest") navigate("/");
+
+  const coachName = `${user.firstName} ${user.lastName}`;
+
   const [serviceData, setServiceData] = useState({
     name: "",
     description: "",
     category: "",
     price: "",
     startTime: "",
-    duration: "",
+    duration: 0,
     image: "",
     status: "",
-    coachID: "",
+    coachID: "irrelevante",
+    coachIDs: user.systemRole === "Coach" ? [user.userID] : ["Select a coach"],
     capacity: "",
     areaID: "1",
   });
 
-  const [coaches, setCoaches] = useState([]);
+  const [twoCoaches, setTwoCoaches] = useState(false);
+
+  const [coaches, setCoaches] = useState(null);
   const [newImage, setNewImage] = useState(undefined);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCoaches = async () => {
       try {
-        const response = await axios.get("https://gymspace-backend.onrender.com/Coaches");
+        const response = await axios.get(
+          "https://gymspace-backend.onrender.com/users"
+        );
         const { data } = response;
-        if (data) setCoaches(data);
+        if (data) {
+          const coachesList = data.filter(
+            (user) => user.systemRole === "Coach"
+          );
+          setCoaches(coachesList);
+        }
       } catch (error) {
-        window.alert("No se pudieron cargar los entrenadores: " + error.message);
+        window.alert(
+          "No se pudieron cargar los entrenadores: " + error.message
+        );
       }
     };
 
@@ -55,23 +77,72 @@ export default function CreateService() {
   }, [newImage]);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (name === "duration" || name === "capacity") value = parseInt(value);
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleCoachSelect = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "coach1") {
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [value, prevData.coachIDs[1]],
+      }));
+    } else if (name === "coach2") {
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0], value],
+      }));
+    }
+  };
+
+  const handleTwoCoaches = (boolean) => {
+    if (boolean) {
+      setTwoCoaches(true);
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0], "Select a coach"],
+      }));
+    }
+    if (!boolean) {
+      setTwoCoaches(false);
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0]],
+      }));
+    }
   };
 
   const handleTimeChange = (event, fieldName) => {
     const { value } = event.target;
 
-    if (value === '' || (fieldName === 'startTimeHour' && !isNaN(value) && value >= 0 && value <= 23) ||
-      (fieldName === 'startTimeMinute' && !isNaN(value) && value >= 0 && value <= 59)) {
+    if (
+      value === "" ||
+      (fieldName === "startTimeHour" &&
+        !isNaN(value) &&
+        value >= 0 &&
+        value <= 23) ||
+      (fieldName === "startTimeMinute" &&
+        !isNaN(value) &&
+        value >= 0 &&
+        value <= 59)
+    ) {
       setServiceData((prevData) => {
         const updatedTime = {
           ...prevData,
           [fieldName]: value,
         };
         // Formatear la cadena de tiempo
-        if (updatedTime.startTimeHour !== undefined && updatedTime.startTimeMinute !== undefined) {
-          updatedTime.startTime = formatTime(updatedTime.startTimeHour, updatedTime.startTimeMinute);
+        if (
+          updatedTime.startTimeHour !== undefined &&
+          updatedTime.startTimeMinute !== undefined
+        ) {
+          updatedTime.startTime = formatTime(
+            updatedTime.startTimeHour,
+            updatedTime.startTimeMinute
+          );
         }
         return updatedTime;
       });
@@ -79,14 +150,25 @@ export default function CreateService() {
   };
 
   function formatTime(hour, minute) {
-    const formattedHour = String(hour).padStart(2, '0');
-    const formattedMinute = String(minute).padStart(2, '0');
+    const formattedHour = String(hour).padStart(2, "0");
+    const formattedMinute = String(minute).padStart(2, "0");
     return `${formattedHour}:${formattedMinute}`;
   }
 
   const handleSubmit = async () => {
+    if (serviceData.coachIDs[0] === serviceData.coachIDs[1]) {
+      window.alert("If");
+      return;
+    }
+    if (serviceData.coachIDs[0] === "Select a coach") {
+      window.alert("Please, select a coach first");
+      return;
+    }
     try {
-      const response = await axios.post("https://gymspace-backend.onrender.com/Services", serviceData);
+      const response = await axios.post(
+        "https://gymspace-backend.onrender.com/Services",
+        serviceData
+      );
       window.alert("Servicio creado");
 
       navigate("/Services");
@@ -197,26 +279,27 @@ export default function CreateService() {
             multiline
             required
             value={serviceData.description}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
               },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
                 },
-                '&:hover fieldset': {
-                  borderColor: 'white',
+                "&:hover fieldset": {
+                  borderColor: "white",
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
                 },
               },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
                 },
               },
             }}
@@ -228,26 +311,27 @@ export default function CreateService() {
             fullWidth
             required
             value={serviceData.price}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
               },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
                 },
-                '&:hover fieldset': {
-                  borderColor: 'white',
+                "&:hover fieldset": {
+                  borderColor: "white",
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
                 },
               },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
                 },
               },
             }}
@@ -259,26 +343,27 @@ export default function CreateService() {
             fullWidth
             required
             value={serviceData.capacity}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
               },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
                 },
-                '&:hover fieldset': {
-                  borderColor: 'white',
+                "&:hover fieldset": {
+                  borderColor: "white",
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
                 },
               },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
                 },
               },
             }}
@@ -290,26 +375,27 @@ export default function CreateService() {
             fullWidth
             required
             value={serviceData.duration}
-            onChange={handleChange} sx={{
-              marginTop: '10px',
-              '& .MuiInputBase-input': {
-                color: 'white',
+            onChange={handleChange}
+            sx={{
+              marginTop: "10px",
+              "& .MuiInputBase-input": {
+                color: "white",
               },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
                 },
-                '&:hover fieldset': {
-                  borderColor: 'white',
+                "&:hover fieldset": {
+                  borderColor: "white",
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#ff9721',
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff9721",
                 },
               },
-              '& .MuiInputLabel-root': {
-                color: 'white',
-                '&.Mui-focused': {
-                  color: '#ff9721',
+              "& .MuiInputLabel-root": {
+                color: "white",
+                "&.Mui-focused": {
+                  color: "#ff9721",
                 },
               },
             }}
@@ -326,25 +412,25 @@ export default function CreateService() {
               sx={{
                 margin: "2px",
                 width: "100px",
-                marginTop: '10px',
-                '& .MuiInputBase-input': {
-                  color: 'white',
+                marginTop: "10px",
+                "& .MuiInputBase-input": {
+                  color: "white",
                 },
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'white',
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
                   },
-                  '&:hover fieldset': {
-                    borderColor: 'white',
+                  "&:hover fieldset": {
+                    borderColor: "white",
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#ff9721',
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#ff9721",
                   },
                 },
-                '& .MuiInputLabel-root': {
-                  color: 'white',
-                  '&.Mui-focused': {
-                    color: '#ff9721',
+                "& .MuiInputLabel-root": {
+                  color: "white",
+                  "&.Mui-focused": {
+                    color: "#ff9721",
                   },
                 },
               }}
@@ -357,34 +443,41 @@ export default function CreateService() {
               fullWidth
               required
               value={serviceData.startTimeMinute}
-              onChange={(event) => handleTimeChange(event, "startTimeMinute")}//
+              onChange={(event) => handleTimeChange(event, "startTimeMinute")} //
               sx={{
                 margin: "2px",
                 width: "100px",
-                marginTop: '10px',
-                '& .MuiInputBase-input': {
-                  color: 'white',
+                marginTop: "10px",
+                "& .MuiInputBase-input": {
+                  color: "white",
                 },
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'white',
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
                   },
-                  '&:hover fieldset': {
-                    borderColor: 'white',
+                  "&:hover fieldset": {
+                    borderColor: "white",
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#ff9721',
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#ff9721",
                   },
                 },
-                '& .MuiInputLabel-root': {
-                  color: 'white',
-                  '&.Mui-focused': {
-                    color: '#ff9721',
+                "& .MuiInputLabel-root": {
+                  color: "white",
+                  "&.Mui-focused": {
+                    color: "#ff9721",
                   },
                 },
               }}
             />
-            <Typography variant="body2" sx={{ marginLeft: '8px', color: 'transparent', marginTop: '10px' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: "8px",
+                color: "transparent",
+                marginTop: "10px",
+              }}
+            >
               Start Time: {serviceData.startTime}
             </Typography>
           </Container>
@@ -399,43 +492,132 @@ export default function CreateService() {
             value={serviceData.status}
             onChange={handleChange}
             sx={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: '10px',
-              '& .Mui-checked': {
-                color: '#ff9721', // Cambia el color del icono cuando está seleccionado
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: "10px",
+              "& .Mui-checked": {
+                color: "#ff9721", // Cambia el color del icono cuando está seleccionado
               },
             }}
           >
             <FormControlLabel
               value="available"
-              control={<Radio sx={{ color: 'white' }} />}
+              control={<Radio sx={{ color: "white" }} />}
               label="Available"
             />
             <FormControlLabel
               value="unavailable"
-              control={<Radio sx={{ color: 'white' }} />}
+              control={<Radio sx={{ color: "white" }} />}
               label="Unavailable"
             />
           </RadioGroup>
 
-          <InputLabel name="selectCoachs">TRAINER</InputLabel>
-          <Select
-            labelId="selectCoach"
-            name="coachID"
-            label="Entrenador"
-            value={serviceData.coachID}
-            onChange={handleChange}
-          >
-            {coaches
-              ? coaches.map((coach, i) => (
-                <MenuItem key={i} id="coachID" value={coach.userID}>
-                  {`${coach.firstName} ${coach.lastName}`}
-                </MenuItem>
-              ))
-              : null}
-          </Select>
-
+          {user.systemRole === "Admin" ? (
+            coaches ? (
+              <div>
+                <InputLabel name="selectCoachs">TRAINERS</InputLabel>
+                {twoCoaches ? (
+                  <Box>
+                    <Select
+                      labelId="selectCoach"
+                      name="coach1"
+                      label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
+                      value={serviceData.coachIDs[0]}
+                      onChange={handleCoachSelect}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Select
+                      labelId="selectCoach"
+                      name="coach2"
+                      label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
+                      value={serviceData.coachIDs[1]}
+                      onChange={handleCoachSelect}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Button
+                      sx={{ color: "white", border: "1px solid white" }}
+                      onClick={() => handleTwoCoaches(false)}
+                    >
+                      <Typography variant="h5">-</Typography>{" "}
+                    </Button>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Select
+                      labelId="selectCoach"
+                      name="coachID"
+                      label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
+                      value={serviceData.coachIDs[0]}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Button
+                      sx={{ color: "white", border: "1px solid white" }}
+                      onClick={() => handleTwoCoaches(true)}
+                    >
+                      <Typography variant="h5">+</Typography>
+                    </Button>
+                  </Box>
+                )}
+              </div>
+            ) : (
+              <img src={loading} alt="loading..."></img>
+            )
+          ) : (
+            <TextField
+              name="coach"
+              label="Coach"
+              fullWidth
+              required
+              autoFocus
+              value={coachName}
+              disabled
+              sx={{
+                marginTop: "10px",
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#ff9721",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "white",
+                  "&.Mui-focused": {
+                    color: "#ff9721",
+                  },
+                },
+              }}
+            />
+          )}
         </Box>
         <Button
           variant="contained"
