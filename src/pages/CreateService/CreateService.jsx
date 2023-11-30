@@ -38,9 +38,8 @@ export default function CreateService() {
     duration: 0,
     image: "",
     status: "",
-    coachID: 'irrelevante',
-    coachIDs:
-      user.systemRole === "Coach" ? [user.userID] : ["Select a coach"],
+    coachID: "irrelevante",
+    coachIDs: user.systemRole === "Coach" ? [user.userID] : ["Select a coach"],
     capacity: "",
     areaID: "1",
   });
@@ -58,7 +57,9 @@ export default function CreateService() {
         );
         const { data } = response;
         if (data) {
-          const coachesList = data.filter((user) => user.systemRole === 'Coach');
+          const coachesList = data.filter(
+            (user) => user.systemRole === "Coach"
+          );
           setCoaches(coachesList);
         }
       } catch (error) {
@@ -67,7 +68,7 @@ export default function CreateService() {
         );
       }
     };
-  
+
     fetchCoaches();
   }, []);
 
@@ -155,7 +156,6 @@ export default function CreateService() {
   }
 
   const handleSubmit = async () => {
-    
     if (serviceData.coachIDs[0] === serviceData.coachIDs[1]) {
       window.alert("If");
       return;
@@ -176,7 +176,7 @@ export default function CreateService() {
       window.alert("No se pudo crear el servicio: " + error.message);
     }
   };
-  
+
   return (
     <Container
       sx={{
@@ -522,6 +522,7 @@ export default function CreateService() {
                       labelId="selectCoach"
                       name="coach1"
                       label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
                       value={serviceData.coachIDs[0]}
                       onChange={handleCoachSelect}
                     >
@@ -536,6 +537,7 @@ export default function CreateService() {
                       labelId="selectCoach"
                       name="coach2"
                       label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
                       value={serviceData.coachIDs[1]}
                       onChange={handleCoachSelect}
                     >
@@ -546,7 +548,12 @@ export default function CreateService() {
                         </MenuItem>
                       ))}
                     </Select>
-                    <Button onClick={() => handleTwoCoaches(false)}>-</Button>
+                    <Button
+                      sx={{ color: "white", border: "1px solid white" }}
+                      onClick={() => handleTwoCoaches(false)}
+                    >
+                      <Typography variant="h5">-</Typography>{" "}
+                    </Button>
                   </Box>
                 ) : (
                   <Box>
@@ -554,6 +561,7 @@ export default function CreateService() {
                       labelId="selectCoach"
                       name="coachID"
                       label="Entrenador"
+                      sx={{ color: "white", border: "1px solid white" }}
                       value={serviceData.coachIDs[0]}
                       onChange={handleChange}
                     >
@@ -564,7 +572,12 @@ export default function CreateService() {
                         </MenuItem>
                       ))}
                     </Select>
-                    <Button onClick={() => handleTwoCoaches(true)}>+</Button>
+                    <Button
+                      sx={{ color: "white", border: "1px solid white" }}
+                      onClick={() => handleTwoCoaches(true)}
+                    >
+                      <Typography variant="h5">+</Typography>
+                    </Button>
                   </Box>
                 )}
               </div>
