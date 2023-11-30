@@ -189,12 +189,12 @@ const TopBarMenu = () => {
             >
               <Box p={2}>
                 {user ? (
-                  <Box className={style.accountContainer}>
+                  <Box className={style.accountContainer} >
                     <TopBarButton
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      fullWidth={true}
+                      sx={{width: 1}}
                       onClick={() => handleRedirect("Profile")}
                     >
                       Profile
@@ -203,7 +203,7 @@ const TopBarMenu = () => {
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      fullWidth={true}
+                      sx={{width: 1}}
                       onClick={() => handleRedirect("UserProducts")}
                     >
                       Your products
@@ -211,12 +211,13 @@ const TopBarMenu = () => {
                     <TopBarButton
                       variant="contained"
                       color="menuButton"
-                      fullWidth="true"
                       disableElevation
+                      sx={{width: 1}}
                       onClick={() => handleRedirect("UserServices")}
                     >
                       Your services
                     </TopBarButton>
+
                     <LogIn />
                   </Box>
                 ) : (
