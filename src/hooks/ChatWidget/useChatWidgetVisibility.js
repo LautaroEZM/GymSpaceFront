@@ -6,7 +6,7 @@ const useChatWidgetVisibility = () => {
   const [chatWidgetVisible, setChatWidgetVisible] = useState(false);
 
   useEffect(() => {
-    const toDisplayPaths = ['/', '/Marketplace', '/Services']
+    const toDisplayPaths = ['/', '/Marketplace', '/Services', '/ShopCart']
     setChatWidgetVisible(toDisplayPaths.includes(location.pathname));
   }, [location.pathname]);
 
