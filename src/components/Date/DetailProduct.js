@@ -9,7 +9,6 @@ export default function DetailProduct() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(id);
   useEffect(() => {
     const getProd = async (id) => {
       try {

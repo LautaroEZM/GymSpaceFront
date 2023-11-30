@@ -19,7 +19,7 @@ export const warning = (boolean) => {
 }
 
 export const setUser = (user) => {
-    console.log("console log de user ======", user)
+    
     return {
         type: SET_USER,
         payload: user,

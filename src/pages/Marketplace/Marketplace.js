@@ -21,7 +21,7 @@ import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
 import { useSelector, useDispatch} from "react-redux";
 import Loading from "../../components/Loading/loading";
-import { setUser } from "../../REDUX/actions";
+
 import axios from "axios";
 
 export default function Marketplace() {

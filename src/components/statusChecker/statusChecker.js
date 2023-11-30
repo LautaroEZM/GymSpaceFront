@@ -8,7 +8,7 @@ import { warning } from "../../REDUX/actions";
 import { Box } from "@mui/system";
 
 export const status = (redux, auth0) => {
-  console.log(auth0);
+  
   if (redux.status === "unregistered") {
     return "complete";
   } else if (!auth0) {

@@ -44,12 +44,12 @@ export default function UserServices() {
   const [userProducts, setUserProducts] = useState();
 
   useEffect(() => {
-    console.log("user");
+
     const id = user.userID;
     const getUser = async (id) => {
       try {
         const req = await buildReq({}, getAccessTokenSilently);
-        console.log("token");
+
         const response = await axios.get(`${API_URL}/userproducts/${id}`, req);
         const { data } = response;
         if (data) {
@@ -66,7 +66,6 @@ export default function UserServices() {
   }, [user]);
 
   useEffect(() => {
-    console.log(userProducts);
   }, [userProducts]);
 
   if (loading) return <Loading loading={loading} />;

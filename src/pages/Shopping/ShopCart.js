@@ -104,7 +104,7 @@ const ShopCart = () => {
       });
 
       const urlToPay = data.response.init_point;
-      console.log(urlToPay)
+  
       if(urlToPay){
         const req = await buildReq({products: productsCart, services:servicesCart},getAccessTokenSilently)
         await axios.put(API_URL + "/cart/"+user.sub,req)

@@ -80,7 +80,6 @@ export default function UpdateUser() {
 
   const handleSubmit = async () => {
     try {
-      console.log(userUpdate);
 
       const response = await axios.put(`${API_URL}/Users/${id}`, userUpdate);
       window.alert("Usuario Actualizado");

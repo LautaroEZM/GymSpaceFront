@@ -120,7 +120,7 @@ export default (data) => {
         })(),
         //
     ]
-    console.log(contexts);
+    
     return contexts.join(`\n\n`)
 }
 

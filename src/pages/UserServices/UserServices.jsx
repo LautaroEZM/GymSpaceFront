@@ -43,17 +43,13 @@ export default function UserServices() {
 
   const today = getDate();
 
-  console.log("today,", today);
-
   const [userServices, setUserServices] = useState();
 
   useEffect(() => {
-    console.log("user");
     const id = user.userID;
     const getUser = async (id) => {
       try {
         const req = await buildReq({}, getAccessTokenSilently);
-        console.log("token");
         const response = await axios.get(`${API_URL}/userservices/${id}`, req);
         const { data } = response;
         if (data) {
@@ -71,7 +67,7 @@ export default function UserServices() {
   }, [user]);
 
   useEffect(() => {
-    console.log(userServices);
+    
   }, [userServices]);
 
   if (loading) return <Loading loading={loading} />;

@@ -81,13 +81,13 @@ const TopBarMenu = () => {
         if (!productsCart || !productsCart.length) {
           const req = await buildReq({}, getAccessTokenSilently);
           const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
-          console.log(data);
+          
           setproductsCart(data.products);
         }
         if (!servicesCart ||!servicesCart.length) {
           const req = await buildReq({}, getAccessTokenSilently);
           const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
-          console.log(data);
+          
           setServicesCart(data.services);
         }
       }
