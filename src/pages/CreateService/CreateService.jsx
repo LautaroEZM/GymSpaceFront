@@ -38,10 +38,14 @@ export default function CreateService() {
     duration: 0,
     image: "",
     status: "",
-    coachID: user.systemRole === "Coach" ? user.userID : "Select a coach",
+    coachID: 'irrelevante',
+    coachIDs:
+      user.systemRole === "Coach" ? [user.userID] : ["Select a coach"],
     capacity: "",
     areaID: "1",
   });
+
+  const [twoCoaches, setTwoCoaches] = useState(false);
 
   const [coaches, setCoaches] = useState(null);
   const [newImage, setNewImage] = useState(undefined);
@@ -70,8 +74,41 @@ export default function CreateService() {
 
   const handleChange = (event) => {
     let { name, value } = event.target;
-    if(name === 'duration' || name === 'capacity') value = parseInt(value)
+    if (name === "duration" || name === "capacity") value = parseInt(value);
     setServiceData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleCoachSelect = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "coach1") {
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [value, prevData.coachIDs[1]],
+      }));
+    } else if (name === "coach2") {
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0], value],
+      }));
+    }
+  };
+
+  const handleTwoCoaches = (boolean) => {
+    if (boolean) {
+      setTwoCoaches(true);
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0], "Select a coach"],
+      }));
+    }
+    if (!boolean) {
+      setTwoCoaches(false);
+      setServiceData((prevData) => ({
+        ...prevData,
+        coachIDs: [prevData.coachIDs[0]],
+      }));
+    }
   };
 
   const handleTimeChange = (event, fieldName) => {
@@ -115,7 +152,12 @@ export default function CreateService() {
   }
 
   const handleSubmit = async () => {
-    if (serviceData.coachID === "Select a coach") {
+    
+    if (serviceData.coachIDs[0] === serviceData.coachIDs[1]) {
+      window.alert("If");
+      return;
+    }
+    if (serviceData.coachIDs[0] === "Select a coach") {
       window.alert("Please, select a coach first");
       return;
     }
@@ -134,7 +176,8 @@ export default function CreateService() {
 
   useEffect(() => {
     console.log(serviceData);
-  }, [serviceData]);
+    console.log(twoCoaches);
+  }, [serviceData, twoCoaches]);
 
   return (
     <Container
@@ -474,21 +517,58 @@ export default function CreateService() {
           {user.systemRole === "Admin" ? (
             coaches ? (
               <div>
-                <InputLabel name="selectCoachs">TRAINER</InputLabel>
-                <Select
-                  labelId="selectCoach"
-                  name="coachID"
-                  label="Entrenador"
-                  value={serviceData.coachID}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="Select a coach">Select a Coach</MenuItem>
-                  {coaches.map((coach, i) => (
-                    <MenuItem key={i} id="coachID" value={coach.userID}>
-                      {`${coach.firstName} ${coach.lastName}`}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <InputLabel name="selectCoachs">TRAINERS</InputLabel>
+                {twoCoaches ? (
+                  <Box>
+                    <Select
+                      labelId="selectCoach"
+                      name="coach1"
+                      label="Entrenador"
+                      value={serviceData.coachIDs[0]}
+                      onChange={handleCoachSelect}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Select
+                      labelId="selectCoach"
+                      name="coach2"
+                      label="Entrenador"
+                      value={serviceData.coachIDs[1]}
+                      onChange={handleCoachSelect}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Button onClick={() => handleTwoCoaches(false)}>-</Button>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Select
+                      labelId="selectCoach"
+                      name="coachID"
+                      label="Entrenador"
+                      value={serviceData.coachIDs[0]}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="Select a coach">Select a Coach</MenuItem>
+                      {coaches.map((coach, i) => (
+                        <MenuItem key={i} id="coachID" value={coach.userID}>
+                          {`${coach.firstName} ${coach.lastName}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Button onClick={() => handleTwoCoaches(true)}>+</Button>
+                  </Box>
+                )}
               </div>
             ) : (
               <img src={loading} alt="loading..."></img>
