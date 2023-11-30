@@ -1,1 +1,1 @@
-export const API_URL = 'https://gymspace-backend.onrender.com'
+export const API_URL = 'http://localhost:3004'

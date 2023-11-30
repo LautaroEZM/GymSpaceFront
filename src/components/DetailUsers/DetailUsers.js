@@ -24,6 +24,7 @@ export default function DetailUsers() {
                 const response = await axios.get(`${API_URL}/Users/${id}`,req);
 
                 const { data }  = response;
+                console.log(data)
                 if (data) {
                     setUser(data);
                 } else {

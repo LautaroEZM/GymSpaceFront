@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -7,7 +7,6 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Button,
 } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -15,9 +14,17 @@ import {
   SmallOrangeOutlinedButton,
   ProductCard,
 } from "../../styles/ComponentStyles";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
+import { useEffect } from "react";
 
 export default function ProductList({ sortedProducts }) {
+  
+  const [selectedProducts, setSelectedProducts] = useLocalStorage("product",[]);
+  
+  useEffect(()=>{},[selectedProducts])
+
+
   return (
     <Box
       sx={{
@@ -29,7 +36,7 @@ export default function ProductList({ sortedProducts }) {
     >
       <Box sx={{ width: "90%", marginBottom: "40px" }}>
         <Grid container spacing={2}>
-          {sortedProducts().map((product, i) => (
+          {sortedProducts().map((product,i) => (
             <Grid
               item
               key={i}
@@ -90,12 +97,29 @@ export default function ProductList({ sortedProducts }) {
                   </Link>
                 </CardActions>
                 <CardActions sx={{ justifyContent:"right" }}>
-                  <IconButton 
+                  {selectedProducts.filter(item => item.productID ===product.productID).length?<IconButton 
                    color="primary"
                    aria-label="add to shopping cart"
+                   sx={{fontSize: '13px' }}
+                  onClick={()=>setSelectedProducts(selectedProducts.filter(item => item.productID !== product.productID))}
                    >
+                    <div>X</div>
+                    
+
+                    
+                  </IconButton>:<IconButton 
+                   color="primary"
+                   aria-label="add to shopping cart"
+                   sx={{fontSize: '13px' }}
+                  onClick={()=>setSelectedProducts([...selectedProducts, {...product,quantity:1}])}
+                   >
+                    <div>Añadir</div>
+                    <div>Al</div>
+                    <div>Carrito</div>
+
                     <AddShoppingCartIcon />
-                  </IconButton>
+                  </IconButton>}
+                  
                 </CardActions>
               </ProductCard>
             </Grid>
