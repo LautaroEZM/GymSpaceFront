@@ -18,12 +18,14 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
 import DetailUsers from "./components/DetailUsers/DetailUsers";
 import Profile from "./pages/Profile/Profile";
-import UpdateUser from './pages/UpdateUser/UpdateUser';
-import ChatWidget from './components/ChatWidget'
+import UpdateUser from "./pages/UpdateUser/UpdateUser";
+import ChatWidget from "./components/ChatWidget";
 import useChatWidgetVisibility from "./hooks/ChatWidget/useChatWidgetVisibility";
+import UserServices from "./pages/UserServices/UserServices";
+import UserProducts from "./pages/UserProducts/UserProducts";
 
 export default function App() {
-  const chatWidgetVisible = useChatWidgetVisibility()
+  const chatWidgetVisible = useChatWidgetVisibility();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -32,24 +34,26 @@ export default function App() {
           <TopBarMenu></TopBarMenu>
           {chatWidgetVisible && <ChatWidget />}
           <Routes>
-            <Route path="/" element={ <Home /> } />
+            <Route path="/" element={<Home />} />
             <Route path="/Marketplace" element={<Marketplace />} />
             <Route path="/Services" element={<Services />} />
-            <Route path="/ShopCart" element={<ShopCart/>} />
+            <Route path="/ShopCart" element={<ShopCart />} />
             <Route path="/Users" element={<UserList />} />
             <Route path="/Marketplace/detail/:id" element={<DetailProduct />} />
-            <Route path="/ServiceDetail/:id" element={<DetailService/>} />
+            <Route path="/ServiceDetail/:id" element={<DetailService />} />
             <Route path="/UsersDetail/:id" element={<DetailUsers />} />
             <Route path="/signUp" element={<SignUp />} />
-            <Route path="/CreateProduct" element={<CreateProduct/>} />
+            <Route path="/CreateProduct" element={<CreateProduct />} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/UpdateUser/:id" element={<UpdateUser />} />
-            <Route path="/signUp" element={<SignUp/>} />
+            <Route path="/signUp" element={<SignUp />} />
             <Route path="/CreateProduct" element={<CreateProduct />} />
             <Route path="/CreateService" element={<CreateService />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="UserServices" element={<UserServices />} />
+            <Route path="UserProducts" element={<UserProducts />} />
           </Routes>
         </div>
       </div>

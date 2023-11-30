@@ -54,17 +54,20 @@ export default function CreateService() {
     const fetchCoaches = async () => {
       try {
         const response = await axios.get(
-          "https://gymspace-backend.onrender.com/coaches"
+          "https://gymspace-backend.onrender.com/users"
         );
         const { data } = response;
-        if (data) setCoaches(data);
+        if (data) {
+          const coachesList = data.filter((user) => user.systemRole === 'Coach');
+          setCoaches(coachesList);
+        }
       } catch (error) {
         window.alert(
           "No se pudieron cargar los entrenadores: " + error.message
         );
       }
     };
-
+  
     fetchCoaches();
   }, []);
 
@@ -173,12 +176,7 @@ export default function CreateService() {
       window.alert("No se pudo crear el servicio: " + error.message);
     }
   };
-
-  useEffect(() => {
-    console.log(serviceData);
-    console.log(twoCoaches);
-  }, [serviceData, twoCoaches]);
-
+  
   return (
     <Container
       sx={{
