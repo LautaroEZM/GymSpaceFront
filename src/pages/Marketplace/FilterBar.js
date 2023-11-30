@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Collapse,
   TextField,
   Typography,
   Slider,
-  Button,
+  Switch,
 } from "@mui/material";
-import { OrangeButtonFilter, OrangeOutlinedButton } from "../../styles/ComponentStyles";
+import { OrangeButtonFilter } from "../../styles/ComponentStyles";
 
 export default function FilterBar({
   allCategories,
@@ -18,10 +18,12 @@ export default function FilterBar({
   handlePriceFilter,
   filterOpen,
   maxProductPrice,
+  handleShowOnlyFavorites,
 }) {
   const initialPriceRange = [0, maxProductPrice];
   const [priceRange, setPriceRange] = useState(initialPriceRange);
   const [minPrice, maxPrice] = priceRange;
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   if (
     propPriceRange[0] !== priceRange[0] ||
@@ -29,6 +31,11 @@ export default function FilterBar({
   ) {
     setPriceRange(propPriceRange);
   }
+
+  const handleFavoritesSwitchChange = () => {
+    setShowOnlyFavorites(!showOnlyFavorites);
+    handleShowOnlyFavorites(!showOnlyFavorites);
+  };
 
   return (
     <Collapse in={filterOpen} timeout="auto" unmountOnExit>
@@ -133,6 +140,26 @@ export default function FilterBar({
               }}
             />
           </Box>
+        </Box>
+
+        {/* Favorites Switch */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "80%",
+            mt: 2,
+          }}
+        >
+          <Typography variant="body1" sx={{ color: "#ff9721" }}>
+            Show Favorites
+          </Typography>
+          <Switch
+            checked={showOnlyFavorites}
+            onChange={handleFavoritesSwitchChange}
+            color="primary"
+          />
         </Box>
       </Box>
     </Collapse>
