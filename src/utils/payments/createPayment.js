@@ -22,6 +22,7 @@ const postPaymentLink = async (data) => {
     const options = {
         method: 'POST',
         url: "https://gymspace-backend.onrender.com/payments/create-order",
+        // url: "http://localhost:3001/payments/create-order",
         data
     };
 

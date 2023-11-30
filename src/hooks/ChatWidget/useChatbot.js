@@ -6,7 +6,7 @@ import shoppingCart from '../../utils/chat/shoppingCart';
 import getGPTResponse from '../../utils/chat/getGPTResponse';
 import { getMenuMessage } from '../../components/ChatWidget/ChatMenu';
 
-const useChatbot = (initialMessage) => {
+const useChatbot = (initialMessage, chatBotContext) => {
     const CHATBOT_NAME = "GymBot";
 
     const [typing, setTyping] = useState(false);
@@ -46,13 +46,12 @@ const useChatbot = (initialMessage) => {
             // Get GPT Message
             const systemMessage = {
                 role: "system",
-                content: generateGymBotContext({ shoppingCart })
-                // content: generateGymBotContext({ linkCreated: true, shoppingCart })
+                content: chatBotContext
             }
             const apiData = await getGPTResponse({
                 model: "gpt-3.5-turbo-1106",
                 messages: [systemMessage, ...apiMessages],
-                max_tokens: 120,
+                max_tokens: 1200,
                 temperature: 0.2,
                 n: 1
             });
