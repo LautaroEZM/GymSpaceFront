@@ -60,10 +60,11 @@ const ShopCart = () => {
 
       setServicesCart(updatedCart);
     } else {
+      
       const updatedCart = productsCart.filter(
-        (item) => item.productID !== prodServ.productId
+        (item) => item.productID !== prodServ.productID
       );
-
+      console.log(updatedCart)
       setproductsCart(updatedCart);
     }
   };
@@ -96,15 +97,20 @@ const ShopCart = () => {
         }),
       ];
       const userId = await getUUID(user.sub);
-      console.log(itemsToPay);
+      
       const { data } = await axios.post(API_URL + "/payments/create-order", {
         userId: userId,
         items: itemsToPay,
       });
 
       const urlToPay = data.response.init_point;
-      const external_reference = data.response.external_reference;
-      window.open(urlToPay, "_blank");
+      console.log(urlToPay)
+      if(urlToPay){
+        const req = await buildReq({products: productsCart, services:servicesCart},getAccessTokenSilently)
+        await axios.put(API_URL + "/cart/"+user.sub,req)
+        window.localStorage.clear()
+      window.location.href = urlToPay
+      }
     } catch (error) {
       console.log(error);
     }
