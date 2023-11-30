@@ -1,4 +1,4 @@
-import {GET_USER, WARNING} from './actions'
+import {GET_USER, WARNING, SET_USER} from './actions'
 
 const initState = {
     user: { systemRole: "Guest" },
@@ -9,6 +9,10 @@ const initState = {
 const reducer = (state = initState, action) => {
     switch(action.type){
         case GET_USER: return {
+            ...state,
+            user: action.payload
+        }
+        case SET_USER: return {
             ...state,
             user: action.payload
         }
