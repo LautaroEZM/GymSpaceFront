@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import { Box } from '@mui/system';
 
 const ServiceCard = ({ serviceName, extraInfo, enrolledPeople, coaches }) => {
     return (
@@ -17,24 +18,24 @@ const ServiceCard = ({ serviceName, extraInfo, enrolledPeople, coaches }) => {
                     </Typography>
                 </CardContent>
                 <CardContent>
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ flex: 1 }}>
+                    <Box style={{ display: 'flex' }}>
+                        <Box style={{ flex: 1 }}>
                             <Typography variant="subtitle1">Users : {enrolledPeople.length}</Typography>
                             <List>
                                 {enrolledPeople.map((person, index) => (
                                     <ListItem key={index}>{person}</ListItem>
                                 ))}
                             </List>
-                        </div>
-                        <div style={{ flex: 1 }}>
+                        </Box>
+                        <Box style={{ flex: 1 }}>
                             <Typography variant="subtitle1">Coaches : {coaches.length}</Typography>
                             <List>
                                 {coaches.map((coach, index) => (
                                     <ListItem key={index}>{coach}</ListItem>
                                 ))}
                             </List>
-                        </div>
-                    </div>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
     );

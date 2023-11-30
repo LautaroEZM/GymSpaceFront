@@ -1,21 +1,22 @@
 import React from 'react';
 import ServiceCard from './ServiceCard';
+import { Box } from '@mui/system';
 
 const ServiceCardList = ({ services }) => {
 
     return (
-        <div>
+        <Box>
             {services.map((service, index) => (
-                <div key={index} style={{ marginBottom: '20px' }}>
+                <Box key={index} style={{ marginBottom: '20px' }}>
                     <ServiceCard
                         serviceName={service.serviceName}
                         extraInfo={service.extraInfo}
                         enrolledPeople={service.enrolledPeople}
                         coaches={service.coaches}
                     />
-                </div>
+                </Box>
             ))}
-        </div>
+        </Box>
     );
 };
 
