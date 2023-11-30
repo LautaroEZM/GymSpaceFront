@@ -35,7 +35,7 @@ const TopBarMenu = () => {
   const [anchorElHome, setAnchorElHome] = useState(null);
   const [anchorElIcon, setAnchorElIcon] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
-  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
+  const [productsCart, setproductsCart] = useLocalStorage("product", []);
   const [servicesCart, setServicesCart] = useLocalStorage("service", []);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPosition, setMobileMenuPosition] = useState({
@@ -77,12 +77,12 @@ const TopBarMenu = () => {
   useEffect(() => {
     const getcartAPI = async () => {
       if (user && isAuthenticated) {
-        if(!productsCart.length){
+        if(!productsCart || !productsCart.length){
         const req = await buildReq({},getAccessTokenSilently)
         const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
         console.log(data)
         setproductsCart(data.products)}
-        if(!servicesCart.length){
+        if(!servicesCart ||!servicesCart.length){
           const req = await buildReq({},getAccessTokenSilently)
           const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
           console.log(data)
