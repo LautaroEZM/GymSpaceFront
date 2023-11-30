@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
-import Linkify from 'react-linkify';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import styles from "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -17,10 +14,10 @@ import {
 import useChatbot from '../../../hooks/ChatWidget/useChatbot';
 import createPaymentLink from '../../../utils/payments/createPayment';
 import ChatMessage from '../ChatMessage';
+import generateGymBotContext from '../../../utils/chat/contextGenerators/generateGymBotContext';
 
-export default function ChatContent() {
-    const initialMessage = `Hola, soy GymBot. ¿Cómo puedo ayudarte?`
-    const { messages, typing, sendMessage, clearChat } = useChatbot(initialMessage)
+export default function ChatContent({ initialMessage, chatbotContext }) {
+    const { messages, typing, sendMessage, clearChat } = useChatbot(initialMessage, chatbotContext)
     const [disabled, setDisabled] = useState(false);
     const handleSend = async (message) => {
         setDisabled(true);
