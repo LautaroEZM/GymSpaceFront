@@ -1,10 +1,8 @@
 import {
-  Container,
   TextField,
   Button,
   Select,
   MenuItem,
-  InputLabel,
   Box,
   Typography,
 } from "@mui/material";
@@ -19,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../REDUX/actions";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useAuth0 } from "@auth0/auth0-react";
+import { TextFieldForm, OrangeOutlinedButton } from "../../styles/ComponentStyles";
 
 export default function SignUp() {
   const loadingImage =
@@ -56,13 +55,11 @@ export default function SignUp() {
   }, [photo]);
 
   const handleChange = (event) => {
-    // handles the input changes of the form
     const { name, value } = event.target;
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleBirth = (value) => {
-    // handles the date of birth changes
     console.log("handleBirth: ", value);
     const newDate = formatDate(value);
     setUserData((prevData) => ({ ...prevData, birth: newDate }));
@@ -82,7 +79,6 @@ export default function SignUp() {
 
   useEffect(() => {
     if (newUser && newUser.email) {
-      // Establecer el valor de email solo si newUser tiene un valor y tiene la propiedad email
       setUserData((prevData) => ({ ...prevData, email: newUser.email }));
     }
     if (newUser && newUser.systemRole) {
@@ -139,6 +135,8 @@ export default function SignUp() {
         minWidth: 150,
         justifyContent: "center",
         flexDirection: "column",
+        width: "100%",
+        alignItems: "center",
       }}
     >
       {loading ? (
@@ -155,150 +153,157 @@ export default function SignUp() {
           <img src={loadingImage} className={styles.picture2}></img>
         </Box>
       ) : null}
-      <Box
-        sx={{
-          display: "flex",
-          padding: 5,
-          justifyContent: "space-between",
-          width: "800px",
-          alignSelf: "center",
-          backgroundColor: "#414141",
-        }}
-      >
-        <Typography variant="h5" color="alternative">
-          Edit Profile
-        </Typography>
-        <TextField // name input
-          name="firstName"
-          label="Name"
-          value={userData.firstName}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-        <TextField // lastname input
-          name="lastName"
-          label="Lastname"
-          value={userData.lastName}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          padding: 5,
-          justifyContent: "space-between",
-          width: "800px",
-          alignSelf: "center",
-          backgroundColor: "#414141",
-        }}
-      >
-        <TextField //adress input
-          name="address"
-          label="Address"
-          value={userData.address}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-        <Select // the gender select with it's 3 options
-          labelId="selectGender"
-          name="gender"
-          label="Gender"
-          value={userData.gender}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
+      <Box sx={{
+        width: "95%",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#414141",
+        maxWidth: "600px",
+        marginTop: "10px",
+      }}>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
         >
-          <MenuItem id="gender" value={"Select a gender"}>
-            Select a gender
-          </MenuItem>
-          <MenuItem id="gender" value={"male"}>
-            Male
-          </MenuItem>
-          <MenuItem id="gender" value={"female"}>
-            Female
-          </MenuItem>
-          <MenuItem id="gender" value={"prefer not to say"}>
-            Prefer not to say
-          </MenuItem>
-        </Select>
-        <DatePicker //the date of birth datePicker
-          label="Birth"
-          name="birth"
-          format="YYYY-MM-DD"
-          value={userData.birth}
-          onChange={handleBirth}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          padding: 5,
-          justifyContent: "space-between",
-          width: "800px",
-          alignSelf: "center",
-          backgroundColor: "#414141",
-        }}
-      >
-        <TextField
-          name="phone"
-          label="Phone"
-          value={userData.phone}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-        <TextField //contact phone input
-          name="contactPhone"
-          label="Contact phone"
-          value={userData.contactPhone}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-        <TextField // email input
-          disabled
-          name="email"
-          label="Email"
-          value={userData.email}
-          onChange={handleChange}
-          sx={{ backgroundColor: "white", borderRadius: 4 }}
-        />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          padding: 5,
-          justifyContent: "space-between",
-          width: "800px",
-          alignSelf: "center",
-          backgroundColor: "#414141",
-        }}
-      >
-        <PhotoUpload photo={photo} setPhoto={setPhoto} />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          padding: 5,
-          justifyContent: "space-between",
-          width: "800px",
-          alignSelf: "center",
-          backgroundColor: "#414141",
-        }}
-      >
-        <Button // sends the form info to the back-end controller and registers the user
-          variant="contained"
-          color={theme.primary}
-          onClick={() => handleSubmit()}
+
+          <TextFieldForm // name input
+            name="firstName"
+            label="Name"
+            value={userData.firstName}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+          <TextFieldForm // lastname input
+            name="lastName"
+            label="Lastname"
+            value={userData.lastName}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+            alignItems: "center",
+          }}
         >
-          {loading ? (
-            <img src={loadingImage} className={styles.picture}></img>
-          ) : (
-            "Save"
-          )}
-        </Button>
-        <Errors
-          userData={userData} // errors component
-        />
+          <TextFieldForm //adress input
+            name="address"
+            label="Address"
+            value={userData.address}
+            onChange={handleChange}
+            sx={{ width: "200px" }}
+          />
+          <Select // the gender select with it's 3 options
+            labelId="selectGender"
+            name="gender"
+            label="Gender"
+            value={userData.gender}
+            onChange={handleChange}
+            sx={{ width: "250px", height: "60px" }}
+          >
+            <MenuItem id="gender" value={"Select a gender"}>
+              Select a gender
+            </MenuItem>
+            <MenuItem id="gender" value={"male"}>
+              Male
+            </MenuItem>
+            <MenuItem id="gender" value={"female"}>
+              Female
+            </MenuItem>
+            <MenuItem id="gender" value={"prefer not to say"}>
+              Prefer not to say
+            </MenuItem>
+          </Select>
+          <DatePicker //the date of birth datePicker
+            label="Birth"
+            name="birth"
+            format="YYYY-MM-DD"
+            value={userData.birth}
+            onChange={handleBirth}
+            sx={{ width: "250px" }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <TextFieldForm
+            name="phone"
+            label="Phone"
+            value={userData.phone}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+          <TextFieldForm //contact phone input
+            name="contactPhone"
+            label="Contact phone"
+            value={userData.contactPhone}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+
+        </Box>
+        <Box sx={{
+          display: "flex",
+          padding: 2,
+          justifyContent: "center",
+          alignSelf: "center",
+        }}>
+          <TextFieldForm // email input
+            disabled
+            name="email"
+            label="Email"
+            value={userData.email}
+            onChange={handleChange}
+            sx={{ width: "250px" }}
+          />
+        </Box >
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <PhotoUpload photo={photo} setPhoto={setPhoto} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "space-between",
+            alignSelf: "center",
+          }}
+        >
+          <Box>
+            <Errors
+              userData={userData} // errors component
+            />
+          </Box>
+          <OrangeOutlinedButton // sends the form info to the back-end controller and registers the user
+            onClick={() => handleSubmit()}
+          >
+            {loading ? (
+              <img src={loadingImage} className={styles.picture}></img>
+            ) : (
+              "Save"
+            )}
+          </OrangeOutlinedButton>
+
+        </Box>
       </Box>
     </Box>
   );
