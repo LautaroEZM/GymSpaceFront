@@ -10,7 +10,7 @@ import { getDate, getDateTimestamp } from "../../utils/shopCartUtils";
 import dayjs from "dayjs";
 
 const ShopCart = () => {
-  const [productsCart, setproductsCart] = useLocalStorage("product", "[]");
+  const [productsCart, setproductsCart] = useLocalStorage("product", []);
   const [servicesCart, setServicesCart] = useLocalStorage("service", []);
   const [total, setTotal] = useState(
     productsCart.reduce((acc, p) => acc + p.price * p.quantity, 0) +
