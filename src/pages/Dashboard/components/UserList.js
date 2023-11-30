@@ -24,7 +24,12 @@ import {
 } from "../../../styles/ComponentStyles";
 
 import UpdateUser from "../../UpdateUser/UpdateUser";
+import { API_URL } from "../../../utils/constants";
+import { buildReq } from "../../../utils/auth0Utils";
+import axios from "axios";
 
+import { useAuth0 } from "@auth0/auth0-react";
+import Loading from "../../../components/Loading/loading";
 import { useSelector } from "react-redux";
 
 export default function UserList() {
@@ -37,13 +42,22 @@ export default function UserList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("firstName");
 
+  const { getAccessTokenSilently } = useAuth0();
+
+  const loadingImage =
+    "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
+
+  const [loading, setLoading] = useState(false);
+
   const reduxUser = useSelector((state) => state.user);
 
   useEffect(() => {
+    setLoading(true);
     fetch("https://gymspace-backend.onrender.com/Users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
+        setLoading(true);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -68,20 +82,22 @@ export default function UserList() {
     user[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDelete = (userId) => {
+  const handleDelete = async (id) => {
     if (reduxUser.systemRole !== "Admin") {
       window.alert("You do not have permission to do that");
       return;
     }
-    fetch(`https://gymspace-backend.onrender.com/Users/${userId}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then(() => {
-        const updatedUsers = users.filter((user) => user.userID !== userId);
+    try {
+      const req = await buildReq({}, getAccessTokenSilently);
+      const response = await axios.delete(`${API_URL}/Users/${id}`, req);
+      const { data } = response;
+      if (data) {
+        const updatedUsers = users.filter((user) => user.userID !== id);
         setUsers(updatedUsers);
-      })
-      .catch((error) => console.error("Error deleting user:", error));
+      }
+    } catch (error) {
+      window.alert(error.message);
+    }
   };
 
   const sortedUsers = () => {
@@ -261,7 +277,7 @@ export default function UserList() {
                   <BlueContainedButton>UPDATE</BlueContainedButton>
                 </LinkNoDeco>
                 <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
-                  DELETE
+                  "DELETE"
                 </RedOutlinedButton>
               </TableCell>
             ) : (
