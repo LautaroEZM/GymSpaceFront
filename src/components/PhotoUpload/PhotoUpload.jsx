@@ -72,6 +72,7 @@ export default function PhotoUPload({ photo, setPhoto }) {
         value={photo} // the value is passed down throught props by the father
         onChange={handlePhoto} // pretty self-explanatory
         inputProps={{ accept: ".png, .jpeg" }} // makes sure the file uploaded is a png or jpeg
+        sx={{ color: "white", border: "1px solid white" }} 
       />
     </Container>
   );
