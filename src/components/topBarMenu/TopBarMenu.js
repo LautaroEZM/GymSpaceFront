@@ -74,19 +74,22 @@ const TopBarMenu = () => {
     };
     checkUser();
   }, [user]);
+
   useEffect(() => {
     const getcartAPI = async () => {
       if (user && isAuthenticated) {
-        if(!productsCart.length){
-        const req = await buildReq({},getAccessTokenSilently)
-        const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
-        console.log(data)
-        setproductsCart(data.products)}
-        if(!servicesCart.length){
-          const req = await buildReq({},getAccessTokenSilently)
-          const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
-          console.log(data)
-          setServicesCart(data.services)}
+        if (!productsCart.length) {
+          const req = await buildReq({}, getAccessTokenSilently);
+          const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
+          console.log(data);
+          setproductsCart(data.products);
+        }
+        if (!servicesCart.length) {
+          const req = await buildReq({}, getAccessTokenSilently);
+          const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
+          console.log(data);
+          setServicesCart(data.services);
+        }
       }
     };
     getcartAPI();
@@ -171,11 +174,18 @@ const TopBarMenu = () => {
           </LinkNoDeco>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <LinkNoDeco to="/ShopCart">
-            <TopBarButton disableElevation>
-              <ShoppingCartIcon />
-            </TopBarButton>
-          </LinkNoDeco>
+          {newUser.systemRole === "Guest" ? (
+            warningState ? (
+              <StatusChecker status={currentStatus} />
+            ) : null
+          ) : (
+            <LinkNoDeco to="/ShopCart">
+              <TopBarButton disableElevation>
+                <ShoppingCartIcon />
+              </TopBarButton>
+            </LinkNoDeco>
+          )}
+
           <Box className={style.accountContainer}>
             <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
               {user && isAuthenticated ? (
@@ -195,12 +205,12 @@ const TopBarMenu = () => {
             >
               <Box p={2}>
                 {user ? (
-                  <Box className={style.accountContainer} >
+                  <Box className={style.accountContainer}>
                     <TopBarButton
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("Profile")}
                     >
                       Profile
@@ -209,7 +219,7 @@ const TopBarMenu = () => {
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("UserProducts")}
                     >
                       Your products
@@ -218,7 +228,7 @@ const TopBarMenu = () => {
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("UserServices")}
                     >
                       Your services
@@ -255,7 +265,6 @@ const TopBarMenu = () => {
         sx={{
           "& .MuiTypography-root": {
             color: "orange",
-            
           },
         }}
       >
@@ -275,10 +284,6 @@ const TopBarMenu = () => {
           </LinkNoDeco>
         </MenuItem>
       </StyledMenu>
-
-      {currentStatus !== "safe" && warningState ? (
-        <StatusChecker status={currentStatus} />
-      ) : null}
     </AppBar>
   );
 };

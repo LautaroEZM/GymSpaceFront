@@ -1,7 +1,8 @@
 import {GET_USER, WARNING} from './actions'
 
 const initState = {
-    user: {},
+    user: { systemRole: "Guest" },
+    blockAccess: false, 
     warning: true,
 }
 
