@@ -8,6 +8,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import Container from "@mui/material/Container";
 import { getDate, getDateTimestamp } from "../../utils/shopCartUtils";
 import dayjs from "dayjs";
+import Card from '@mui/material/Card';
+import  { Box }  from "@mui/material";
+import { CardMedia } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShopCart = () => {
   const [productsCart, setproductsCart] = useLocalStorage("product", []);
@@ -32,6 +36,8 @@ const ShopCart = () => {
     if(timestamp>Date.now()){
       
       newServices[i]["startDate"] = dayjs(value);
+    }if(!timestamp){
+      alert('No se a introducido una fecha de inicio')
     } else {
       newServices[i]["startDate"] = dayjs();
     }
@@ -43,11 +49,11 @@ const ShopCart = () => {
       const newServices = [...servicesCart];
       newServices[i]["quantity"] = parseInt(quantity);
       setServicesCart(newServices);
-    } else {
-      const newproducts = [...productsCart];
-      newproducts[i]["quantity"] = parseInt(quantity);
-      setproductsCart(newproducts);
-    }
+      } else {
+        const newproducts = [...productsCart];
+        newproducts[i]["quantity"] = parseInt(quantity);
+        setproductsCart(newproducts);
+      }
   };
 
   const handleDeleteFromCart = (prodServ) => {
@@ -118,31 +124,57 @@ const ShopCart = () => {
 
   return (
     <div>
-      <h1>Shop Cart</h1>
+      <h1 style={{color: "orange", textAlign: "center"}}>Shop Cart</h1>
 
       {/* Productos */}
       {productsCart && productsCart.length > 0
         ? productsCart.map((product, i) => (
             <div key={i}>
               <div>
-                <h3>{product.name}</h3>
-                <img src={product.image} />
-                <h3 style={{ color: "white" }}>{product.price} US$</h3>
+                <Card sx={{ display: 'flex', backgroundColor:"white", border:"orange 2px solid"}}>
+
+                <Box sx={{ width: "90%", marginBottom: "40px", display:"flex",flexDirection:"row" }}>
+                <CardMedia
+                  component="img"
+                  sx={{ width: 151 }}
+                  image={product.image}
+                  style={{
+                    color: "#fff",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                  />
+                <h3 style={{ marginLeft:"30px", marginTop:"50px"}}>{product.name}</h3>
                 <input
                   type="number"
+                  style={{
+                    border: "orange 1px solid",
+                    marginTop:"60px",
+                    height: "50px",  
+                    marginLeft: "200px"                  
+                  }}
                   value={product.quantity}
                   onChange={(e) =>
                     handleAddToCartWithQuantity(product, e.target.value, i)
                   }
-                />
-              </div>
-
-              <button
+                  min="0"
+                  max={product.stockNow}
+                  />
+                  <h3 style={{ color: "black", marginLeft: "500px", marginTop:"60px", marginRight:"100px"}}>{product.price} US$</h3>
+              <button style={{
+                marginTop:"70px",
+                width: "50px",
+                height: "50px",
+              }}
                 key={product.id}
                 onClick={() => handleDeleteFromCart(product)}
-              >
-                Delete
-              </button>
+                >
+                <DeleteIcon/>
+              </button >
+              </Box>
+              </Card>
+              </div>
+
             </div>
           ))
         : null}
@@ -151,18 +183,46 @@ const ShopCart = () => {
         ? servicesCart.map((service, i) => (
             <div key={i}>
               <div>
-                <h3>{service.name}</h3>
-                <img src={service.image} />
-                <h3 style={{ color: "white" }}>{service.price} US$</h3>
+              <Card sx={{ display: 'flex', backgroundColor:"white", border:"orange 2px solid" }}>
+
+              <Box sx={{ width: "90%", marginBottom: "40px", display:"flex",flexDirection:"row" }}>
+              <CardMedia
+                  component="img"
+                  sx={{ width: 151 }}
+                  image={service.image}
+                  style={{
+                    color: "#fff",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                  />
+                <h3 style={{ marginLeft:"30px"}}>{service.name}</h3>
                 <input
                   type="number"
+                  style={{
+                    border: "orange 1px solid",
+                    marginTop:"60px",
+                    height: "50px",
+                    marginLeft: "400px"
+                  }}  
                   value={service.quantity}
                   onChange={(e) =>
                     handleAddToCartWithQuantity(service, e.target.value, i)
                   }
                 />
-              </div>
-              <Container maxWidth="xs">
+                  <h3 style={{ color: "black", marginLeft: "400px", marginTop:"60px", marginRight:"100px"}}>{service.price} US$</h3>
+              <button style={{
+                marginTop:"70px",
+                width: "50px",
+                height: "50px"
+              }}
+                key={service.id}
+                onClick={() => handleDeleteFromCart(service)}
+                >
+                <DeleteIcon/>
+              </button>
+              </Box>
+              <Container style={{marginTop:"60px" }} maxWidth="xs">
                 <DatePicker
                   // className={styles.date}
                   label="Start Date"
@@ -172,21 +232,17 @@ const ShopCart = () => {
                   value={dayjs(service.startDate)}
                   
                   onChange={(e)=>handleDate(e,i)}
-                />
+                  />
               </Container>
-              <button
-                key={service.id}
-                onClick={() => handleDeleteFromCart(service)}
-              >
-                Delete
-              </button>
+              </Card>
+              </div>
             </div>
           ))
         : null}
 
       {/* Mostrar el total */}
-      <p style={{ color: "white" }}>Total: ${total}</p>
-      <button onClick={handleBuy}>Pay</button>
+      <p style={{ color: "white", textAlign: "center" }}>Total: ${total}</p>
+      <button style={{marginLeft:"50%"}} onClick={handleBuy}>Pay</button>
       {/* Botones para eliminar y comprar */}
     </div>
   );

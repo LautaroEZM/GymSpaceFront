@@ -79,18 +79,16 @@ const TopBarMenu = () => {
   useEffect(() => {
     const getcartAPI = async () => {
       if (user && isAuthenticated) {
-        if (!productsCart || !productsCart.length) {
-          const req = await buildReq({}, getAccessTokenSilently);
-          const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
-          
-          setproductsCart(data.products);
-        }
-        if (!servicesCart ||!servicesCart.length) {
-          const req = await buildReq({}, getAccessTokenSilently);
-          const { data } = await axios.get(API_URL + "/cart/" + user.sub, req);
-          
-          setServicesCart(data.services);
-        }
+        if(!productsCart || !productsCart.length){
+        const req = await buildReq({},getAccessTokenSilently)
+        const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
+        console.log(data)
+        setproductsCart(data.products)}
+        if(!servicesCart ||!servicesCart.length){
+          const req = await buildReq({},getAccessTokenSilently)
+          const{data} = await axios.get(API_URL + "/cart/"+user.sub,req)
+          console.log(data)
+          setServicesCart(data.services)}
       }
     };
     getcartAPI();
