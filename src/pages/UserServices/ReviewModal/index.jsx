@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Snackbar } from '@mui/material';
 import axios from 'axios';
 import { API_URL, API_URL_LOCAL } from '../../../utils/constants';
 
@@ -7,6 +7,7 @@ const ReviewModal = ({ open, onClose, title, image, userService }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [comment, setComment] = useState(userService.Review?.comment || "");
     const [review, setReview] = useState(userService.Review);
+    const [showSuccessBanner, setShowSuccessBanner] = useState(false);
     useEffect(() => { setComment(userService.Review?.comment) }, [userService])
 
     const createReview = async (comment) => {
@@ -19,6 +20,7 @@ const ReviewModal = ({ open, onClose, title, image, userService }) => {
                 display: "tocheck",
             })
             setReview(data)
+            setShowSuccessBanner(true)
         } catch (error) {
             console.log(error);
         }
@@ -28,8 +30,12 @@ const ReviewModal = ({ open, onClose, title, image, userService }) => {
         try {
             const url = `${API_URL}/reviews/${review.reviewID}`
             // const url = `${API_URL_LOCAL}/reviews/${review.reviewID}`
-            const { data } = await axios.put(url, { comment, })
+            const { data } = await axios.put(url, {
+                comment,
+                display: "tocheck",
+            })
             setReview(data)
+            setShowSuccessBanner(true)
         } catch (error) {
             console.log(error);
         }
@@ -95,6 +101,15 @@ const ReviewModal = ({ open, onClose, title, image, userService }) => {
                     Save Changes
                 </Button>
             </DialogActions>
+            <Snackbar
+                open={showSuccessBanner}
+                autoHideDuration={3000}
+                onClose={() => setShowSuccessBanner(false)}
+                message="Changes saved successfully!"
+                ContentProps={{
+                    sx: { backgroundColor: 'green' }
+                }}
+            />
         </Dialog>
     );
 };
