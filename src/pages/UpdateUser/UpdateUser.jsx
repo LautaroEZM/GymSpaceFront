@@ -10,7 +10,6 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { API_URL } from "../../utils/constants";
@@ -20,6 +19,7 @@ import { OrangeOutlinedButton } from "../../styles/ComponentStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "../../REDUX/actions";
 import Errors from "./Errors";
+import PhotoUPload from "../../components/PhotoUpload/PhotoUpload";
 
 export default function UpdateUser() {
   const { id } = useParams();
@@ -54,9 +54,15 @@ export default function UpdateUser() {
     getUser(id);
   }, [id]);
 
+  const [photo, setPhoto] = useState(userData.photo);
+
   useEffect(() => {
     setDateval(dayjs(userData.birth));
   }, [userData.birth]);
+
+  useEffect(() => {
+    setUserUpdate((prevData) => ({ ...prevData, photo: photo }));
+  }, [photo]);
 
   const navigate = useNavigate();
 
@@ -256,6 +262,7 @@ export default function UpdateUser() {
               },
             }}
           />
+          < PhotoUPload photo={photo} setPhoto={setPhoto} />
           <Typography component="h1" variant="h6" marginTop="15px">
             Gender
           </Typography>

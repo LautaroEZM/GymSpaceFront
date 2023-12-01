@@ -50,6 +50,11 @@ export default function Errors({ userData , error , setError }) {
             return;
         }
 
+        if (!userData.photo) {
+            setError("You must upload a photo");
+            return;
+        }
+
         if (!/^\+?\d+$/.test(userData.phone)) {
             setError("Invalid phone number format");
             return;
@@ -59,11 +64,6 @@ export default function Errors({ userData , error , setError }) {
             setError("Invalid contact phone number format");
             return;
         }
-
-        // if (!userData.image) {
-        //     setError("You must upload a photo");
-        //     return;
-        // }
 
         setError("");
     }, [userData]);
