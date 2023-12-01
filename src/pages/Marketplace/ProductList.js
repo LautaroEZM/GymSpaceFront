@@ -79,7 +79,8 @@ export default function ProductList({ sortedProducts, showOnlyFavorites }) {
                 return true;
               }
             })
-            .map((product, i) => (
+            .map((product, i) => {
+              if(product.status === 'available') return (
               <Grid item key={i} xs={12} sm={6} md={4} lg={2} xl={2}>
                 <ProductCard
                   sx={{
@@ -188,7 +189,7 @@ export default function ProductList({ sortedProducts, showOnlyFavorites }) {
                   </CardActions> :null}
                 </ProductCard>
               </Grid>
-            ))}
+            )})}
         </Grid>
       </Box>
     </Box>
