@@ -2,6 +2,7 @@ export const GET_USER = "GET_USER";
 export const SET_USER = "SET_USER";
 export const WARNING = "WARNING";
 export const SET_FAVORITES = "SET_FAVORITES";
+export const EDIT_PROFILE = "EDIT_PROFILE"
 
 export const getUser = (user) => {
   return {
@@ -30,3 +31,10 @@ export const setFavorites = (favorites) => {
     payload: favorites,
   };
 };
+
+export const editProfile = (boolean) => {
+  return {
+    type: EDIT_PROFILE,
+    payload: boolean,
+  }
+}

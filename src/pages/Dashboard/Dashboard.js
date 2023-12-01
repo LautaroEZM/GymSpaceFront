@@ -25,10 +25,14 @@ import { API_URL } from "./../../utils/constants";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ProductListDashboard from "./components/ProductListDashboard";
+
 function Dashboard() {
   const [showMenu, setShowMenu] = useState(true); // Cambiado a true para que siempre se muestre en pantallas grandes
   const [showClientsUserList, setShowClientsUserList] = useState(false);
   const [showCardServiceList, setShowCardServiceList] = useState(false);
+  const [showProductListDashboard, setShowProductListDashboard] =
+    useState(false);
   const [showProductGraph, setShowProductGraph] = useState(false);
   const [showServiceGraph, setShowServiceGraph] = useState(true);
   const [services, setServices] = useState([]);
@@ -37,7 +41,7 @@ function Dashboard() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   const newUser = useSelector((state) => state.user);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,7 +56,7 @@ function Dashboard() {
     };
   }, []);
   useEffect(() => {
-    ["Admin", "Coach"].includes(newUser.systemRole)?null:navigate("/")
+    ["Admin", "Coach"].includes(newUser.systemRole) ? null : navigate("/");
   }, []);
   useEffect(() => {
     const getServices = async () => {
@@ -214,6 +218,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowCardServiceList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="List" />
@@ -225,6 +230,7 @@ function Dashboard() {
                     setShowCardServiceList(false);
                     setShowProductGraph(false);
                     setShowServiceGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -239,12 +245,18 @@ function Dashboard() {
                 <ListItemText primary="Products" sx={{ color: "#bbbbbb" }} />
               </DashBoardCategory>
               <List>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 1" />
-                </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 2" />
-                </DashBoardListItem>
+                <DashBoardListItem
+                  button
+                  onClick={() => {
+                    setShowClientsUserList(false);
+                    setShowServiceGraph(false);
+                    setShowCardServiceList(false);
+                    setShowProductListDashboard(true);
+                    setShowMenu(false);
+                  }}
+                >
+                  <ListItemText primary="Product List" />
+                  </DashBoardListItem>
                 <DashBoardListItem
                   button
                   onClick={() => {
@@ -252,6 +264,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowClientsUserList(false);
                     setShowProductGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -273,6 +286,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowClientsUserList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="People" />
@@ -308,6 +322,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowCardServiceList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="List" />
@@ -319,6 +334,7 @@ function Dashboard() {
                     setShowCardServiceList(false);
                     setShowProductGraph(false);
                     setShowServiceGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -333,12 +349,18 @@ function Dashboard() {
                 <ListItemText primary="Products" sx={{ color: "#bbbbbb" }} />
               </DashBoardCategory>
               <List>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 1" />
-                </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 2" />
-                </DashBoardListItem>
+                <DashBoardListItem
+                  button
+                  onClick={() => {
+                    setShowClientsUserList(false);
+                    setShowServiceGraph(false);
+                    setShowCardServiceList(false);
+                    setShowProductListDashboard(true);
+                    
+                  }}
+                >
+                  <ListItemText primary="Product List" />
+                  </DashBoardListItem>
                 <DashBoardListItem
                   button
                   onClick={() => {
@@ -346,6 +368,8 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowClientsUserList(false);
                     setShowProductGraph(true);
+                    setShowProductListDashboard(false);
+                    
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -367,6 +391,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowClientsUserList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="People" />
@@ -386,6 +411,7 @@ function Dashboard() {
             {showCardServiceList && (
               <ServiceCardList services={transformedServices} />
             )}
+            {showProductListDashboard && <ProductListDashboard />}
             {showServiceGraph && <ServiceGraph data={formattedGraphDataService} />}
             {showProductGraph && <ProductGraph data={formattedGraphDataProduct} />}
           </Box>
