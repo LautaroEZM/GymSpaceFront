@@ -151,16 +151,31 @@ export const StyledMenu = styled(Menu)`
 
 
 export const StyledSelect = styled(Select)`
+  background-color: #111111f4;
+  width: 350px;
+  border-radius: 5px;
+  transform: translate(0, 5px);
+  color: #ff9721;
 
-    background-color: #111111f4;
-    width: 350px;
-    border-radius: 5px;
-    transform: translate(0, 5px);
-    color: #ff9721;
+  &.MuiOutlinedInput-root {
+    &:hover fieldset,
+    &.Mui-focused fieldset {
+      border-color: #ff9721; // Borde cuando está deseleccionado o enfocado
+    }
+  }
+
+  & .MuiSelect-root {
+    color: #ff9721; // Color del texto
+  }
 `;
 
 export const StyledMenuItemSelect = styled(MenuItem)`
+color: #ff9721;
+background-color: transparent;
   &:hover {
+    background-color: #1c181397;
+  }
+  &:focus {
     background-color: #1c181397;
   }
 `;
@@ -192,11 +207,11 @@ export const TextFieldForm = styled(TextField)`
 
   & .MuiOutlinedInput-root {
     & fieldset {
-      border-color: white;
+      border-color: black;
     }
 
     &:hover fieldset {
-      border-color: white;
+      border-color: #ff9721;
     }
 
     &.Mui-focused fieldset {
@@ -205,7 +220,7 @@ export const TextFieldForm = styled(TextField)`
   }
 
   & .MuiInputLabel-root {
-    color: white;
+    color: #ff9721;
 
     &.Mui-focused {
       color: #ff9721;
