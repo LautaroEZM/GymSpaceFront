@@ -1,10 +1,11 @@
-import { GET_USER, WARNING, SET_USER, SET_FAVORITES } from "./actions";
+import { GET_USER, WARNING, SET_USER, SET_FAVORITES, EDIT_PROFILE } from "./actions";
 
 const initState = {
   user: { systemRole: "Guest" },
   favorites: [],
   blockAccess: false,
   warning: true,
+  editProfile: false,
 };
 
 const reducer = (state = initState, action) => {
@@ -29,6 +30,12 @@ const reducer = (state = initState, action) => {
         ...state,
         warning: action.payload,
       };
+    case EDIT_PROFILE: {
+      return {
+        ...state, 
+        editProfile: action.payload
+      }
+    }
     default:
       return state;
   }

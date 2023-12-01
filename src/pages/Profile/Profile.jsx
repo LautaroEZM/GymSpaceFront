@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -9,11 +8,24 @@ import { useNavigate } from "react-router";
 import { OrangeOutlinedButton } from "../../styles/ComponentStyles";
 import NotFound from "../NotFound/NotFound";
 import styles from "./Profile.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { editProfile } from "../../REDUX/actions";
+import { useEffect } from "react";
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
   const userProfile = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
+  const handleEditProfile = () => {
+    dispatch(editProfile(true))
+    navigate('/signUp')
+  }
+
+  useEffect(() => {
+    dispatch(editProfile(false))
+  }, [])
 
   if (user && isAuthenticated) {
     return (
@@ -44,7 +56,7 @@ const Profile = () => {
           />
           <OrangeOutlinedButton
             onClick={() => {
-              navigate("/signUp");
+              handleEditProfile();
             }}
             sx={{ marginTop: "5px" }}
           >

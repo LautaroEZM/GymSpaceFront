@@ -14,10 +14,16 @@ import Errors from "./Errors";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../REDUX/actions";
+import { getUser, editProfile } from "../../REDUX/actions";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useAuth0 } from "@auth0/auth0-react";
-import { TextFieldForm, OrangeOutlinedButton } from "../../styles/ComponentStyles";
+import {
+  TextFieldForm,
+  OrangeOutlinedButton,
+} from "../../styles/ComponentStyles";
+import { getPickersLayoutUtilityClass } from "@mui/x-date-pickers/PickersLayout/pickersLayoutClasses";
+import dayjs from "dayjs";
+
 
 export default function SignUp() {
   const loadingImage =
@@ -26,6 +32,29 @@ export default function SignUp() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const newUser = useSelector((state) => state.user);
+
+  const editProfile = useSelector((state) => state.editProfile);
+
+  const [pickedDate, setPickedDate] = useState(dayjs())
+
+  const handleBirth = (value) => {
+    const newDate = formatDate(value.$d);
+    console.log(newDate);
+    setPickedDate(value)
+    setUserData((prevData) => ({ ...prevData, birth: newDate }));
+  };
+
+  const today = dayjs();
+  const twelveYearsAgo = today.subtract(12, 'year');
+
+  const formatDate = (value) => {
+    const year = value.getFullYear().toString();
+    const month = (value.getMonth() + 1).toString().padStart(2, '0');
+    const day = value.getDate().toString().padStart(2, '0');
+  
+    const newDate = `${year}-${month}-${day}`;
+    return newDate;
+  };
 
   const [userData, setUserData] = useState({
     firstName: "",
@@ -59,24 +88,6 @@ export default function SignUp() {
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleBirth = (value) => {
-    console.log("handleBirth: ", value);
-    const newDate = formatDate(value);
-    setUserData((prevData) => ({ ...prevData, birth: newDate }));
-  };
-
-  const formatDate = (value) => {
-    console.log("formatDate: ", value);
-    const year = value.$y.toString();
-    const month =
-      value.$M < 10 ? "0" + (value.$M + 1) : (value.$M + 1).toString();
-    const day = value.$D < 10 ? "0" + value.$D : value.$D.toString();
-
-    const newDate = `${year}-${month}-${day}`;
-    console.log("format date: ", newDate);
-    return newDate;
-  };
-
   useEffect(() => {
     if (newUser && newUser.email) {
       setUserData((prevData) => ({ ...prevData, email: newUser.email }));
@@ -90,7 +101,7 @@ export default function SignUp() {
     if (newUser && newUser.photo) {
       setPhoto(newUser.photo);
     }
-    if (newUser && newUser.firstName) {
+    if (newUser && newUser.firstName && newUser.phone !== 'phone') {
       setUserData((prevData) => ({
         ...prevData,
         firstName: newUser.firstName,
@@ -100,6 +111,10 @@ export default function SignUp() {
         phone: newUser.phone,
         contactPhone: newUser.contactPhone,
       }));
+      if(newUser && newUser.birth) {
+        const parse = dayjs(newUser.birth, { dateFormat: 'YYYY-MM-DD' })
+        handleBirth(parse)
+      }
     }
     setLoading(false);
   }, [newUser]);
@@ -120,7 +135,7 @@ export default function SignUp() {
       if (data) {
         dispatch(getUser(userData));
         setLoading(false);
-        navigate("/");
+        navigate(editProfile ? "/Profile" : "/");
       }
     } catch (error) {
       window.alert("Could not create user: " + error.message);
@@ -153,14 +168,16 @@ export default function SignUp() {
           <img src={loadingImage} className={styles.picture2}></img>
         </Box>
       ) : null}
-      <Box sx={{
-        width: "95%",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#414141",
-        maxWidth: "600px",
-        marginTop: "10px",
-      }}>
+      <Box
+        sx={{
+          width: "95%",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#414141",
+          maxWidth: "600px",
+          marginTop: "10px",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -169,7 +186,6 @@ export default function SignUp() {
             alignSelf: "center",
           }}
         >
-
           <TextFieldForm // name input
             name="firstName"
             label="Name"
@@ -226,7 +242,8 @@ export default function SignUp() {
             label="Birth"
             name="birth"
             format="YYYY-MM-DD"
-            value={userData.birth}
+            maxDate={twelveYearsAgo}
+            value={pickedDate}
             onChange={handleBirth}
             sx={{ width: "250px" }}
           />
@@ -253,14 +270,15 @@ export default function SignUp() {
             onChange={handleChange}
             sx={{ width: "250px" }}
           />
-
         </Box>
-        <Box sx={{
-          display: "flex",
-          padding: 2,
-          justifyContent: "center",
-          alignSelf: "center",
-        }}>
+        <Box
+          sx={{
+            display: "flex",
+            padding: 2,
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
           <TextFieldForm // email input
             disabled
             name="email"
@@ -269,7 +287,7 @@ export default function SignUp() {
             onChange={handleChange}
             sx={{ width: "250px" }}
           />
-        </Box >
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -302,7 +320,6 @@ export default function SignUp() {
               "Save"
             )}
           </OrangeOutlinedButton>
-
         </Box>
       </Box>
     </Box>
