@@ -49,8 +49,8 @@ export default function UserServices() {
     const getUser = async (id) => {
       try {
         const req = await buildReq({}, getAccessTokenSilently);
-        // const url = `${API_URL}/userservices?userId=${id}`
-        const url = `${API_URL_LOCAL}/userservices?userId=${id}`
+        const url = `${API_URL}/userservices?userId=${id}`
+        // const url = `${API_URL_LOCAL}/userservices?userId=${id}`
         const response = await axios.get(url, req);
         const { data } = response;
         // console.log(data.map((userService) => userService.Service));
