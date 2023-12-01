@@ -13,6 +13,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import Loading from "../../components/Loading/loading";
 
 import styles from "./DetailProduct.module.css";
+import { useSelector } from "react-redux";
 
 export default function DetailProduct() {
   const { id } = useParams();
@@ -23,6 +24,7 @@ export default function DetailProduct() {
   const [productsCart, setProductsCart] = useLocalStorage("product", []);
   const [units, setUnits] = useState(1)
   const [icon, setIcon] = useState(AddShoppingCartIcon)
+  const user = useSelector((state) => state.user);
 
   const handleChangeUnits = (event) => {
     const {value} = event.target
@@ -132,6 +134,7 @@ export default function DetailProduct() {
         <Typography sx={{ color: "white", marginTop: 5 }} variant="h6">
           Description: {product.description}
         </Typography>
+        { user.systemRole !== 'Guest'?<>
         {isAdded ? (
           <OrangeOutlinedButton
           onClick={() => handleDeleteFromCart(product)}
@@ -149,10 +152,11 @@ export default function DetailProduct() {
           >
             <AddShoppingCartIcon/>
             <Typography sx={{ color: "white" }} variant="h3">
-              BUY US${product.price}
+              BUY S/{product.price}
             </Typography>
           </OrangeContainedButton>
         )}
+        </>:null}
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <Typography sx={{ color: "white", marginTop: 2 }} variant="h5">
