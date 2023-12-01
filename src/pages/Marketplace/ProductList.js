@@ -74,7 +74,7 @@ export default function ProductList({ sortedProducts, showOnlyFavorites }) {
           {sortedProducts()
             .filter((product) => {
               if (showOnlyFavorites) {
-                return user?.favoriteProducts?.includes(product.productID);
+                return favorites.find((fav) => fav.id === product.productID);
               } else {
                 return true;
               }

@@ -258,12 +258,7 @@ function Dashboard() {
                   }}
                 >
                   <ListItemText primary="Product List" />
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 1" />
-                </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 2" />
-                </DashBoardListItem>
+                  </DashBoardListItem>
                 <DashBoardListItem
                   button
                   onClick={() => {
@@ -362,6 +357,7 @@ function Dashboard() {
                   }}
                 >
                   <ListItemText primary="Product List" />
+                  </DashBoardListItem>
                 <DashBoardListItem button>
                   <ListItemText primary="Option 1" />
                 </DashBoardListItem>
@@ -415,7 +411,6 @@ function Dashboard() {
             {showCardServiceList && (
               <ServiceCardList services={transformedServices} />
             )}
-            {showServiceGraph && <ServiceGraph data={formattedGraphData} />}
             {showProductListDashboard && <ProductListDashboard />}
             {showServiceGraph && <ServiceGraph data={formattedGraphDataService} />}
             {showProductGraph && <ProductGraph data={formattedGraphDataProduct} />}
