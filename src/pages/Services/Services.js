@@ -35,7 +35,7 @@ export default function Album() {
   const [servicesCart, setServicesCart] = useLocalStorage("service", []);
   const user = useSelector((state) => state.user);
 
-  useEffect(() => {}, [servicesCart]);
+  useEffect(() => { }, [servicesCart]);
 
   useEffect(() => {
     fetch("https://gymspace-backend.onrender.com/Services")
@@ -129,12 +129,12 @@ export default function Album() {
                     selectedCategories.includes(service.category)
                 )
                 .map((service) => (
-                 
+
                   <ServicesCard key={service.serviceID}>
                     <CardMedia
                       component="div"
                       sx={{
-                        pt: "56.25%",
+                        pt: "35%",
                         background: `url(${service.image})`,
                       }}
                     />
@@ -173,55 +173,61 @@ export default function Album() {
                         {service.description}
                       </Typography>
                     </CardContent>
-                    { user.systemRole !== 'Guest'?
-                    <CardActions>
-                      <LinkNoDeco to={`/ServiceDetail/${service.serviceID}`}>
+                    {user.systemRole !== 'Guest' ?
+                      <CardActions>
+                        <LinkNoDeco to={`/ServiceDetail/${service.serviceID}`}>
+                          <SmallOrangeOutlinedButtonLess>
+                            View
+                          </SmallOrangeOutlinedButtonLess>
+                        </LinkNoDeco>
                         <SmallOrangeOutlinedButtonLess>
-                          View
+                          Edit
                         </SmallOrangeOutlinedButtonLess>
-                      </LinkNoDeco>
-                      <SmallOrangeOutlinedButtonLess>
-                        Edit
-                      </SmallOrangeOutlinedButtonLess>
-                      {servicesCart.filter(
-                        (item) => item.serviceID === service.serviceID
-                      ).length ? (
-                        <IconButton
-                          color="primary"
-                          aria-label="add to shopping cart"
-                          sx={{ fontSize: "13px" }}
-                          onClick={() =>
-                            setServicesCart(
-                              servicesCart.filter(
-                                (item) => item.serviceID !== service.serviceID
+                        {servicesCart.filter(
+                          (item) => item.serviceID === service.serviceID
+                        ).length ? (
+                          <IconButton
+                            color="primary"
+                            aria-label="add to shopping cart"
+                            sx={{ fontSize: "13px" }}
+                            onClick={() =>
+                              setServicesCart(
+                                servicesCart.filter(
+                                  (item) => item.serviceID !== service.serviceID
+                                )
                               )
-                            )
-                          }
-                        >
-                          <div>X</div>
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          color="primary"
-                          aria-label="add to shopping cart"
-                          sx={{ fontSize: "13px" }}
-                          onClick={() =>
-                            setServicesCart([
-                              ...servicesCart,
-                              { ...service, quantity: 1, startDate: dayjs()  },
-                            ])
-                          }
-                        >
-                          <div>Add to cart</div>
-                          
+                            }
+                          >
+                            <Typography>
+                              X
+                            </Typography>
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            color="primary"
+                            aria-label="add to shopping cart"
+                            sx={{ fontSize: "13px" }}
+                            onClick={() =>
+                              setServicesCart([
+                                ...servicesCart,
+                                { ...service, quantity: 1, startDate: dayjs() },
+                              ])
+                            }
+                          >
+                            <Box>
+                              <Typography>
+                                Add to cart
+                              </Typography>
+                              <AddShoppingCartIcon />
+                            </Box>
 
-                          <AddShoppingCartIcon />
-                        </IconButton>
-                      )}
-                    </CardActions>:null}
-                    </ServicesCard>
-                    
-                 
+
+                          </IconButton>
+                        )}
+                      </CardActions> : null}
+                  </ServicesCard>
+
+
                 ))}
             </Grid>
           </Container>
