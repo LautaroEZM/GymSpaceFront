@@ -12,7 +12,7 @@ import UserServicesCards from "./UserServicesCards";
 
 export default function UserServices() {
   const user = useSelector((state) => state.user);
-
+  
   const navigate = useNavigate();
 
   const { getAccessTokenSilently } = useAuth0();
@@ -98,7 +98,7 @@ export default function UserServices() {
         title="Services Caducated"
         redirectButtonName="Buy"
       />
-      {true || isCoach ? <UserServicesCards
+      {isCoach ? <UserServicesCards
         userServices={userServices}
         disabled={!userServices.length}
         userServiceDisabled={(userService) => userService.finishDate < today && checkServiceCoach(userService)}
