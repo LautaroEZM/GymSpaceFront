@@ -134,7 +134,7 @@ export default function Album() {
                     <CardMedia
                       component="div"
                       sx={{
-                        pt: "35%",
+                        pt: "40%",
                         background: `url(${service.image})`,
                       }}
                     />
@@ -174,18 +174,18 @@ export default function Album() {
                       </Typography>
                     </CardContent>
                     {user.systemRole !== 'Guest' ?
-                      <CardActions>
+                      <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
                         <LinkNoDeco to={`/ServiceDetail/${service.serviceID}`}>
                           <SmallOrangeOutlinedButtonLess>
                             View
                           </SmallOrangeOutlinedButtonLess>
                         </LinkNoDeco>
-                        <SmallOrangeOutlinedButtonLess>
+                        {/* <SmallOrangeOutlinedButtonLess>
                           Edit
-                        </SmallOrangeOutlinedButtonLess>
-                        {servicesCart.filter(
-                          (item) => item.serviceID === service.serviceID
-                        ).length ? (
+                        </SmallOrangeOutlinedButtonLess> */}
+                        {servicesCart
+                          .filter((item) => item.serviceID === service.serviceID)
+                          .length ? (
                           <IconButton
                             color="primary"
                             aria-label="add to shopping cart"
@@ -198,9 +198,7 @@ export default function Album() {
                               )
                             }
                           >
-                            <Typography>
-                              X
-                            </Typography>
+                            DELETE
                           </IconButton>
                         ) : (
                           <IconButton
@@ -214,20 +212,12 @@ export default function Album() {
                               ])
                             }
                           >
-                            <Box>
-                              <Typography>
-                                Add to cart
-                              </Typography>
-                              <AddShoppingCartIcon />
-                            </Box>
-
-
+                                ADD TO CART
+                              {/* <AddShoppingCartIcon /> */}
                           </IconButton>
                         )}
                       </CardActions> : null}
                   </ServicesCard>
-
-
                 ))}
             </Grid>
           </Container>
