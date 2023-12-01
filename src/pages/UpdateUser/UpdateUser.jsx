@@ -10,7 +10,6 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { API_URL } from "../../utils/constants";
@@ -19,6 +18,8 @@ import dayjs from "dayjs";
 import { OrangeOutlinedButton } from "../../styles/ComponentStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "../../REDUX/actions";
+import Errors from "./Errors";
+import PhotoUPload from "../../components/PhotoUpload/PhotoUpload";
 
 export default function UpdateUser() {
   const { id } = useParams();
@@ -29,6 +30,7 @@ export default function UpdateUser() {
   const [userData, setUserData] = useState({});
   const [userUpdate, setUserUpdate] = useState({});
   const [dateval, setDateval] = useState(dayjs("2022-04-17"));
+  const [error,setError] = useState("");
 
   const { getAccessTokenSilently } = useAuth0();
 
@@ -52,9 +54,15 @@ export default function UpdateUser() {
     getUser(id);
   }, [id]);
 
+  const [photo, setPhoto] = useState(userData.photo);
+
   useEffect(() => {
     setDateval(dayjs(userData.birth));
   }, [userData.birth]);
+
+  useEffect(() => {
+    setUserUpdate((prevData) => ({ ...prevData, photo: photo }));
+  }, [photo]);
 
   const navigate = useNavigate();
 
@@ -254,6 +262,7 @@ export default function UpdateUser() {
               },
             }}
           />
+          < PhotoUPload photo={photo} setPhoto={setPhoto} />
           <Typography component="h1" variant="h6" marginTop="15px">
             Gender
           </Typography>
@@ -285,6 +294,7 @@ export default function UpdateUser() {
           >
             <MenuItem value={"male"}>Male</MenuItem>
             <MenuItem value={"female"}>Female</MenuItem>
+            <MenuItem value={"other"}>Other</MenuItem>
           </Select>
           <TextField
             name="address"
@@ -412,37 +422,38 @@ export default function UpdateUser() {
               },
             }}
           />
-          <TextField
+          <Typography component="h1" variant="h6" marginTop="15px">
+            Status
+          </Typography>
+          <Select
+            labelId="status"
             name="status"
-            label="Status"
+            label="status"
             required
             value={userData.status || ""}
             onChange={handleChange}
             sx={{
-              marginTop: "15px",
               width: "70%",
+              "& .MuiInputLabel-root": {
+                color: "white !important",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
               "& .MuiInputBase-input": {
                 color: "white",
               },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ff9721",
-                },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
               },
-              "& .MuiInputLabel-root": {
-                color: "white",
-                "&.Mui-focused": {
-                  color: "#ff9721",
-                },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ff9721",
               },
             }}
-          />
+          >
+            <MenuItem value={"active"}>Active</MenuItem>
+            <MenuItem value={"inactive"}>Inactive</MenuItem>
+          </Select>
           <Typography component="h1" variant="h6" marginTop="15px">
             System Role
           </Typography>
@@ -474,14 +485,17 @@ export default function UpdateUser() {
           >
             <MenuItem value={"Admin"}>Admin</MenuItem>
             <MenuItem value={"Coach"}>Coach</MenuItem>
-            <MenuItem value={"Guest"}>Guest</MenuItem>
             <MenuItem value={"User"}>User</MenuItem>
           </Select>
+        </Box>
+        <Box>
+          < Errors userData={userData} error={error} setError={setError} />
         </Box>
         <Button
           variant="contained"
           color="orangeButton"
           onClick={handleSubmit}
+          disabled={Boolean(error)}
           sx={{ mt: 3, mb: 2 }}
         >
           Update User

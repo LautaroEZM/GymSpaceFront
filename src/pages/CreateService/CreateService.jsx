@@ -16,9 +16,12 @@ import axios from "axios";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Errors from "./Errors";
 
 export default function CreateService() {
   const user = useSelector((state) => state.user);
+
+  const [error,setError] = useState("");
 
   const loading =
     "https://firebasestorage.googleapis.com/v0/b/gymspace-d93d8.appspot.com/o/loading.gif?alt=media&token=9b285b61-c22f-4f7f-a3ca-154db8d99d73";
@@ -33,14 +36,14 @@ export default function CreateService() {
     name: "",
     description: "",
     category: "",
-    price: "",
     startTime: "",
+    price: 0,
     duration: 0,
     image: "",
     status: "",
     coachID: "irrelevante",
     coachIDs: user.systemRole === "Coach" ? [user.userID] : ["Select a coach"],
-    capacity: "",
+    capacity: 0,
     areaID: "1",
   });
 
@@ -370,7 +373,7 @@ export default function CreateService() {
           />
           <TextField
             name="duration"
-            label="Duration"
+            label="Duration (min)"
             type="number"
             fullWidth
             required
@@ -400,6 +403,9 @@ export default function CreateService() {
               },
             }}
           />
+          <Typography component="h1" variant="h5" marginTop="10px">
+              Start Time
+          </Typography>
           <Container>
             <TextField
               name="startTimeHour"
@@ -559,11 +565,11 @@ export default function CreateService() {
                   <Box>
                     <Select
                       labelId="selectCoach"
-                      name="coachID"
+                      name="coach1"
                       label="Entrenador"
                       sx={{ color: "white", border: "1px solid white" }}
                       value={serviceData.coachIDs[0]}
-                      onChange={handleChange}
+                      onChange={handleCoachSelect}
                     >
                       <MenuItem value="Select a coach">Select a Coach</MenuItem>
                       {coaches.map((coach, i) => (
@@ -619,10 +625,14 @@ export default function CreateService() {
             />
           )}
         </Box>
+        <Box>
+          < Errors serviceData={serviceData} error={error} setError={setError} />
+        </Box>
         <Button
           variant="contained"
           color="orangeButton"
           onClick={handleSubmit}
+          disabled={Boolean(error)}
           sx={{ mt: 3, mb: 2 }}
         >
           Create Service

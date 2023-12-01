@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import styles from "./Errors.module.css";
 import Container from "@mui/material/Container";
 
-export default function Errors({ serviceData }) {
-  const [error, setError] = useState("");
+export default function Errors({ serviceData , error , setError }) {
+  // const [error, setError] = useState("");
 
   useEffect(() => {
     if (serviceData.name.length < 4) {
@@ -36,6 +36,21 @@ export default function Errors({ serviceData }) {
       return;
     }
 
+    if (serviceData.price < 0 || serviceData.price === 0) {
+      setError("Price can't be zero or below zero");
+      return;
+    }
+
+    if (serviceData.capacity < 0 || serviceData.capacity === 0) {
+      setError("Capacity can't be zero or below zero");
+      return;
+    }
+
+    if (serviceData.duration < 0 || serviceData.duration === 0) {
+      setError("Duration can't be zero or below zero");
+      return;
+    }
+
     if (serviceData.description < 8) {
       setError("The description must be over 8 characters");
       return;
@@ -46,30 +61,16 @@ export default function Errors({ serviceData }) {
       return;
     }
 
-    if (serviceData.price < 0) {
-      setError("Price can't be below zero");
-      return;
-    }
-
-    if (serviceData.duration < 0) {
-      setError("Duration can't be below zero");
-      return;
-    }
-
-    if (serviceData.capacity < 0) {
-      setError("Capacity can't be below zero");
-      return;
-    }
-
     if (serviceData.status === "") {
       setError("A status must be selected");
       return;
     }
 
-    if (serviceData.coachID === "") {
+    if (serviceData.coachIDs[0] === "Select a coach") {
       setError("A coach must be selected");
       return;
     }
+
     setError("");
   }, [serviceData]);
 
