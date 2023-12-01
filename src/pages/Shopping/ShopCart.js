@@ -160,7 +160,7 @@ const ShopCart = () => {
                   min="0"
                   max={product.stockNow}
                   />
-                  <h3 style={{ color: "black", marginLeft: "500px", marginTop:"60px", marginRight:"100px"}}>{product.price} US$</h3>
+                  <h3 style={{ color: "black", marginLeft: "500px", marginTop:"60px", marginRight:"100px"}}>S/{product.price} </h3>
               <button style={{
                 marginTop:"70px",
                 width: "50px",
@@ -210,7 +210,7 @@ const ShopCart = () => {
                     handleAddToCartWithQuantity(service, e.target.value, i)
                   }
                 />
-                  <h3 style={{ color: "black", marginLeft: "400px", marginTop:"60px", marginRight:"100px"}}>{service.price} US$</h3>
+                  <h3 style={{ color: "black", marginLeft: "400px", marginTop:"60px", marginRight:"100px"}}>S/{service.price} </h3>
               <button style={{
                 marginTop:"70px",
                 width: "50px",
@@ -241,7 +241,7 @@ const ShopCart = () => {
         : null}
 
       {/* Mostrar el total */}
-      <p style={{ color: "white", textAlign: "center" }}>Total: ${total}</p>
+      <p style={{ color: "white", textAlign: "center" }}>Total: S/{total}</p>
       <button style={{marginLeft:"50%"}} onClick={handleBuy}>Pay</button>
       {/* Botones para eliminar y comprar */}
     </div>

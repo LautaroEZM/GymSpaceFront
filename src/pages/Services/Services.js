@@ -25,6 +25,7 @@ import {
 import { useLocalStorage } from "../../components/Hooks/useLocalStorage";
 import dayjs from "dayjs";
 
+
 export default function Album() {
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -32,6 +33,7 @@ export default function Album() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [servicesCart, setServicesCart] = useLocalStorage("service", []);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {}, [servicesCart]);
 
@@ -171,6 +173,7 @@ export default function Album() {
                         {service.description}
                       </Typography>
                     </CardContent>
+                    { user.systemRole !== 'Guest'?
                     <CardActions>
                       <LinkNoDeco to={`/ServiceDetail/${service.serviceID}`}>
                         <SmallOrangeOutlinedButtonLess>
@@ -209,14 +212,13 @@ export default function Album() {
                             ])
                           }
                         >
-                          <div>Añadir</div>
-                          <div>Al</div>
-                          <div>Carrito</div>
+                          <div>Add to cart</div>
+                          
 
                           <AddShoppingCartIcon />
                         </IconButton>
                       )}
-                    </CardActions>
+                    </CardActions>:null}
                     </ServicesCard>
                     
                  

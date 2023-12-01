@@ -151,7 +151,7 @@ export default function ProductList({ sortedProducts, showOnlyFavorites }) {
                       </SmallOrangeOutlinedButton>
                     </LinkNoDeco>
                   </CardActions>
-                  <CardActions sx={{ justifyContent: "center" }}>
+                  { user.systemRole !== 'Guest'?<CardActions sx={{ justifyContent: "center" }}>
                     {selectedProducts.filter(
                       (item) => item.productID === product.productID
                     ).length ? (
@@ -185,7 +185,7 @@ export default function ProductList({ sortedProducts, showOnlyFavorites }) {
                         <AddShoppingCartIcon />
                       </IconButton>
                     )}
-                  </CardActions>
+                  </CardActions> :null}
                 </ProductCard>
               </Grid>
             ))}
