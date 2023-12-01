@@ -37,6 +37,7 @@ export default function PhotoUPload({ photo, setPhoto }) {
       sx={{
         minWidth: 300,
         minHeight: 300,
+        alignSelf: 'center'
       }}
     >
       {photo ? ( // if there's a photo it will ask if you want a preview
@@ -57,7 +58,7 @@ export default function PhotoUPload({ photo, setPhoto }) {
         value={photo} // the value is passed down throught props by the father
         onChange={handlePhoto} // pretty self-explanatory
         inputProps={{ accept: ".png, .jpeg" }} // makes sure the file uploaded is a png or jpeg
-        sx={{ color: "white", border: "1px solid white" }}
+        sx={{ color: "white", border: "1px solid white", width: '355px', alignSelf: 'center' }}
       />
     </Container>
   );

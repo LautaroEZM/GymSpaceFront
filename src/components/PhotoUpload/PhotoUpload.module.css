@@ -2,6 +2,9 @@
   height: 300px;
   width: 345px;
   margin-left: 5px;
+  object-fit: cover;
+  border: 1px solid white;
+  border-radius: 5%;
 }
 
 .div {
