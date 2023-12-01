@@ -10,15 +10,28 @@ import ChatMenu from '../ChatMenu';
 
 export default function ChatMessage({ index, message, sendMessage, disabled, setDisabled }) {
     return <Message model={message}>
-        {message.sender != "user" && <Message.CustomContent>
-            {message.message}
-            <ChatMenu sendMessage={sendMessage} disabled={disabled} setDisabled={setDisabled} />
-            {!index && <Typography
-                variant="h10"
-                style={{ color: 'rgba(0, 0, 0, 0.6)' }}
-            >
-                Powered by ChatGPT
-            </Typography>}
-        </Message.CustomContent>}
+        {message.sender != "user" && (
+            <Message.CustomContent>
+                <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+                    <a
+                        href={decoratedHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        key={key}
+                    >
+                        {decoratedText}
+                    </a>
+                )}>
+                    {message.message}
+                </Linkify>
+                <ChatMenu sendMessage={sendMessage} disabled={disabled} setDisabled={setDisabled} />
+                {!index && <Typography
+                    variant="h10"
+                    style={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                >
+                    Powered by ChatGPT
+                </Typography>}
+            </Message.CustomContent>
+        )}
     </Message>
 }

@@ -1,9 +1,6 @@
 .container {
   height: 30px;
   min-width: 300px;
-  position: absolute;
-  left: 200px;
-  top: 480px;
 }
 
 .noErrors {

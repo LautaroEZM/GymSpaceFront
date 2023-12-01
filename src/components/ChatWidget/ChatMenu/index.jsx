@@ -24,17 +24,17 @@ export default function ChatMenu({ sendMessage, disabled, setDisabled }) {
                 setDisabled(false)
             },
         },
-        {
-            textValue: "Pagar carrito",
-            handleClick: async () => {
-                setDisabled(true);
-                const mpData = await createPaymentLink()
-                const mpLink = mpData?.response.init_point
-                if (mpLink) window.open(mpLink, 'MercadoPago');
-                else console.log("Error del servidor para generar link de pago.");
-                setDisabled(false)
-            },
-        },
+        // {
+        //     textValue: "Pagar carrito",
+        //     handleClick: async () => {
+        //         setDisabled(true);
+        //         const mpData = await createPaymentLink()
+        //         const mpLink = mpData?.response.init_point
+        //         if (mpLink) window.open(mpLink, 'MercadoPago');
+        //         else console.log("Error del servidor para generar link de pago.");
+        //         setDisabled(false)
+        //     },
+        // },
     ]
     return <Box sx={{ display: 'flex', '& > *': { m: 1, }, }}>
         <ButtonGroup

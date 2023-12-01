@@ -5,6 +5,7 @@ const getGPTResponse = async (data) => {
     const options = {
         method: 'POST',
         url: "https://gymspace-backend.onrender.com/chat/response",
+        // url: "http://localhost:3001/chat/response",
         data
     };
 

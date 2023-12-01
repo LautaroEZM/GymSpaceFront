@@ -1,15 +1,14 @@
 import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
-import { API_URL } from "../../utils/constants";
+import { API_URL, API_URL_LOCAL } from "../../utils/constants";
 import { buildReq } from "../../utils/auth0Utils";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Loading from "../../components/Loading/loading";
-import ServiceCard from "../Services/ServiceCard";
-import { OrangeContainedButton } from "../../styles/ComponentStyles";
 import { useNavigate } from "react-router";
+import UserServicesCards from "./UserServicesCards";
 
 export default function UserServices() {
   const user = useSelector((state) => state.user);
@@ -35,27 +34,27 @@ export default function UserServices() {
 
   const checkServiceCoach = (service) => {
     let found = false;
-    service.coachIDs.forEach((e) => {
-      if (e === user.userID) found = true;
+    service.coachIDs.forEach((coachId) => {
+      if (coachId === user.userID) found = true;
     });
     return found;
   };
 
   const today = getDate();
 
-  console.log("today,", today);
-
   const [userServices, setUserServices] = useState();
 
   useEffect(() => {
-    console.log("user");
     const id = user.userID;
     const getUser = async (id) => {
       try {
         const req = await buildReq({}, getAccessTokenSilently);
-        console.log("token");
-        const response = await axios.get(`${API_URL}/userservices/${id}`, req);
+        const url = `${API_URL}/userservices?userId=${id}`
+        // const url = `${API_URL_LOCAL}/userservices?userId=${id}`
+        const response = await axios.get(url, req);
         const { data } = response;
+        // console.log(data.map((userService) => userService.Service));
+        // console.log(data);
         if (data) {
           setUserServices(data);
           setLoading(false);
@@ -71,7 +70,7 @@ export default function UserServices() {
   }, [user]);
 
   useEffect(() => {
-    console.log(userServices);
+
   }, [userServices]);
 
   if (loading) return <Loading loading={loading} />;
@@ -85,131 +84,27 @@ export default function UserServices() {
         flexDirection: "column",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 7,
-        }}
-      >
-        <Typography variant="h3" color="white">
-          In course:
-        </Typography>
-        {userServices.length > 0 ? (
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            {userServices.map((service, i) => {
-              if (service.finishDate > today) {
-                return <ServiceCard key={i} service={service} />;
-              }
-              <ServiceCard key={i} service={service} />;
-            })}
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 3,
-            }}
-          >
-            {" "}
-            <Typography sx={{ paddingBottom: 5 }} variant="h5" color="white">
-              {" "}
-              Noghing here yet{" "}
-            </Typography>
-            <OrangeContainedButton onClick={() => navigate("/Services")}>
-              Buy
-            </OrangeContainedButton>
-          </Box>
-        )}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 3,
-        }}
-      >
-        <Typography variant="h3" color="white">
-          Caducated:
-        </Typography>
-        {userServices.length > 0 ? (
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            {userServices.map((service, i) => {
-              if (service.finishDate < today) {
-                return <ServiceCard key={i} service={service} />;
-              }
-              <ServiceCard key={i} service={service} />;
-            })}
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 3,
-            }}
-          >
-            {" "}
-            <Typography sx={{ paddingBottom: 5 }} variant="h5" color="white">
-              {" "}
-              Noghing here yet{" "}
-            </Typography>
-          </Box>
-        )}
-      </Box>
-      {isCoach ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 3,
-          }}
-        >
-          <Typography variant="h3" color="white">
-            Your classes:
-          </Typography>
-          {userServices.length > 0 ? (
-            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-              {userServices.map((service, i) => {
-                if (service.finishDate > today && checkServiceCoach(service)) {
-                  return <ServiceCard key={i} service={service} />;
-                }
-                <ServiceCard key={i} service={service} />;
-              })}
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 3,
-              }}
-            >
-              {" "}
-              <Typography sx={{ paddingBottom: 5 }} variant="h5" color="white">
-                {" "}
-                Noghing here yet{" "}
-              </Typography>
-              <OrangeContainedButton onClick={() => navigate("/CreateService")}>
-                Create service
-              </OrangeContainedButton>
-            </Box>
-          )}
-        </Box>
-      ) : null}
+      <UserServicesCards
+        userServices={userServices}
+        disabled={!userServices.length}
+        userServiceDisabled={(userService) => userService.finishDate < today}
+        title="Services in Course"
+        redirectButtonName="Buy"
+      />
+      <UserServicesCards
+        userServices={userServices}
+        disabled={!userServices.length}
+        userServiceDisabled={(userService) => userService.finishDate >= today}
+        title="Services Caducated"
+        redirectButtonName="Buy"
+      />
+      {true || isCoach ? <UserServicesCards
+        userServices={userServices}
+        disabled={!userServices.length}
+        userServiceDisabled={(userService) => userService.finishDate < today && checkServiceCoach(userService)}
+        title="Your Classes"
+        redirectButtonName="Create service"
+      /> : null}
     </Box>
   );
 }

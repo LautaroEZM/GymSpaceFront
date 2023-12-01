@@ -73,7 +73,9 @@ const TopBarMenu = () => {
       }
     };
     checkUser();
+    
   }, [user]);
+
   useEffect(() => {
     const getcartAPI = async () => {
       if (user && isAuthenticated) {
@@ -130,6 +132,8 @@ const TopBarMenu = () => {
     navigate(`/${url}`);
   };
 
+  
+
   return (
     <AppBar
       position="static"
@@ -166,16 +170,25 @@ const TopBarMenu = () => {
           <LinkNoDeco to="/Services">
             <TopBarButton disableElevation>SERVICES</TopBarButton>
           </LinkNoDeco>
-          <LinkNoDeco to="/Dashboard">
+          
+          {(["Admin", "Coach"].includes(newUser.systemRole)) ?<LinkNoDeco to="/Dashboard">
             <TopBarButton disableElevation>DASHBOARD</TopBarButton>
-          </LinkNoDeco>
+          </LinkNoDeco> :null}
+          
         </Box>
         <Box sx={{ display: "flex" }}>
-          <LinkNoDeco to="/ShopCart">
-            <TopBarButton disableElevation>
-              <ShoppingCartIcon />
-            </TopBarButton>
-          </LinkNoDeco>
+          {newUser.systemRole === "Guest" ? (
+            warningState ? (
+              <StatusChecker status={currentStatus} />
+            ) : null
+          ) : (
+            <LinkNoDeco to="/ShopCart">
+              <TopBarButton disableElevation>
+                <ShoppingCartIcon />
+              </TopBarButton>
+            </LinkNoDeco>
+          )}
+
           <Box className={style.accountContainer}>
             <TopBarButton disableElevation onClick={handleToggleMenuIcon}>
               {user && isAuthenticated ? (
@@ -195,12 +208,12 @@ const TopBarMenu = () => {
             >
               <Box p={2}>
                 {user ? (
-                  <Box className={style.accountContainer} >
+                  <Box className={style.accountContainer}>
                     <TopBarButton
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("Profile")}
                     >
                       Profile
@@ -209,7 +222,7 @@ const TopBarMenu = () => {
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("UserProducts")}
                     >
                       Your products
@@ -218,7 +231,7 @@ const TopBarMenu = () => {
                       variant="contained"
                       color="menuButton"
                       disableElevation
-                      sx={{width: 1}}
+                      sx={{ width: 1 }}
                       onClick={() => handleRedirect("UserServices")}
                     >
                       Your services
@@ -255,7 +268,6 @@ const TopBarMenu = () => {
         sx={{
           "& .MuiTypography-root": {
             color: "orange",
-            
           },
         }}
       >
@@ -270,15 +282,12 @@ const TopBarMenu = () => {
           </LinkNoDeco>
         </MenuItem>
         <MenuItem onClick={handleMobileMenuToggle}>
+        {(["Admin", "Coach"].includes(newUser.systemRole)) ?
           <LinkNoDeco to="/Dashboard">
             <Typography variant="inherit">DASHBOARD</Typography>
-          </LinkNoDeco>
+          </LinkNoDeco>:null}
         </MenuItem>
       </StyledMenu>
-
-      {currentStatus !== "safe" && warningState ? (
-        <StatusChecker status={currentStatus} />
-      ) : null}
     </AppBar>
   );
 };
