@@ -22,7 +22,8 @@ import ServiceCardList from "./components/ServiceCardList";
 import ServiceGraph from "./components/ServiceGraph";
 import { API_URL } from "./../../utils/constants";
 import axios from "axios";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const [showMenu, setShowMenu] = useState(true); // Cambiado a true para que siempre se muestre en pantallas grandes
   const [showClientsUserList, setShowClientsUserList] = useState(false);
@@ -32,6 +33,8 @@ function Dashboard() {
   const [userservices, setUserservices] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  const newUser = useSelector((state) => state.user);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +48,9 @@ function Dashboard() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  useEffect(() => {
+    ["Admin", "Coach"].includes(newUser.systemRole)?null:navigate("/")
+  }, []);
   useEffect(() => {
     const getServices = async () => {
       try {

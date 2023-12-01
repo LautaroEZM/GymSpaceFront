@@ -73,6 +73,7 @@ const TopBarMenu = () => {
       }
     };
     checkUser();
+    
   }, [user]);
 
   useEffect(() => {
@@ -171,9 +172,11 @@ const TopBarMenu = () => {
           <LinkNoDeco to="/Services">
             <TopBarButton disableElevation>SERVICES</TopBarButton>
           </LinkNoDeco>
-          <LinkNoDeco to="/Dashboard">
+          
+          {(["Admin", "Coach"].includes(newUser.systemRole)) ?<LinkNoDeco to="/Dashboard">
             <TopBarButton disableElevation>DASHBOARD</TopBarButton>
-          </LinkNoDeco>
+          </LinkNoDeco> :null}
+          
         </Box>
         <Box sx={{ display: "flex" }}>
           {newUser.systemRole === "Guest" ? (
@@ -281,9 +284,10 @@ const TopBarMenu = () => {
           </LinkNoDeco>
         </MenuItem>
         <MenuItem onClick={handleMobileMenuToggle}>
+        {(["Admin", "Coach"].includes(newUser.systemRole)) ?
           <LinkNoDeco to="/Dashboard">
             <Typography variant="inherit">DASHBOARD</Typography>
-          </LinkNoDeco>
+          </LinkNoDeco>:null}
         </MenuItem>
       </StyledMenu>
     </AppBar>
