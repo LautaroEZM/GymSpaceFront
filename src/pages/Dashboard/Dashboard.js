@@ -135,7 +135,7 @@ function Dashboard() {
 
   const formattedGraphDataProduct = Object.keys(graphdataproduct).map((product) => ({
     product: product,
-    users: graphdataproduct[product],
+    sales: graphdataproduct[product],
   }));
 
   console.log(formattedGraphDataProduct);

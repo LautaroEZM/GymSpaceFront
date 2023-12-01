@@ -43,7 +43,7 @@ const ServiceGraph = ({ data }) => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="users" fill={theme.palette.success.main} />
+                    <Bar dataKey="sales" fill={theme.palette.success.main} />
                 </BarChart>
             </ResponsiveContainer>
         </Box>
