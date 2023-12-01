@@ -20,6 +20,7 @@ import {
 import UserList from "./components/UserList";
 import ServiceCardList from "./components/ServiceCardList";
 import ServiceGraph from "./components/ServiceGraph";
+import ProductGraph from "./components/ProductGraph";
 import { API_URL } from "./../../utils/constants";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -28,8 +29,10 @@ function Dashboard() {
   const [showMenu, setShowMenu] = useState(true); // Cambiado a true para que siempre se muestre en pantallas grandes
   const [showClientsUserList, setShowClientsUserList] = useState(false);
   const [showCardServiceList, setShowCardServiceList] = useState(false);
+  const [showProductGraph, setShowProductGraph] = useState(false);
   const [showServiceGraph, setShowServiceGraph] = useState(true);
   const [services, setServices] = useState([]);
+  const [userserproducts, setUserproducts] = useState([]);
   const [userservices, setUserservices] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
@@ -72,11 +75,20 @@ function Dashboard() {
       }
     };
 
+    const getUserproducts = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/userproducts`);
+        const { data } = response;
+        setUserproducts(data);
+      } catch (error) {
+        console.error("Error fetching Userservices:", error.message);
+      }
+    };
+
     getServices();
     getUserservices();
+    getUserproducts();
   }, []);
-
-  const enrolledPeople = ["angel", "lautaro", "adrian", "kevin"];
 
   const transformedServices = services.map((service) => {
     const enrolledPeople = userservices
@@ -96,7 +108,7 @@ function Dashboard() {
     };
   });
 
-  const graphdata = userservices.reduce((acc, userService) => {
+  const graphdataservice = userservices.reduce((acc, userService) => {
     const serviceKey = `${userService.Service.name} ${userService.Service.startTime}`;
     if (acc[serviceKey]) {
       acc[serviceKey] += 1;
@@ -106,10 +118,27 @@ function Dashboard() {
     return acc;
   }, {});
 
-  const formattedGraphData = Object.keys(graphdata).map((service) => ({
+  const formattedGraphDataService = Object.keys(graphdataservice).map((service) => ({
     service: service,
-    users: graphdata[service],
+    users: graphdataservice[service],
   }));
+
+  const graphdataproduct = userserproducts.reduce((acc, userProduct) => {
+    const productKey = `${userProduct.Product.name}`;
+    if (acc[productKey]) {
+      acc[productKey] += userProduct.qty;
+    } else {
+      acc[productKey] = userProduct.qty;
+    }
+    return acc;
+  }, {});
+
+  const formattedGraphDataProduct = Object.keys(graphdataproduct).map((product) => ({
+    product: product,
+    sales: graphdataproduct[product],
+  }));
+
+  console.log(formattedGraphDataProduct);
 
   const handleToggleMenu = () => {
     setShowMenu(!showMenu);
@@ -152,7 +181,8 @@ function Dashboard() {
             {showCardServiceList && (
               <ServiceCardList services={transformedServices} />
             )}
-            {showServiceGraph && <ServiceGraph data={formattedGraphData} />}
+            {showServiceGraph && <ServiceGraph data={formattedGraphDataService} />}
+            {showProductGraph && <ProductGraph data={formattedGraphDataProduct} />}
           </Box>
           <Drawer
             anchor="left"
@@ -182,6 +212,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowClientsUserList(false);
                     setShowServiceGraph(false);
+                    setShowProductGraph(false);
                     setShowCardServiceList(true);
                   }}
                 >
@@ -192,6 +223,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowClientsUserList(false);
                     setShowCardServiceList(false);
+                    setShowProductGraph(false);
                     setShowServiceGraph(true);
                   }}
                 >
@@ -199,7 +231,7 @@ function Dashboard() {
                 </DashBoardListItem>
               </List>
 
-              {/* Categoría Finances */}
+              {/* Categoría Products */}
               <DashBoardCategory>
                 <ListItemIcon>
                   <AccountBalanceIcon sx={{ color: "#bbbbbb" }} />
@@ -213,8 +245,16 @@ function Dashboard() {
                 <DashBoardListItem button>
                   <ListItemText primary="Option 2" />
                 </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 3" />
+                <DashBoardListItem
+                  button
+                  onClick={() => {
+                    setShowCardServiceList(false);
+                    setShowServiceGraph(false);
+                    setShowClientsUserList(false);
+                    setShowProductGraph(true);
+                  }}
+                >
+                  <ListItemText primary="Stats" />
                 </DashBoardListItem>
               </List>
 
@@ -231,6 +271,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowCardServiceList(false);
                     setShowServiceGraph(false);
+                    setShowProductGraph(false);
                     setShowClientsUserList(true);
                   }}
                 >
@@ -265,6 +306,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowClientsUserList(false);
                     setShowServiceGraph(false);
+                    setShowProductGraph(false);
                     setShowCardServiceList(true);
                   }}
                 >
@@ -275,6 +317,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowClientsUserList(false);
                     setShowCardServiceList(false);
+                    setShowProductGraph(false);
                     setShowServiceGraph(true);
                   }}
                 >
@@ -282,7 +325,7 @@ function Dashboard() {
                 </DashBoardListItem>
               </List>
 
-              {/* Categoría Finances */}
+              {/* Categoría Products */}
               <DashBoardCategory>
                 <ListItemIcon>
                   <AccountBalanceIcon sx={{ color: "#bbbbbb" }} />
@@ -296,8 +339,16 @@ function Dashboard() {
                 <DashBoardListItem button>
                   <ListItemText primary="Option 2" />
                 </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 3" />
+                <DashBoardListItem
+                  button
+                  onClick={() => {
+                    setShowCardServiceList(false);
+                    setShowServiceGraph(false);
+                    setShowClientsUserList(false);
+                    setShowProductGraph(true);
+                  }}
+                >
+                  <ListItemText primary="Stats" />
                 </DashBoardListItem>
               </List>
 
@@ -314,6 +365,7 @@ function Dashboard() {
                   onClick={() => {
                     setShowCardServiceList(false);
                     setShowServiceGraph(false);
+                    setShowProductGraph(false);
                     setShowClientsUserList(true);
                   }}
                 >
@@ -334,7 +386,8 @@ function Dashboard() {
             {showCardServiceList && (
               <ServiceCardList services={transformedServices} />
             )}
-            {showServiceGraph && <ServiceGraph data={formattedGraphData} />}
+            {showServiceGraph && <ServiceGraph data={formattedGraphDataService} />}
+            {showProductGraph && <ProductGraph data={formattedGraphDataProduct} />}
           </Box>
         </>
       )}
