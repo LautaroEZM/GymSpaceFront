@@ -13,16 +13,19 @@ import { useState, useEffect } from "react";
 import PhotoUpload from "../../components/PhotoUpload/PhotoUpload";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { OrangeContainedButton, TextFieldForm } from "../../styles/ComponentStyles";
+import {
+  OrangeContainedButton,
+  TextFieldForm,
+} from "../../styles/ComponentStyles";
 import { useSelector } from "react-redux";
+import Errors from "./Errors";
 
 export default function CreateProduct() {
-
-  const user = useSelector((state) => state.user )
+  const user = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
-  if (user.systemRole !== 'Admin') navigate('/')
+  if (user.systemRole !== "Admin") navigate("/");
 
   const [productData, setProductData] = useState({
     name: "",
@@ -35,6 +38,8 @@ export default function CreateProduct() {
     status: "",
   });
 
+  const [errors, setErrors] = useState(null);
+
   const [newImage, setNewImage] = useState(undefined);
 
   const handleChange = (event) => {
@@ -43,8 +48,10 @@ export default function CreateProduct() {
   };
 
   const handleSubmit = async () => {
+    if (errors) {
+      window.alert(errors);
+    }
     try {
-
       const product = await axios.post(
         "https://gymspace-backend.onrender.com/products",
         productData
@@ -64,7 +71,6 @@ export default function CreateProduct() {
     setProductData((prevData) => ({ ...prevData, image: newImage }));
   }, [newImage]);
 
-
   return (
     <Container
       sx={{
@@ -76,7 +82,6 @@ export default function CreateProduct() {
         color: "white",
         marginTop: "20px",
         marginBottom: "20px",
-        
       }}
     >
       <Box
@@ -100,11 +105,17 @@ export default function CreateProduct() {
           component="form"
           noValidate
           onSubmit={handleSubmit}
-          sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          sx={{
+            mt: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
         >
           <FormControl>
             <TextFieldForm
               label="Name"
+              name="name"
               required
               autoFocus
               value={productData.name}
@@ -112,12 +123,14 @@ export default function CreateProduct() {
             />
             <TextFieldForm
               label="Category"
+              name="category"
               required
               value={productData.category}
               onChange={handleChange}
             />
             <TextFieldForm
               label="Brand"
+              name="brand"
               required
               value={productData.brand}
               onChange={handleChange}
@@ -126,6 +139,7 @@ export default function CreateProduct() {
           <PhotoUpload photo={newImage} setPhoto={setNewImage} />
           <TextFieldForm
             label="Description"
+            name="description"
             multiline
             required
             value={productData.description}
@@ -137,25 +151,26 @@ export default function CreateProduct() {
             value={productData.status}
             onChange={handleChange}
             sx={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              margin: '10px',
+              flexDirection: "row",
+              justifyContent: "center",
+              margin: "10px",
             }}
           >
             <FormControlLabel
               value="available"
-              control={<Radio sx={{ color: 'white' }} />}
+              control={<Radio sx={{ color: "white" }} />}
               label="Available"
             />
             <FormControlLabel
               value="unavailable"
-              control={<Radio sx={{ color: 'white' }} />}
+              control={<Radio sx={{ color: "white" }} />}
               label="Unavailable"
             />
           </RadioGroup>
           <TextFieldForm
             label="Stock now"
             type="number"
+            name="stockNow"
             required
             value={productData.stockNow}
             onChange={handleChange}
@@ -163,13 +178,19 @@ export default function CreateProduct() {
           <TextFieldForm
             label="Price"
             type="number"
+            name="price"
             required
             value={productData.price}
             onChange={handleChange}
           />
+          <Errors
+            productData={productData}
+            errors={errors}
+            setErrors={setErrors}
+          />
           <OrangeContainedButton
             onClick={() => handleSubmit()}
-            sx={{ marginTop: '20px' }}
+            sx={{ marginTop: "50px" }}
           >
             Create Product
           </OrangeContainedButton>
