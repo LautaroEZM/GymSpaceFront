@@ -19,10 +19,11 @@ import { OrangeOutlinedButton, LinkNoDeco } from "../../styles/ComponentStyles";
 import FilterBar from "./FilterBar";
 import SortMenu from "./SortMenu";
 import ProductList from "./ProductList";
-import { useSelector, useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Loading from "../../components/Loading/loading";
 
 import axios from "axios";
+import { setFavorites } from "../../REDUX/actions";
 
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
@@ -35,33 +36,16 @@ export default function Marketplace() {
   const [noProducts, setNoProducts] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getFavorites = async () => {
       const userFavorites = `https://gymspace-backend.onrender.com/users/favorites/${user.userID}`;
       const { data } = await axios.get(userFavorites);
-      const favoriteProducts = [];
-      const favoriteServices = [];
-      for (const fav of data) {
-        if (fav.type === "prod") {
-          favoriteProducts.push(fav.id);
-        }
-        if (fav.type === "serv") {
-          favoriteServices.push(fav.id);
-        }
-      }
-      dispatch(
-        setUser({
-          ...user,
-          favoriteProducts,
-          favoriteServices,
-        })
-      );
+      dispatch(setFavorites(data));
     };
     if (user.userID) getFavorites();
-  }, [user.userID]);
+  }, [user]);
 
   useEffect(() => {
     setLoading(true);
@@ -229,10 +213,8 @@ export default function Marketplace() {
         ) : (
           <>
             <ProductList
-              user={user}
-              showOnlyFavorites={showOnlyFavorites}
               sortedProducts={sortedProducts}
-              maxProductPrice={maxProductPrice}
+              showOnlyFavorites={showOnlyFavorites}
             />
           </>
         )}
