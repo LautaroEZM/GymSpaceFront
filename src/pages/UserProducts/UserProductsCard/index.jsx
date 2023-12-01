@@ -1,10 +1,13 @@
-import { CardActions, CardContent, CardMedia, Grid, Rating, Typography } from '@mui/material'
+import { CardActions, CardContent, CardMedia, Grid, Rating, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useState } from 'react'
 import { LinkNoDeco, ProductCard, SmallOrangeOutlinedButton } from '../../../styles/ComponentStyles'
+import ReviewModal from '../ReviewModal';
 
 export default function UserProductsCard({ userProduct }) {
-    return <Grid item xs={12} sm={6} md={4} lg={2} xl={2}>
+    const [openModal, setOpenModal] = useState(false);
+
+    return <Grid item xs={12} sm={6} md={4} lg={2} xl={2} style={{ margin: '8px' }}>
         <ProductCard
             sx={{
                 height: "100%",
@@ -54,10 +57,16 @@ export default function UserProductsCard({ userProduct }) {
                         VIEW DETAIL
                     </SmallOrangeOutlinedButton>
                 </LinkNoDeco>
-                <SmallOrangeOutlinedButton>
+                {/* <SmallOrangeOutlinedButton onClick={() => setOpenModal(true)}>
                     ADD REVIEW
-                </SmallOrangeOutlinedButton>
+                </SmallOrangeOutlinedButton> */}
             </CardActions>
+            <ReviewModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title={userProduct.title}
+                image={userProduct.picture_url}
+            />
         </ProductCard>
     </Grid>
 }
