@@ -13,7 +13,12 @@ import {
   FormControl,
 } from "@mui/material";
 import axios from "axios";
-import { OrangeOutlinedButton, RedOutlinedButton, StyledSelect, TextFieldForm } from "../../../styles/ComponentStyles";
+import {
+  OrangeOutlinedButton,
+  RedOutlinedButton,
+  StyledSelect,
+  TextFieldForm,
+} from "../../../styles/ComponentStyles";
 
 const ProductEditPopup = ({ product, open, onClose, onUpdate }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
@@ -40,7 +45,7 @@ const ProductEditPopup = ({ product, open, onClose, onUpdate }) => {
       )
       .then((response) => {
         console.log("Product updated successfully", response);
-        onUpdate(editedProduct);
+        onUpdate(editedProduct); // Llama a la función onUpdate con el producto editado
         onClose();
       })
       .catch((error) => console.error("Error updating product", error));

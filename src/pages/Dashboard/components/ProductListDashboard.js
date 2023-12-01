@@ -6,15 +6,17 @@ import {
   Typography,
   Container,
   Grid,
+  TextField, // Nueva importación para el campo de búsqueda
 } from "@mui/material";
 import axios from "axios";
-import ProductEditPopup from "./ProductEditPopup"; // Importa el nuevo componente
-import { OrangeOutlinedButton } from "../../../styles/ComponentStyles";
+import ProductEditPopup from "./ProductEditPopup";
+import { OrangeOutlinedButton, TextFieldForm } from "../../../styles/ComponentStyles";
 
 const ProductListDashboard = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Nuevo estado para el término de búsqueda
 
   useEffect(() => {
     axios
@@ -48,16 +50,43 @@ const ProductListDashboard = () => {
     setEditPopupOpen(true);
   };
 
+  const handleUpdate = (editedProduct) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.productID === editedProduct.productID ? editedProduct : product
+      )
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
+      {/* Campo de búsqueda */}
+      <TextFieldForm
+        label="Search by Name"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        style={{ marginBottom: "10px" }}
+      />
+
       <Grid container spacing={0} direction="column">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <Grid item key={product.productID} xs={12} sm={12} md={12}>
             <Card
               onClick={() => handleCardClick(product)}
               style={{
-                backgroundColor: "#414141", // Cambiado a #141414
-                color: "white", // Texto en blanco
+                backgroundColor: "#414141",
+                color: "white",
                 height: "250px",
                 marginBottom: "10px",
               }}
@@ -105,7 +134,6 @@ const ProductListDashboard = () => {
                   size="small"
                   onClick={handleEditClick}
                   disabled={!selectedProduct}
-                  
                 >
                   Edit
                 </OrangeOutlinedButton>
@@ -127,10 +155,7 @@ const ProductListDashboard = () => {
       <ProductEditPopup
         open={isEditPopupOpen}
         onClose={() => setEditPopupOpen(false)}
-        onUpdate={(editedProduct) => {
-          console.log("Product updated:", editedProduct);
-          setEditPopupOpen(false);
-        }}
+        onUpdate={handleUpdate}
         product={selectedProduct || {}}
       />
     </Container>

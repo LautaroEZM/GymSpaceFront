@@ -218,6 +218,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowCardServiceList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="List" />
@@ -229,6 +230,7 @@ function Dashboard() {
                     setShowCardServiceList(false);
                     setShowProductGraph(false);
                     setShowServiceGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -251,10 +253,6 @@ function Dashboard() {
                     setShowCardServiceList(false);
                     setShowProductListDashboard(true);
                     setShowMenu(false);
-                    console.log(
-                      "showProductListDashboard:",
-                      showProductListDashboard
-                    );
                   }}
                 >
                   <ListItemText primary="Product List" />
@@ -266,6 +264,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowClientsUserList(false);
                     setShowProductGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -287,6 +286,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowClientsUserList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="People" />
@@ -322,6 +322,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowCardServiceList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="List" />
@@ -333,6 +334,7 @@ function Dashboard() {
                     setShowCardServiceList(false);
                     setShowProductGraph(false);
                     setShowServiceGraph(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -354,16 +356,11 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowCardServiceList(false);
                     setShowProductListDashboard(true);
+                    
                   }}
                 >
                   <ListItemText primary="Product List" />
                   </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 1" />
-                </DashBoardListItem>
-                <DashBoardListItem button>
-                  <ListItemText primary="Option 2" />
-                </DashBoardListItem>
                 <DashBoardListItem
                   button
                   onClick={() => {
@@ -371,6 +368,8 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowClientsUserList(false);
                     setShowProductGraph(true);
+                    setShowProductListDashboard(false);
+                    
                   }}
                 >
                   <ListItemText primary="Stats" />
@@ -392,6 +391,7 @@ function Dashboard() {
                     setShowServiceGraph(false);
                     setShowProductGraph(false);
                     setShowClientsUserList(true);
+                    setShowProductListDashboard(false);
                   }}
                 >
                   <ListItemText primary="People" />
