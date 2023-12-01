@@ -10,7 +10,6 @@ import {
   CssBaseline,
   ThemeProvider,
   Box,
-  MenuItem,
 } from "@mui/material";
 import theme from "../../../theme";
 import {
@@ -41,6 +40,7 @@ export default function UserList() {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("firstName");
+  const [selectedRole, setSelectedRole] = useState("all");
 
   const { getAccessTokenSilently } = useAuth0();
 
@@ -72,15 +72,12 @@ export default function UserList() {
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
+    setSelectedRole("all"); // Reinicia el filtro de roles al cambiar la categoría
   };
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
-  const filteredUsers = users.filter((user) =>
-    user[selectedCategory].toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleDelete = async (id) => {
     if (reduxUser.systemRole !== "Admin") {
@@ -101,7 +98,7 @@ export default function UserList() {
   };
 
   const sortedUsers = () => {
-    const sortableUsers = [...filteredUsers];
+    const sortableUsers = users.slice(); // Copia el array para evitar mutar el estado directamente
     if (sortConfig.key !== null) {
       sortableUsers.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -124,53 +121,34 @@ export default function UserList() {
           label="FIRST NAME"
           sorted={sortConfig.key === "firstName"}
           direction={sortConfig.direction}
-          maxWidth={200}
+          maxWidth={70}
         />
         <SortableTableCell
           onClick={() => handleSort("lastName")}
           label="LAST NAME"
           sorted={sortConfig.key === "lastName"}
           direction={sortConfig.direction}
-          maxWidth={200}
-        />
-        <SortableTableCell
-          onClick={() => handleSort("gender")}
-          label="GENDER"
-          sorted={sortConfig.key === "gender"}
-          direction={sortConfig.direction}
-          maxWidth={150}
+          maxWidth={70}
         />
         <SortableTableCell
           onClick={() => handleSort("phone")}
           label="PHONE"
           sorted={sortConfig.key === "phone"}
           direction={sortConfig.direction}
-          maxWidth={150}
+          maxWidth={70}
         />
         <SortableTableCell
-          onClick={() => handleSort("status")}
-          label="STATUS"
-          sorted={sortConfig.key === "status"}
+          onClick={() => handleSort("email")}
+          label="EMAIL"
+          sorted={sortConfig.key === "email"}
           direction={sortConfig.direction}
-          maxWidth={50}
+          maxWidth={400}
         />
         <TableCell
           sx={{
             fontSize: 18,
             color: "white",
-            minWidth: 150,
-            backgroundColor: "#414141",
-            border: "1px solid white",
-            textAlign: "center",
-          }}
-        >
-          ROLE
-        </TableCell>
-        <TableCell
-          sx={{
-            fontSize: 18,
-            color: "white",
-            minWidth: 150,
+            width: 100,
             backgroundColor: "#414141",
             border: "1px solid white",
             textAlign: "center",
@@ -185,9 +163,15 @@ export default function UserList() {
   const renderTableData = () => {
     const userRedux = useSelector((state) => state.user);
 
+    const filteredByRole =
+      selectedRole === "all"
+        ? sortedUsers()
+        : sortedUsers().filter((user) => user.systemRole === selectedRole);
+
     return (
+      
       <TableBody>
-        {sortedUsers().map((user, index) => (
+        {filteredByRole.map((user, index) => (
           <TableRow
             key={user.userID}
             sx={{
@@ -226,16 +210,6 @@ export default function UserList() {
                 border: "1px solid white",
               }}
             >
-              {user.gender}
-            </TableCell>
-            <TableCell
-              sx={{
-                fontSize: 14,
-                color: "white",
-                maxWidth: 100,
-                border: "1px solid white",
-              }}
-            >
               {user.phone}
             </TableCell>
             <TableCell
@@ -246,54 +220,31 @@ export default function UserList() {
                 border: "1px solid white",
               }}
             >
-              {user.status}
+              {user.email}
             </TableCell>
-
             <TableCell
               sx={{
-                fontSize: 14,
-                color: "white",
-                maxWidth: 100,
+                display: "flex",
+                gap: "8px",
+                minWidth: 150,
                 border: "1px solid white",
+                justifyContent: "center",
               }}
             >
-              {user.systemRole}
+              <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
+                <OrangeContainedButton>DETAIL</OrangeContainedButton>
+              </LinkNoDeco>
+              {userRedux.systemRole === "Admin" && (
+                <>
+                  <LinkNoDeco to={`/UpdateUser/${user.userID}`}>
+                    <BlueContainedButton>UPDATE</BlueContainedButton>
+                  </LinkNoDeco>
+                  <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
+                    DELETE
+                  </RedOutlinedButton>
+                </>
+              )}
             </TableCell>
-
-            {userRedux.systemRole === "Admin" ? (
-              <TableCell
-                sx={{
-                  display: "flex",
-                  gap: "8px",
-                  minWidth: 150,
-                  border: "1px solid white",
-                  justifyContent: "center",
-                }}
-              >
-                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
-                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
-                </LinkNoDeco>
-                <LinkNoDeco to={`/UpdateUser/${user.userID}`}>
-                  <BlueContainedButton>UPDATE</BlueContainedButton>
-                </LinkNoDeco>
-                <RedOutlinedButton onClick={() => handleDelete(user.userID)}>
-                  "DELETE"
-                </RedOutlinedButton>
-              </TableCell>
-            ) : (
-              <TableCell
-                sx={{
-                  fontSize: 14,
-                  color: "white",
-                  maxWidth: 100,
-                  border: "1px solid white",
-                }}
-              >
-                <LinkNoDeco to={`/UsersDetail/${user.userID}`}>
-                  <OrangeContainedButton>DETAIL</OrangeContainedButton>
-                </LinkNoDeco>
-              </TableCell>
-            )}
           </TableRow>
         ))}
       </TableBody>
@@ -337,32 +288,85 @@ export default function UserList() {
           minHeight: "100vh",
         }}
       >
+        <Box sx={{
+          color: "#f3a143",
+          fontSize: "40px",
+        }}>USERS LIST</Box>
         <Box
           sx={{
             py: 1,
             flexGrow: 1,
             width: "90%",
-            marginTop: 5,
           }}
         >
-          <TextFieldForm
-            label="Search"
-            variant="outlined"
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-          />
-          <StyledSelect
-            value={selectedCategory}
-            onChange={handleCategoryChange}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyItems: "center",
+              marginBottom: "5px",
+            }}
           >
-            <StyledMenuItemSelect value="firstName">
-              First Name
-            </StyledMenuItemSelect>
-            <StyledMenuItemSelect value="lastName">
-              Last Name
-            </StyledMenuItemSelect>
-            <StyledMenuItemSelect value="phone">Phone</StyledMenuItemSelect>
-          </StyledSelect>
+            <StyledSelect
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              sx={{
+                width: "100%",
+                maxWidth: "200px",
+                marginBottom: "5px",
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "black",
+                  },
+                },
+              }}
+            >
+              <StyledMenuItemSelect value="firstName">
+                First Name
+              </StyledMenuItemSelect>
+              <StyledMenuItemSelect value="lastName">
+                Last Name
+              </StyledMenuItemSelect>
+              <StyledMenuItemSelect value="phone">Phone</StyledMenuItemSelect>
+              <StyledMenuItemSelect value="email">Email</StyledMenuItemSelect>
+            </StyledSelect>
+
+            <TextFieldForm
+              label="Search"
+              value={searchTerm}
+              onChange={handleSearchTermChange}
+              sx={{
+                width: "100%",
+                maxWidth: "400px",
+                marginBottom: "10px",
+              }}
+            />
+
+            <StyledSelect
+              value={selectedRole}
+              onChange={(event) => setSelectedRole(event.target.value)}
+              sx={{
+                width: "100%",
+                maxWidth: "200px",
+                marginBottom: "10px",
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "black",
+                  },
+                },
+              }}
+            >
+              <StyledMenuItemSelect value="all">All Roles</StyledMenuItemSelect>
+              <StyledMenuItemSelect value="Admin">Admin</StyledMenuItemSelect>
+              <StyledMenuItemSelect value="User">User</StyledMenuItemSelect>
+              <StyledMenuItemSelect value="Coach">Coach</StyledMenuItemSelect>
+            </StyledSelect>
+          </Box>
           <TableContainer component={Paper}>
             <Table>
               {renderTableHeader()}
