@@ -12,7 +12,7 @@ import CreateProduct from "./pages/CreateProduct/CreateProduct";
 import Services from "./pages/Services/Services";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import UserList from "./pages/Dashboard/components/UserList";
-import DetailProduct from "./components/Date/DetailProduct";
+import DetailProduct from "./pages/Marketplace/DetailProduct";
 import ShopCart from "./pages/Shopping/ShopCart";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import DetailService from "./components/DetailService/DetailService";
