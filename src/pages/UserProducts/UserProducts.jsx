@@ -18,6 +18,7 @@ import {
   SmallOrangeOutlinedButton,
   LinkNoDeco,
 } from "../../styles/ComponentStyles";
+import UserProductsCard from "./UserProductsCard";
 
 export default function UserServices() {
   const user = useSelector((state) => state.user);
@@ -52,6 +53,8 @@ export default function UserServices() {
 
         const response = await axios.get(`${API_URL}/userproducts/${id}`, req);
         const { data } = response;
+        // console.log(data.User);
+        // console.log(data);
         if (data) {
           setUserProducts(data);
           setLoading(false);
@@ -91,62 +94,10 @@ export default function UserServices() {
         <Typography variant="h3" color="white">
           Bought products:
         </Typography>
-        {userProducts.length > 0 ? (
+        {userProducts && userProducts.length > 0 ? (
           <Box sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-evenly', flexWrap: "wrap", padding: 8 }}>
-            {userProducts.map((product, i) => (
-            <Grid item key={i} xs={12} sm={6} md={4} lg={2} xl={2}>
-              <ProductCard
-                sx={{
-                  height: "100%",
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={product.image}
-                  alt={product.name}
-                  style={{
-                    color: "#fff",
-                    fontStyle: "italic",
-                    fontSize: "14px",
-                  }}
-                />
-                <CardContent
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Rating
-                    name={`rating-${product.productID}`}
-                    value={4}
-                    precision={0.5}
-                    readOnly
-                    sx={{ marginBottom: 1, color: "#ff9721" }}
-                  />
-                  <Typography
-                    variant="h6"
-                    sx={{ color: "#fff", textAlign: "center" }}
-                  >
-                    {product.name}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ color: "#fff", textAlign: "center" }}
-                  >
-                    ${product.price}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "center" }}>
-                  <LinkNoDeco to={`/Marketplace/detail/${product.productID}`}>
-                    <SmallOrangeOutlinedButton>
-                      VIEW DETAIL
-                    </SmallOrangeOutlinedButton>
-                  </LinkNoDeco>
-                </CardActions>
-              </ProductCard>
-            </Grid>
+            {userProducts.map((userProduct, i) => (
+              <UserProductsCard key={i} userProduct={userProduct} />
             ))}
           </Box>
         ) : (
