@@ -112,7 +112,7 @@ export default function DetailService() {
                     variant="body1"
                     sx={{ color: "#text.secondary", textAlign: "center" }}
                 >
-                ${service.price}
+                S/{service.price}
                 </Typography>
                 <Typography
                     variant="body1"

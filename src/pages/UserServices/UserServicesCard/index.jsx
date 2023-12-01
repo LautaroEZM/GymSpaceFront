@@ -3,8 +3,10 @@ import { CardMedia, CardContent, CardActions, Typography } from "@mui/material";
 import { SmallOrangeOutlinedButtonLess } from "../../../styles/ComponentStyles";
 import { ServicesCard, LinkNoDeco } from "../../../styles/ComponentStyles";
 import ReviewModal from "../ReviewModal";
+import { useSelector } from "react-redux";
 
 export default function UserServicesCard({ userService }) {
+    const user = useSelector((state) => state.user)
     const {
         Service: service
     } = userService
@@ -59,7 +61,9 @@ export default function UserServicesCard({ userService }) {
                     View
                 </SmallOrangeOutlinedButtonLess>
             </LinkNoDeco>
-            <SmallOrangeOutlinedButtonLess>Edit</SmallOrangeOutlinedButtonLess>
+            {user.systemRole !== 'User' && <SmallOrangeOutlinedButtonLess>
+                Edit
+            </SmallOrangeOutlinedButtonLess>}
             <SmallOrangeOutlinedButtonLess
                 onClick={() => setOpenModal(true)}
             >
