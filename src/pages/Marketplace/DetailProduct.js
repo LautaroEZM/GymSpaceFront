@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import Loading from "../../components/Loading/loading";
 
 import styles from "./DetailProduct.module.css";
 
@@ -49,7 +50,7 @@ export default function DetailProduct() {
   }, [id]);
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loading loading={isLoading} ></Loading>
   }
 
   if (error) {
