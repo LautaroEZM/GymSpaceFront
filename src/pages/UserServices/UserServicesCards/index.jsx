@@ -3,6 +3,7 @@ import { Box } from '@mui/system';
 import React from 'react'
 import ServiceCard from '../../Services/ServiceCard';
 import { OrangeContainedButton } from '../../../styles/ComponentStyles';
+import UserServicesCard from '../UserServicesCard';
 
 export default function UserServicesCards({
     userServices,
@@ -28,7 +29,7 @@ export default function UserServicesCards({
                 {userServices.map((userService, i) => {
                     // console.log(service);
                     return !userServiceDisabled(userService) ?
-                        <ServiceCard key={i} service={userService.Service} /> : null
+                        <UserServicesCard key={i} userService={userService} /> : null
                 })}
             </Box>
         ) : (

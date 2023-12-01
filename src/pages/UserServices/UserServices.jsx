@@ -54,7 +54,7 @@ export default function UserServices() {
         const response = await axios.get(url, req);
         const { data } = response;
         // console.log(data.map((userService) => userService.Service));
-        console.log(data);
+        // console.log(data);
         if (data) {
           setUserServices(data);
           setLoading(false);
@@ -88,21 +88,21 @@ export default function UserServices() {
         userServices={userServices}
         disabled={!userServices.length}
         userServiceDisabled={(userService) => userService.finishDate < today}
-        title="In course:"
+        title="Services in Course"
         redirectButtonName="Buy"
       />
       <UserServicesCards
         userServices={userServices}
         disabled={!userServices.length}
         userServiceDisabled={(userService) => userService.finishDate >= today}
-        title="Caducated:"
+        title="Services Caducated"
         redirectButtonName="Buy"
       />
       {true || isCoach ? <UserServicesCards
         userServices={userServices}
         disabled={!userServices.length}
         userServiceDisabled={(userService) => userService.finishDate < today && checkServiceCoach(userService)}
-        title="Your classes:"
+        title="Your Classes"
         redirectButtonName="Create service"
       /> : null}
     </Box>
